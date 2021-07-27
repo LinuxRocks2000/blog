@@ -1,6 +1,9 @@
 *{
     font-family: arial;
 }
+p{
+    font-size: 1.2em;
+}
 body{
     margin: 0px;
     display: grid;
@@ -41,4 +44,12 @@ body > div{
 #footer{
     border-top: 1px solid grey;
     grid-area: footer;
+    padding: 10px;
+    background-color: azure;
+    text-align: center;
+}
+#footer > * > *{
+    text-decoration: none;
+    margin: none;
+    padding: none;
 }

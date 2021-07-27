@@ -1,20 +1,30 @@
 {% for post in site.posts %}
-    <div class = "sidebar-item">
-        <a href="{{ site.baseurl }}{{ post.url }}">{{ post.title }}</a>
-    </div>
+    <a class = "theA" href="{{ site.baseurl }}{{ post.url }}">
+        <div class = "sidebar-item">
+            <span class = "title">{{ post.title }}</span><br />
+            <span class = "bottomthing">{{ post.bottomthing }}</span>
+        </div>
+    </a>
 {% endfor %}
 <style>
     .sidebar-item{
         padding: 10px;
         background-color: azure;
         margin: 10px;
-        white-space: nowrap;
     }
-    .sidebar-item > a{
+    .sidebar-item > .title{
         color: black;
         text-decoration: none;
+        white-space: nowrap;
+    }
+    .sidebar-item > .bottomthing{
+        color: grey;
+        font-weight: bold;
     }
     .sidebar-item:hover{
         background-color: transparent;
+    }
+    .theA{
+        text-decoration: none;
     }
 </style>

@@ -10,3 +10,8 @@ defaults:
     values:
       layout: "default"
       permalink: /:title
+
+plugins:
+    - jemoji
+emoji:
+  src: "https://github.githubassets.com/images/icons/"
