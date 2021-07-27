@@ -2,7 +2,13 @@
 layout: default
 title: "About Page"
 ---
+# About me
 
-# {{ page.title }}
+[Photograph not shown for privacy reasons]
 
-Markdown About Me page here
+My name is Tyler Clarke. I am a teenage computer programmer from Georgia, with about 5 years of experience (so far).  
+I program in HTML, CSS, Javascript, Python, C++, C, Intel assembly, and Befunge-93.  
+My first language was Scratch, and I eschew Java because it is a hatefully slow and inefficient language, not to mention the fact that it is ugly.  
+(I like Python, which may make me a hypocrite. I don't really care.)
+
+In my spare time, I write novels and this blog, which is what I am writing right now, hence the fact that you are reading this.

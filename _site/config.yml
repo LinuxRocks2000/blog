@@ -1,0 +1,10 @@
+name                : LinuxRocks2000 blog
+description         : A blog containing everything that I am thinking of at every known time
+source              : .
+destination         : ./_site
+collections_dir     : .
+plugins_dir         : _plugins # takes an array of strings and loads plugins in that order
+layouts_dir         : _layouts
+data_dir            : _data
+includes_dir        : _includes
+baseurl             : /blog
