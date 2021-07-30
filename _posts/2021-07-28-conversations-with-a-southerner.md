@@ -7,4 +7,4 @@ published: false
 ### However, it can also be undeniably funny
 #### Hence, this post
 
-It was a perfect Sunday morning for a selfie. The old-town streets were covered in fake horse-drawn carriages, and everyone was so hot they couldn't sweat<footnote>  
+It was a perfect Sunday morning for a selfie. The old-town streets were covered in fake horse-drawn carriages, and everyone was so hot they couldn't sweat
