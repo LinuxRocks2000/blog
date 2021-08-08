@@ -1,6 +1,6 @@
 ---
 title: "Something wrong with Squishmallows (only for people who like tabloid humour)"
-bottomthing: "Short attention span of the internet... Or corporate conspiracy?"
+bottomthing: "Detective Lane Howser, on the case"
 published: false
 ---
 ### It was a beautiful August midday that we stepped into the 5-Below, not knowing that we would soon be the sole witnesses to the most important conspiracy of the 21st century.  
@@ -18,11 +18,17 @@ My whale was always the perfect squishmallow - kind, comforting, psychiatrist, b
 The new version was not perfect. It was **ugly**. The only authentic Oswald-clone I could find? An ebay one. Used.  
 The janky Kellytoy website didn't give any answers anyways. Every "squad" was almost empty... I was sure there was something strange happening.
 
-I asked on Reddit, and got no response.
-What is happening? I decided to dig deeper.
-
-
  * * *
  ## I was sure there was something fishy going on.
  * * *
  
+I asked on Reddit, and got no helpful response.  
+What is happening?  
+Where did the squishmallows go?  
+
+For any (anonymous, if your smart) tips, E-Mail me.
+
+## Detective Lane Howser is a private detective in Toronto, Canada. She likes to hunt down the most utterly trivial cases.
+
+
+*This entire article is a joke, based in fact, same as all the further Detective Lane Howser articles.*
