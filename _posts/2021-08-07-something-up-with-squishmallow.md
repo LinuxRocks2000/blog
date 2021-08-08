@@ -1,7 +1,6 @@
 ---
 title: "Something wrong with Squishmallows (only for people who like tabloid humour)"
 bottomthing: "Detective Lane Howser, on the case"
-published: false
 ---
 ### It was a beautiful August midday that we stepped into the 5-Below, not knowing that we would soon be the sole witnesses to the most important conspiracy of the 21st century.  
 
@@ -28,7 +27,7 @@ Where did the squishmallows go?
 
 For any (anonymous, if your smart) tips, E-Mail me.
 
-## Detective Lane Howser is a private detective in Toronto, Canada. She likes to hunt down the most utterly trivial cases.
+### Detective Lane Howser is a private detective in Toronto, Canada. She likes to hunt down the most utterly trivial cases.
 
 
 *This entire article is a joke, based in fact, same as all the further Detective Lane Howser articles.*
