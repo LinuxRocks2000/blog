@@ -1,9 +1,10 @@
 class FootNote extends HTMLElement{
     constructor(){
         super();
-        this.attachShadow();
-        var super = document.createElement("sup");
-        this.appendChild(super);
+        this.attachShadow({mode:"open"});
+        var superscript = document.createElement("sup");
+        superscript.innerHTML = "[citation]";
+        this.shadowRoot.appendChild(superscript);
     }
     connectedCallback(){
         console.log(this);
