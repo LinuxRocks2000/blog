@@ -1,6 +1,6 @@
 ---
 title: Carbon Cycles
-bottomthing: And why Ameerica should use Ethanol
+bottomthing: And why America should use Ethanol
 ---
 ## Carbon Cycles
 ### Most people who got more than a C in organic chemistry know that there is a broad carbon cycle. This is the cycle associated with photosynthesis and release. But, it seems as though there is more than one.
