@@ -50,6 +50,13 @@ body > div{
 }
 #footer > * > *{
     text-decoration: none;
-    margin: none;
-    padding: none;
+    margin: 0px;
+    padding: 0px;
+}
+.citationSup{
+    color: blue;
+    cursor: pointer;
+}
+.citationSup:hover{
+    color: lightblue;
 }
