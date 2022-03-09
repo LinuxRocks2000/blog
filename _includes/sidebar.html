@@ -1,3 +1,4 @@
+<div id="stickything">
 {% for post in site.posts %}
     <a class = "theA" href="{{ site.baseurl }}{{ post.url }}">
         <div class = "sidebar-item">
@@ -6,6 +7,7 @@
         </div>
     </a>
 {% endfor %}
+</div>
 <style>
     .sidebar-item{
         padding: 10px;
@@ -26,5 +28,8 @@
     }
     .theA{
         text-decoration: none;
+    }
+    #stickything{
+        position: relative;
     }
 </style>

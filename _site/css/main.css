@@ -28,6 +28,7 @@ body > div{
 #sidebar{
     grid-area: sidebar;
     background-color: wheat;
+    position: sticky;
 }
 
 #sidebar:hover{

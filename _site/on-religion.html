@@ -57,6 +57,25 @@
   <li>Isn’t profane; keep it civil and clean because this is blog is supposed to be somewhat child-friendly.</li>
 </ul>
 
+            <div id="disqus_thread"></div>
+            <script>
+                /**
+                *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+                *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables    */
+                /*
+                var disqus_config = function () {
+                this.page.url = PAGE_URL;  // Replace PAGE_URL with your page's canonical URL variable
+                this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+                };
+                */
+                (function() { // DON'T EDIT BELOW THIS LINE
+                var d = document, s = d.createElement('script');
+                s.src = 'https://linuxrocks2000-github-io.disqus.com/embed.js';
+                s.setAttribute('data-timestamp', +new Date());
+                (d.head || d.body).appendChild(s);
+                })();
+            </script>
+            <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
         </div>
         <div id="footer">
             <p><a href = "mailto:plupy44@gmail.com">Email?</a></p>
@@ -72,7 +91,8 @@
 
         </div>
         <div id="sidebar">
-            
+            <div id="stickything">
+
     <a class = "theA" href="/blog/gluten-free-dairy-free-highly-based-brownies">
         <div class = "sidebar-item">
             <span class = "title">Gluten Free, Dairy Free, Highly Based Brownies</span><br />
@@ -129,6 +149,7 @@
         </div>
     </a>
 
+</div>
 <style>
     .sidebar-item{
         padding: 10px;
@@ -149,6 +170,9 @@
     }
     .theA{
         text-decoration: none;
+    }
+    #stickything{
+        position: relative;
     }
 </style>
 
