@@ -1,5 +1,6 @@
 ---
 name: "Platformer From Scratch chapter 2"
+bottomthing: "Players, improved graphics, gameloops!"
 ---
 
 Welcome back, padawan gamedevs! In this chapter of Platformer from Scratch, we're going to: add a player and change our render code to support it, and add a game loop.
