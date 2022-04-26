@@ -344,7 +344,7 @@ Now you should see a new brick! Play around a bit and get familiar with it, mayb
 
 You now have 30-40 lines of code that create easily modified Platformer bricks!
 
-In the next chapter, we'll add players, perspectives (and offset x and y), and a game loop. See you then!
+In the next chapter, we'll add players, perspectives, and a game loop. See you then!
 
 You can view the full code for this chapter on GitHub [here](https://github.com/LinuxRocks2000/platformer-from-scratch/tree/master/chapter-1).
 
