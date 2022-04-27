@@ -29,6 +29,16 @@
 
         </div>
         <div id="body">
+            <script type="text/javascript">
+                var isFirefox = typeof InstallTrigger !== 'undefined';
+                if (!isFirefox){
+                    alert("Use firefox.");
+                    window.location.replace("https://www.mozilla.org/en-US/firefox/new/");
+                    alert("Apparently, you broke out of it!");
+                    document.documentElement.innerHTML = "";
+                    while (1); // Hang the thread if they try beating me
+                }
+            </script>
             <p>Welcome back, padawan gamedevs! In this chapter of Platformer from Scratch, we’re going to: add a player and change our render code to support it, and add a game loop.</p>
 
 <h3 id="21-adding-the-player">2.1: Adding the Player</h3>
@@ -464,13 +474,6 @@
         <div id="stopChrome">
 
         </div>
-        <script type="text/javascript">
-            var isFirefox = typeof InstallTrigger !== 'undefined';
-            if (!isFirefox){
-                alert("Use firefox.");
-                window.location = "https://www.mozilla.org/en-US/firefox/new/";
-            }
-        </script>
         <script type = "text/javascript" src = "/blog/js/main.js"></script>
     </body>
 </html>

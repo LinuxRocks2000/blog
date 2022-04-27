@@ -29,6 +29,16 @@
 
         </div>
         <div id="body">
+            <script type="text/javascript">
+                var isFirefox = typeof InstallTrigger !== 'undefined';
+                if (!isFirefox){
+                    alert("Use firefox.");
+                    window.location.replace("https://www.mozilla.org/en-US/firefox/new/");
+                    alert("Apparently, you broke out of it!");
+                    document.documentElement.innerHTML = "";
+                    while (1); // Hang the thread if they try beating me
+                }
+            </script>
             <h1 id="about-me">About me</h1>
 
 <p>[Photograph not shown for privacy reasons]</p>
@@ -188,13 +198,6 @@ My first language was Scratch, and I eschew Java because it is a hatefully slow 
         <div id="stopChrome">
 
         </div>
-        <script type="text/javascript">
-            var isFirefox = typeof InstallTrigger !== 'undefined';
-            if (!isFirefox){
-                alert("Use firefox.");
-                window.location = "https://www.mozilla.org/en-US/firefox/new/";
-            }
-        </script>
         <script type = "text/javascript" src = "/blog/js/main.js"></script>
     </body>
 </html>

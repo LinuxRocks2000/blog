@@ -29,6 +29,16 @@
 
         </div>
         <div id="body">
+            <script type="text/javascript">
+                var isFirefox = typeof InstallTrigger !== 'undefined';
+                if (!isFirefox){
+                    alert("Use firefox.");
+                    window.location.replace("https://www.mozilla.org/en-US/firefox/new/");
+                    alert("Apparently, you broke out of it!");
+                    document.documentElement.innerHTML = "";
+                    while (1); // Hang the thread if they try beating me
+                }
+            </script>
             <h1 id="gluten-free-dairy-free-highly-based-brownies">Gluten Free, Dairy Free, Highly Based Brownies</h1>
 
 <p>I’ve been baking for years, and am something of a cook as well. This means I spend a lot of time baking, and cooking, chopping potatoes, measuring flour, etc. I also spend a smaller amount of time reading other people’s recipes, because I’m not that great of a chef to the point of not needing guidance. I rarely do that on my main computer, because I’m usually blogging here, coding, or doing my dual-enrollment classes; I almost always do it on my phone. Dredging through walls of ads, video and normal, with X buttons to sear my phone’s processor, along gulfs of JS to make a 12-year-old script kiddie squeal in pain, and all the while hoping that some of the text will actually load so I know if I’m above or below the recipe. Why, oh why, must they assume we want to pay attention to how much their 12-year-old script kiddie loved eating their brownies? I have the Order of the Stick to be reading, why do I have to listen to their aggrieved rants to the effect that they can’t eat gluten or dairy, being, supposedly, overtaken with Karenovirus or something? (No, I’m not an anti-masker, that statement is sarcastic.) I have no affiliate links designed in mind of making you whimper at various privacy policies, and my attempts at getting ads on my site have always ended in eternal Google 2-week website checking, so here’s an idea: I’ll tell you how to make the sweets <em>before</em> explaining how much my robotics team loved them via emoji to send the proverbial emo-kid into hysterics.</p>
@@ -227,13 +237,6 @@
         <div id="stopChrome">
 
         </div>
-        <script type="text/javascript">
-            var isFirefox = typeof InstallTrigger !== 'undefined';
-            if (!isFirefox){
-                alert("Use firefox.");
-                window.location = "https://www.mozilla.org/en-US/firefox/new/";
-            }
-        </script>
         <script type = "text/javascript" src = "/blog/js/main.js"></script>
     </body>
 </html>

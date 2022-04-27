@@ -29,6 +29,16 @@
 
         </div>
         <div id="body">
+            <script type="text/javascript">
+                var isFirefox = typeof InstallTrigger !== 'undefined';
+                if (!isFirefox){
+                    alert("Use firefox.");
+                    window.location.replace("https://www.mozilla.org/en-US/firefox/new/");
+                    alert("Apparently, you broke out of it!");
+                    document.documentElement.innerHTML = "";
+                    while (1); // Hang the thread if they try beating me
+                }
+            </script>
             <h2 id="beginning-statements">Beginning statements</h2>
 
 <p>First off, I want to state that I’m not a Christian. I know this is pretty appalling to a lot of people nowadays, which is only natural as a lot of people are Christian: out of the 329.5 million people (as of 2022) here in America, around 65 percent believe in God and a pantheon of saints. Does this mean I am inherently wrong, as America is founded upon majority? No. America was founded on religious safety, from the despot king and church in Europe, and to discriminate on faith is exactly the kind of thing our society would do today, which is not at all a complement. But I digress. This article is not about whether I should be protected by the law from discrimination which I haven’t, interestingly, received (I know a very large amount of intelligent and amiable Christians who accept my faith graciously), it is about why I’m not Christian.</p>
@@ -205,13 +215,6 @@
         <div id="stopChrome">
 
         </div>
-        <script type="text/javascript">
-            var isFirefox = typeof InstallTrigger !== 'undefined';
-            if (!isFirefox){
-                alert("Use firefox.");
-                window.location = "https://www.mozilla.org/en-US/firefox/new/";
-            }
-        </script>
         <script type = "text/javascript" src = "/blog/js/main.js"></script>
     </body>
 </html>

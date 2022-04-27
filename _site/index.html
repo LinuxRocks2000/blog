@@ -29,6 +29,16 @@
 
         </div>
         <div id="body">
+            <script type="text/javascript">
+                var isFirefox = typeof InstallTrigger !== 'undefined';
+                if (!isFirefox){
+                    alert("Use firefox.");
+                    window.location.replace("https://www.mozilla.org/en-US/firefox/new/");
+                    alert("Apparently, you broke out of it!");
+                    document.documentElement.innerHTML = "";
+                    while (1); // Hang the thread if they try beating me
+                }
+            </script>
             <h1>Welcome to my blog!</h1>
 <p>
     I am unaware as to how you landed here - whether it be recommendation from a friend, recommendation from me (if I'm your friend, which I might be - I'm an extrovert), or just stumbling here from Github or another blog. <br /><br />
@@ -189,13 +199,6 @@
         <div id="stopChrome">
 
         </div>
-        <script type="text/javascript">
-            var isFirefox = typeof InstallTrigger !== 'undefined';
-            if (!isFirefox){
-                alert("Use firefox.");
-                window.location = "https://www.mozilla.org/en-US/firefox/new/";
-            }
-        </script>
         <script type = "text/javascript" src = "/blog/js/main.js"></script>
     </body>
 </html>

@@ -29,6 +29,16 @@
 
         </div>
         <div id="body">
+            <script type="text/javascript">
+                var isFirefox = typeof InstallTrigger !== 'undefined';
+                if (!isFirefox){
+                    alert("Use firefox.");
+                    window.location.replace("https://www.mozilla.org/en-US/firefox/new/");
+                    alert("Apparently, you broke out of it!");
+                    document.documentElement.innerHTML = "";
+                    while (1); // Hang the thread if they try beating me
+                }
+            </script>
             <h2 id="microsoft-a-love-letter">Microsoft: A love letter</h2>
 <h5 id="dont-read-if-you-have-a-sense-of-rhymemeter-a-sense-of-humor-enjoy-the-road-not-taken-or-just-have-a-taste-in-poetry-in-general">(don’t read if you have a sense of rhyme/meter, a sense of humor, enjoy The Road Not Taken, or just have a taste in poetry in general)</h5>
 
@@ -215,13 +225,6 @@ As Mark Twain never said<br />
         <div id="stopChrome">
 
         </div>
-        <script type="text/javascript">
-            var isFirefox = typeof InstallTrigger !== 'undefined';
-            if (!isFirefox){
-                alert("Use firefox.");
-                window.location = "https://www.mozilla.org/en-US/firefox/new/";
-            }
-        </script>
         <script type = "text/javascript" src = "/blog/js/main.js"></script>
     </body>
 </html>

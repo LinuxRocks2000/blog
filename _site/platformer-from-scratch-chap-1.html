@@ -29,6 +29,16 @@
 
         </div>
         <div id="body">
+            <script type="text/javascript">
+                var isFirefox = typeof InstallTrigger !== 'undefined';
+                if (!isFirefox){
+                    alert("Use firefox.");
+                    window.location.replace("https://www.mozilla.org/en-US/firefox/new/");
+                    alert("Apparently, you broke out of it!");
+                    document.documentElement.innerHTML = "";
+                    while (1); // Hang the thread if they try beating me
+                }
+            </script>
             <h2 id="learning-the-web-with-platformer-from-scratch">Learning the Web with Platformer from Scratch</h2>
 
 <p>Platformer is a pretty simple game that, if you’ve been on my site for any extended period of time, you’ve probably played. If you haven’t played it, you should go do that now; if there isn’t a link in the header-bar, you can find the link on the main page of my webcomic (which is linked in the top-bar). If you don’t want to play, know that it’s a 2d aligned-axis grid of tiles on which a player can hop about, collecting coins and power-ups, and dodging/defeating enemies. I recently went through re-making it with multiplayer and discovered that it was actually really simple, even with all the network code, so I decided to write this tutorial. (I may publish a Multiplatformer From Scratch later, but for now we’re going to build the single-player original, which is I promise just as cool). In this series, I hope to start from scratch and end with: a level menu, enemies, jumpthrough platforms, and coins; you don’t need any HTML, CSS, or Javascript knowledge at the outset, but it’s a good idea.</p>
@@ -504,13 +514,6 @@
         <div id="stopChrome">
 
         </div>
-        <script type="text/javascript">
-            var isFirefox = typeof InstallTrigger !== 'undefined';
-            if (!isFirefox){
-                alert("Use firefox.");
-                window.location = "https://www.mozilla.org/en-US/firefox/new/";
-            }
-        </script>
         <script type = "text/javascript" src = "/blog/js/main.js"></script>
     </body>
 </html>
