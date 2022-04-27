@@ -7,7 +7,6 @@
         <link rel="stylesheet"
               href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/styles/default.min.css">
         <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/highlight.min.js"></script>
-        <script>hljs.initHighlightingOnLoad();</script>
     </head>
     <body>
         <div id="topbar">
@@ -38,8 +37,9 @@
                     document.documentElement.innerHTML = "";
                     while (1); // Hang the thread if they try beating me
                 }
-            </script>
-            <p>Welcome, friendly JS developers, to the third installment of Platformer From Scratch! In this chapter, we’ll finish the physics engine: velocity, collisions, and true player control.</p>
+                else{
+                    window.onload = function(){
+                        document.getElementById("content-wrapper").innerHTML = `<p>Welcome, friendly JS developers, to the third installment of Platformer From Scratch! In this chapter, we’ll finish the physics engine: velocity, collisions, and true player control.</p>
 
 <h3 id="31-velocity-and-motion">3.1: Velocity and Motion</h3>
 
@@ -620,7 +620,12 @@ class PhysicsObject{
 
 <p>As always, you can view the code for this chapter <a href="https://github.com/LinuxRocks2000/platformer-from-scratch/tree/master/chapter-3">here</a>.</p>
 
-
+`;
+                        hljs.initHighlightingOnLoad();
+                    }
+                }
+            </script>
+            <div id="content-wrapper"></div>
             Unfortunately, Google Ads is too awful to use on my site; I'm sure you're all very sad that this section is not filled with cheap Medicare.<br />
             Yes, my voice oozes sarcasm.
             <div id="disqus_thread"></div>

@@ -7,7 +7,6 @@
         <link rel="stylesheet"
               href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/styles/default.min.css">
         <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/highlight.min.js"></script>
-        <script>hljs.initHighlightingOnLoad();</script>
     </head>
     <body>
         <div id="topbar">
@@ -38,8 +37,9 @@
                     document.documentElement.innerHTML = "";
                     while (1); // Hang the thread if they try beating me
                 }
-            </script>
-            <h1 id="hello-blogosphere-its-good-to-be-back">Hello, blogosphere! Its good to be back!</h1>
+                else{
+                    window.onload = function(){
+                        document.getElementById("content-wrapper").innerHTML = `<h1 id="hello-blogosphere-its-good-to-be-back">Hello, blogosphere! Its good to be back!</h1>
 <p>Anyone who actually ever read my comic when it had a blog (ergo, nobody), knows that it used to be undeniably ugly.<br />
 Then I did a bunch of javascript, totally refactored my entire site and… Even uglier!</p>
 
@@ -53,7 +53,12 @@ some of my posts may joke in socially incorrect ways - racism, religion, and pol
 <h3 id="i-hope-you-like-my-site">I hope you like my site!</h3>
 
 <p>Tyler</p>
-
+`;
+                        hljs.initHighlightingOnLoad();
+                    }
+                }
+            </script>
+            <div id="content-wrapper"></div>
             Unfortunately, Google Ads is too awful to use on my site; I'm sure you're all very sad that this section is not filled with cheap Medicare.<br />
             Yes, my voice oozes sarcasm.
             <div id="disqus_thread"></div>

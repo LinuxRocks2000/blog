@@ -7,7 +7,6 @@
         <link rel="stylesheet"
               href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/styles/default.min.css">
         <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/highlight.min.js"></script>
-        <script>hljs.initHighlightingOnLoad();</script>
     </head>
     <body>
         <div id="topbar">
@@ -38,8 +37,9 @@
                     document.documentElement.innerHTML = "";
                     while (1); // Hang the thread if they try beating me
                 }
-            </script>
-            <h2 id="talking-to-true-southern-people-can-be-a-pain">Talking to true southern people can be a <em>pain</em>.</h2>
+                else{
+                    window.onload = function(){
+                        document.getElementById("content-wrapper").innerHTML = `<h2 id="talking-to-true-southern-people-can-be-a-pain">Talking to true southern people can be a <em>pain</em>.</h2>
 <h3 id="however-it-can-also-be-undeniably-funny">However, it can also be undeniably funny</h3>
 <h4 id="hence-this-post">Hence, this post</h4>
 
@@ -103,7 +103,12 @@ At this point, I gave it up for a lost cause, but he had already gone through so
 
 <p>It was just about now that I realized that not only was I wasting my own time, I was wasting my reader’s time, and decided to cut it off here.<br />
 I intend to release the full text as soon as I can find a hosting service that won’t ban me for life - for now, just imagine. You won’t be far off!</p>
-
+`;
+                        hljs.initHighlightingOnLoad();
+                    }
+                }
+            </script>
+            <div id="content-wrapper"></div>
             Unfortunately, Google Ads is too awful to use on my site; I'm sure you're all very sad that this section is not filled with cheap Medicare.<br />
             Yes, my voice oozes sarcasm.
             <div id="disqus_thread"></div>

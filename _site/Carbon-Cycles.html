@@ -7,7 +7,6 @@
         <link rel="stylesheet"
               href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/styles/default.min.css">
         <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/highlight.min.js"></script>
-        <script>hljs.initHighlightingOnLoad();</script>
     </head>
     <body>
         <div id="topbar">
@@ -38,8 +37,9 @@
                     document.documentElement.innerHTML = "";
                     while (1); // Hang the thread if they try beating me
                 }
-            </script>
-            <h2 id="carbon-cycles">Carbon Cycles</h2>
+                else{
+                    window.onload = function(){
+                        document.getElementById("content-wrapper").innerHTML = `<h2 id="carbon-cycles">Carbon Cycles</h2>
 <h3 id="most-people-who-got-more-than-a-c-in-organic-chemistry-know-that-there-is-a-broad-carbon-cycle-this-is-the-cycle-associated-with-photosynthesis-and-release-but-it-seems-as-though-there-is-more-than-one">Most people who got more than a C in organic chemistry know that there is a broad carbon cycle. This is the cycle associated with photosynthesis and release. But, it seems as though there is more than one.</h3>
 
 <p>For a recap, the carbon cycle is driven by photosynthesis. When plants absorb carbon dioxide, they use sunlight to split water molecules. The oxygen is released, and the hydrogen is bound to the carbon dioxides (in different quantities for different types, of course), to form simple sugars (Glucose, Sucrose).
@@ -63,7 +63,12 @@ Methane is converted inside your body constantly, but a far better supply is fro
 <p>We’re in a battle with global warming. It is either money or the future of the human race, and industries are choosing money in the form of oil. The oil industry has the option to either adapt or collapse, and I fear they will prefer to collapse. The world economy will take a hit, maybe even collapse, into the void left by oil. Millions will be jobless (although they will hopefully be employed by bio-fuel), and wars will start all over the Middle East as our reasons for peace deteriorate.</p>
 
 <p>In the end, is it better to die in fire or ice?</p>
-
+`;
+                        hljs.initHighlightingOnLoad();
+                    }
+                }
+            </script>
+            <div id="content-wrapper"></div>
             Unfortunately, Google Ads is too awful to use on my site; I'm sure you're all very sad that this section is not filled with cheap Medicare.<br />
             Yes, my voice oozes sarcasm.
             <div id="disqus_thread"></div>

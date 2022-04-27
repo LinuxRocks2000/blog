@@ -7,7 +7,6 @@
         <link rel="stylesheet"
               href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/styles/default.min.css">
         <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/highlight.min.js"></script>
-        <script>hljs.initHighlightingOnLoad();</script>
     </head>
     <body>
         <div id="topbar">
@@ -38,8 +37,9 @@
                     document.documentElement.innerHTML = "";
                     while (1); // Hang the thread if they try beating me
                 }
-            </script>
-            <h1 id="about-me">About me</h1>
+                else{
+                    window.onload = function(){
+                        document.getElementById("content-wrapper").innerHTML = `<h1 id="about-me">About me</h1>
 
 <p>[Photograph not shown for privacy reasons]</p>
 
@@ -51,7 +51,12 @@ My first language was Scratch, and I eschew Java because it is a hatefully slow 
 <p>In my spare time, I write novels and this blog, which is what I am writing right now, hence the fact that you are reading this.</p>
 
 <h2 id="im-looking-for-a-part-time-coding-job---if-you-have-anything-you-need-programmed-please-e-mail-me">I’m looking for a part-time coding job - if you have anything you need programmed, please <a href="mailto:plupy44@gmail.com">E-Mail me</a></h2>
-
+`;
+                        hljs.initHighlightingOnLoad();
+                    }
+                }
+            </script>
+            <div id="content-wrapper"></div>
             Unfortunately, Google Ads is too awful to use on my site; I'm sure you're all very sad that this section is not filled with cheap Medicare.<br />
             Yes, my voice oozes sarcasm.
             <div id="disqus_thread"></div>

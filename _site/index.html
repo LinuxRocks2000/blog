@@ -7,7 +7,6 @@
         <link rel="stylesheet"
               href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/styles/default.min.css">
         <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/highlight.min.js"></script>
-        <script>hljs.initHighlightingOnLoad();</script>
     </head>
     <body>
         <div id="topbar">
@@ -38,8 +37,9 @@
                     document.documentElement.innerHTML = "";
                     while (1); // Hang the thread if they try beating me
                 }
-            </script>
-            <h1>Welcome to my blog!</h1>
+                else{
+                    window.onload = function(){
+                        document.getElementById("content-wrapper").innerHTML = `<h1>Welcome to my blog!</h1>
 <p>
     I am unaware as to how you landed here - whether it be recommendation from a friend, recommendation from me (if I'm your friend, which I might be - I'm an extrovert), or just stumbling here from Github or another blog. <br /><br />
     If it is the first - thank your friend (please). I hope you will like this blog, and I hope your friend will recommend more people :)<br />
@@ -52,7 +52,12 @@
     <br />
     (If I haven't written anything else / deleted a lot of my posts, both of those links will point to the <a href = "/blog/hello-world">first post</a>. You can make sure this is correct by checking how many posts there are in the little orange sidebar)
 </p>
-
+`;
+                        hljs.initHighlightingOnLoad();
+                    }
+                }
+            </script>
+            <div id="content-wrapper"></div>
             Unfortunately, Google Ads is too awful to use on my site; I'm sure you're all very sad that this section is not filled with cheap Medicare.<br />
             Yes, my voice oozes sarcasm.
             <div id="disqus_thread"></div>

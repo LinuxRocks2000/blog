@@ -7,7 +7,6 @@
         <link rel="stylesheet"
               href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/styles/default.min.css">
         <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/highlight.min.js"></script>
-        <script>hljs.initHighlightingOnLoad();</script>
     </head>
     <body>
         <div id="topbar">
@@ -38,8 +37,9 @@
                     document.documentElement.innerHTML = "";
                     while (1); // Hang the thread if they try beating me
                 }
-            </script>
-            <h2 id="learning-the-web-with-platformer-from-scratch">Learning the Web with Platformer from Scratch</h2>
+                else{
+                    window.onload = function(){
+                        document.getElementById("content-wrapper").innerHTML = `<h2 id="learning-the-web-with-platformer-from-scratch">Learning the Web with Platformer from Scratch</h2>
 
 <p>Platformer is a pretty simple game that, if you’ve been on my site for any extended period of time, you’ve probably played. If you haven’t played it, you should go do that now; if there isn’t a link in the header-bar, you can find the link on the main page of my webcomic (which is linked in the top-bar). If you don’t want to play, know that it’s a 2d aligned-axis grid of tiles on which a player can hop about, collecting coins and power-ups, and dodging/defeating enemies. I recently went through re-making it with multiplayer and discovered that it was actually really simple, even with all the network code, so I decided to write this tutorial. (I may publish a Multiplatformer From Scratch later, but for now we’re going to build the single-player original, which is I promise just as cool). In this series, I hope to start from scratch and end with: a level menu, enemies, jumpthrough platforms, and coins; you don’t need any HTML, CSS, or Javascript knowledge at the outset, but it’s a good idea.</p>
 
@@ -367,7 +367,12 @@
 
 <p>You can view the full code for this chapter on GitHub <a href="https://github.com/LinuxRocks2000/platformer-from-scratch/tree/master/chapter-1">here</a>.</p>
 
-
+`;
+                        hljs.initHighlightingOnLoad();
+                    }
+                }
+            </script>
+            <div id="content-wrapper"></div>
             Unfortunately, Google Ads is too awful to use on my site; I'm sure you're all very sad that this section is not filled with cheap Medicare.<br />
             Yes, my voice oozes sarcasm.
             <div id="disqus_thread"></div>

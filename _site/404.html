@@ -7,7 +7,6 @@
         <link rel="stylesheet"
               href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/styles/default.min.css">
         <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/highlight.min.js"></script>
-        <script>hljs.initHighlightingOnLoad();</script>
     </head>
     <body>
         <div id="topbar">
@@ -38,12 +37,18 @@
                     document.documentElement.innerHTML = "";
                     while (1); // Hang the thread if they try beating me
                 }
-            </script>
-            <p>We apologize for the inconvenience, but it seems that there isn’t a page here.<br />
+                else{
+                    window.onload = function(){
+                        document.getElementById("content-wrapper").innerHTML = `<p>We apologize for the inconvenience, but it seems that there isn’t a page here.<br />
 This might be because it was never there in the first place, because you mistyped a URL, or because we broke something.</p>
 
 <p>We might have deleted it, too.</p>
-
+`;
+                        hljs.initHighlightingOnLoad();
+                    }
+                }
+            </script>
+            <div id="content-wrapper"></div>
             Unfortunately, Google Ads is too awful to use on my site; I'm sure you're all very sad that this section is not filled with cheap Medicare.<br />
             Yes, my voice oozes sarcasm.
             <div id="disqus_thread"></div>

@@ -7,7 +7,6 @@
         <link rel="stylesheet"
               href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/styles/default.min.css">
         <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/highlight.min.js"></script>
-        <script>hljs.initHighlightingOnLoad();</script>
     </head>
     <body>
         <div id="topbar">
@@ -38,8 +37,9 @@
                     document.documentElement.innerHTML = "";
                     while (1); // Hang the thread if they try beating me
                 }
-            </script>
-            <h2 id="microsoft-a-love-letter">Microsoft: A love letter</h2>
+                else{
+                    window.onload = function(){
+                        document.getElementById("content-wrapper").innerHTML = `<h2 id="microsoft-a-love-letter">Microsoft: A love letter</h2>
 <h5 id="dont-read-if-you-have-a-sense-of-rhymemeter-a-sense-of-humor-enjoy-the-road-not-taken-or-just-have-a-taste-in-poetry-in-general">(don’t read if you have a sense of rhyme/meter, a sense of humor, enjoy The Road Not Taken, or just have a taste in poetry in general)</h5>
 
 <blockquote>
@@ -78,7 +78,12 @@ And your services smell bad too<br />
 As Mark Twain never said<br />
 “You are the rat in my stew”</p>
 </blockquote>
-
+`;
+                        hljs.initHighlightingOnLoad();
+                    }
+                }
+            </script>
+            <div id="content-wrapper"></div>
             Unfortunately, Google Ads is too awful to use on my site; I'm sure you're all very sad that this section is not filled with cheap Medicare.<br />
             Yes, my voice oozes sarcasm.
             <div id="disqus_thread"></div>
