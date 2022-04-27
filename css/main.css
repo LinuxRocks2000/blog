@@ -21,14 +21,14 @@ body > div{
 #body{
     grid-area: body;
     font-family: arial;
-    min-height: 100vh;
     margin-left: 1cm;
+    min-height: 100vh;
 }
 
 #sidebar{
     grid-area: sidebar;
     background-color: wheat;
-    position: sticky;
+    white-space: nowrap;
 }
 
 #sidebar:hover{
@@ -69,4 +69,8 @@ code{
 .noselect{
     user-select: none;
     -webkit-user-select: none;
+}
+
+#stopChrome{
+    -moz-align-items: flex-start;
 }
