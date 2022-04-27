@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+    <head>
+        <meta charset="utf-8">
+        <title>Platformer From Scratch Chap 1</title>
+        <link rel="stylesheet" href="/blog/css/main.css" />
+        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2712681434853528"
+     crossorigin="anonymous"></script>
+        <link rel="stylesheet"
+              href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/styles/default.min.css">
+        <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/highlight.min.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script>
+    </head>
+    <body>
+        <div id="topbar">
+            <nav>
+    <a href="/blog/">Blog</a>
+    <a href="/blog/about">About Me</a>
+    <a href="/">My comic</a>
+</nav>
+
+<style>
+    nav > a{
+        font-family: Arial;
+        font-size: 2em;
+        color: black;
+        text-decoration: none;
+        margin-left: 20px;
+    }
+</style>
+
+        </div>
+        <div id="body">
+            <h2 id="learning-the-web-with-platformer-from-scratch">Learning the Web with Platformer from Scratch</h2>
+
+<p>Platformer is a pretty simple game that, if you’ve been on my site for any extended period of time, you’ve probably played. If you haven’t played it, you should go do that now; if there isn’t a link in the header-bar, you can find the link on the main page of my webcomic (which is linked in the top-bar). If you don’t want to play, know that it’s a 2d aligned-axis grid of tiles on which a player can hop about, collecting coins and power-ups, and dodging/defeating enemies. I recently went through re-making it with multiplayer and discovered that it was actually really simple, even with all the network code, so I decided to write this tutorial. (I may publish a Multiplatformer From Scratch later, but for now we’re going to build the single-player original, which is I promise just as cool). In this series, I hope to start from scratch and end with: a level menu, enemies, jumpthrough platforms, and coins; you don’t need any HTML, CSS, or Javascript knowledge at the outset, but it’s a good idea.</p>
+
+<h3 id="11-setting-up-a-project">1.1 Setting Up a Project</h3>
+
+<p>Setting up a project is pretty simple. You’ll first need to create a new directory with the name of your project (“platformer-from-scratch”, if you want to keep it simple), a fairly universal task on any operating system. Next, create a new text document called <code class="language-plaintext highlighter-rouge">index.html</code>. If you’re on Windows, it won’t actually be named <code class="language-plaintext highlighter-rouge">index.html</code>, it will be named <code class="language-plaintext highlighter-rouge">index.html.txt</code>: you can fix this by doing View &gt; Show File Extensions in File Explorer, then renaming the file and deleting the <code class="language-plaintext highlighter-rouge">.txt</code> part. Because of how absolutely intuitive Windows is, it will warn you that you could make the file not work, this is MS jabber that you can ignore. If you’re on Ubuntu Linux like myself, the <code class="language-plaintext highlighter-rouge">touch</code> coreutils command will do proper filenames; I don’t know the systems for any IDE you choose, and I don’t have any experience on Mac so I can’t advise you.</p>
+
+<p>The next two files, <code class="language-plaintext highlighter-rouge">main.css</code> and <code class="language-plaintext highlighter-rouge">main.js</code>, should be a breeze to create; if they’re not, you should probably Google how to make files on your operating system.</p>
+
+<p>Now, you can open <code class="language-plaintext highlighter-rouge">index.html</code> in your browser - I use Firefox because if they die freedom of information is lost, as almost every other browser is based upon Google products, and the ones that aren’t are not really considered browsers by most developing people (Safari and IE) - aaaaaand… Nothing! You haven’t put anything there yet. Never fear, you’ll be using that browser tab a lot over this tutorial.</p>
+
+<h3 id="12-adding-stuff-to-indexhtml">1.2 Adding Stuff to index.html</h3>
+
+<p>Now is a good time to get an IDE. Notepad/Gedit/Nano/VIM are fine, but for a good development experience, you should use Atom or Intellij or, if you hate software freedom, VS Code. IDEs make finding places in large programs easy because of syntax highlighting, which makes debugging that much sweeter, but it’s your choice. If you already know HTML, you should set it up yourself: you’ll need a <code class="language-plaintext highlighter-rouge">&lt;div&gt;</code> with the id “game”, but if you don’t or don’t want the pain, here’s a code:</p>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;!DOCTYPE html&gt;</span>
+<span class="nt">&lt;html</span> <span class="na">lang=</span><span class="s">"en"</span> <span class="na">dir=</span><span class="s">"ltr"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;head&gt;</span>
+        <span class="nt">&lt;meta</span> <span class="na">charset=</span><span class="s">"utf-8"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;title&gt;&lt;/title&gt;</span>
+    <span class="nt">&lt;/head&gt;</span>
+    <span class="nt">&lt;body&gt;</span>
+
+    <span class="nt">&lt;/body&gt;</span>
+<span class="nt">&lt;/html&gt;</span>
+</code></pre></div></div>
+
+<p>Basically, you declare it to be an HTML document with <code class="language-plaintext highlighter-rouge">&lt;!DOCTYPE html&gt;</code>, create an <code class="language-plaintext highlighter-rouge">&lt;html&gt;</code> tag, put a <code class="language-plaintext highlighter-rouge">&lt;head&gt;</code> tag inside it, do some stuff there, end the <code class="language-plaintext highlighter-rouge">&lt;head&gt;</code> with <code class="language-plaintext highlighter-rouge">&lt;/head&gt;</code>, and you can guess the rest. A tag is just <code class="language-plaintext highlighter-rouge">&lt;tag-name&gt;&lt;/tag-name&gt;</code>; if you don’t have the closing <code class="language-plaintext highlighter-rouge">&lt;/tag-name&gt;</code> it never knows that you ended that tag and will assume everything is inside it. Put the title of your platformer game inside the <code class="language-plaintext highlighter-rouge">&lt;title&gt;</code> tag, which is to say, between <code class="language-plaintext highlighter-rouge">&lt;title&gt;</code> and <code class="language-plaintext highlighter-rouge">&lt;/title&gt;</code>. I used <code class="language-plaintext highlighter-rouge">Platformer From Scratch Tutorial chapter 1</code>.</p>
+
+<p>You don’t need to worry about the <code class="language-plaintext highlighter-rouge">&lt;meta&gt;</code>, that just makes browsers not get mad at you for not declaring the character set.</p>
+
+<p>Now, you need to include your CSS and your JS. Put <code class="language-plaintext highlighter-rouge">&lt;link rel="stylesheet" href="main.css" /&gt;</code> in your <code class="language-plaintext highlighter-rouge">&lt;head&gt;</code>, so the <code class="language-plaintext highlighter-rouge">head</code> now looks like this:</p>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;head&gt;</span>
+    <span class="nt">&lt;meta</span> <span class="na">charset=</span><span class="s">"utf-8"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;title&gt;&lt;/title&gt;</span>
+    <span class="nt">&lt;link</span> <span class="na">rel=</span><span class="s">"stylesheet"</span> <span class="na">href=</span><span class="s">"main.css"</span> <span class="nt">/&gt;</span>
+<span class="nt">&lt;/head&gt;</span>
+</code></pre></div></div>
+
+<p>Notice something peculiar? There’s no <code class="language-plaintext highlighter-rouge">&lt;/link&gt;</code>! This is normal, the <code class="language-plaintext highlighter-rouge">link</code> tag doesn’t need it. Furthermore, this <code class="language-plaintext highlighter-rouge">link</code> has two “properties”: <code class="language-plaintext highlighter-rouge">rel</code> and <code class="language-plaintext highlighter-rouge">href</code>. A property in HTML is placed before the <code class="language-plaintext highlighter-rouge">&gt;</code> ending the tag definition, and is in the format <code class="language-plaintext highlighter-rouge">property-name = property-value</code>. <code class="language-plaintext highlighter-rouge">property-value</code> is almost always enclosed in double quotes, as you can see. The <code class="language-plaintext highlighter-rouge">rel</code> property just tells the browser what the link is for - in this case, a stylesheet, and the <code class="language-plaintext highlighter-rouge">href</code> property gives you the actual url to the file. Because the file is in the same directory, it’s just the filename.</p>
+
+<p>Now we must add the Javascript. Insert <code class="language-plaintext highlighter-rouge">&lt;script type="text/javascript" src="main.js"&gt;&lt;/script&gt;</code> in your <code class="language-plaintext highlighter-rouge">body</code> tag, the <code class="language-plaintext highlighter-rouge">script</code> element can be used to either directly write Javascript or embed Javascript from another location. In this case, we use the <code class="language-plaintext highlighter-rouge">src</code> property, which tells the browser that it’s from an external location, and pass it <code class="language-plaintext highlighter-rouge">main.js</code>, the filename of our Javascript. Why, you ask, should it not be <code class="language-plaintext highlighter-rouge">href="main.js"</code> instead? This is just a random quirk of the development of the HTML specification.</p>
+
+<p>Now, we must make a canvas for the game. If you suddenly feel clever and type <code class="language-plaintext highlighter-rouge">&lt;canvas&gt;&lt;/canvas&gt;</code>, please know that that’s not what I meant at all: if we’re going to use CSS to style this game, we can’t use a <code class="language-plaintext highlighter-rouge">canvas</code>; <code class="language-plaintext highlighter-rouge">canvas</code> does perform graphics, but this tutorial doesn’t follow <code class="language-plaintext highlighter-rouge">canvas</code>. Using elements directly for the game graphics is not only pretty fast, it means we can use CSS for art, which gives us hardware acceleration and a really simple API that does a lot of fun stuff. Instead of <code class="language-plaintext highlighter-rouge">canvas</code>, thus, create a <code class="language-plaintext highlighter-rouge">div</code> with the property <code class="language-plaintext highlighter-rouge">id = "main"</code>. Your full HTML should now look like:</p>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;!DOCTYPE html&gt;</span>
+<span class="nt">&lt;html</span> <span class="na">lang=</span><span class="s">"en"</span> <span class="na">dir=</span><span class="s">"ltr"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;head&gt;</span>
+        <span class="nt">&lt;meta</span> <span class="na">charset=</span><span class="s">"utf-8"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;title&gt;</span>Platformer From Scratch Tutorial chapter 1<span class="nt">&lt;/title&gt;</span>
+        <span class="nt">&lt;link</span> <span class="na">rel=</span><span class="s">"stylesheet"</span> <span class="na">href=</span><span class="s">"main.css"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;/head&gt;</span>
+    <span class="nt">&lt;body&gt;</span>
+        <span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">"game"</span><span class="nt">&gt;&lt;/div&gt;</span>
+        <span class="nt">&lt;script </span><span class="na">type=</span><span class="s">"text/javascript"</span> <span class="na">src=</span><span class="s">"main.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
+    <span class="nt">&lt;/body&gt;</span>
+<span class="nt">&lt;/html&gt;</span>
+</code></pre></div></div>
+
+<p>Notice how the <code class="language-plaintext highlighter-rouge">div</code> is before the <code class="language-plaintext highlighter-rouge">script</code>? That’s really important! For the <code class="language-plaintext highlighter-rouge">&lt;script&gt;</code> to do graphics immediately, and we aren’t going to do events yet (that’s for a later chapter), we need the <code class="language-plaintext highlighter-rouge">&lt;div&gt;</code> to already exist by the time the browser processes the script. This reliance on browser creation times is actually kinda unclean and not recommended, but it’s reliable and works until we cover more advanced concepts such as event listeners for a button click.</p>
+
+<p>Congratulations! You no longer have to edit the HTML until we start on the game interface.</p>
+
+<h3 id="13-the-css">1.3: The CSS</h3>
+
+<p>CSS not only allows us to make fun art of the game, it allows us to position and move elements. You might want to get familiar, as we’ll be using it extensively. To begin, we need to create a skeleton; little of this will make sense until later on in the tutorial, so don’t worry if the explanation is lacking. Paste this into <code class="language-plaintext highlighter-rouge">main.css</code>:</p>
+<div class="language-css highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">#game</span> <span class="o">&gt;</span> <span class="nt">div</span><span class="p">{</span>
+    <span class="nl">position</span><span class="p">:</span> <span class="nb">absolute</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="nc">.normal</span><span class="p">{</span>
+    <span class="nl">background-color</span><span class="p">:</span> <span class="no">brown</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="nc">.player</span><span class="p">{</span>
+    <span class="nl">background-color</span><span class="p">:</span> <span class="no">green</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>You can probably infer from this that it sets some colors and a <code class="language-plaintext highlighter-rouge">position</code> to <code class="language-plaintext highlighter-rouge">absolute</code>. The gibberish before the <code class="language-plaintext highlighter-rouge">{</code> for each style modification (called a “rule”) is called a “selector”, it’s how CSS finds elements to edit. The first selector looks for every <code class="language-plaintext highlighter-rouge">div</code> element inside the element with <code class="language-plaintext highlighter-rouge">id = "game"</code> (<code class="language-plaintext highlighter-rouge">#</code> in css means “ID=” and <code class="language-plaintext highlighter-rouge">&gt;</code> means “all children satisfying the next condition”). The second selector looks only for elements with the <em>class</em> normal, of which there are none (we’ll create them with the script), and the third for class <code class="language-plaintext highlighter-rouge">player</code>, <code class="language-plaintext highlighter-rouge">.</code> means “class = “ in CSS.</p>
+
+<p>I hope you can see why I use CSS for games; once you learn it, it stays forever, and it’s one of the most powerful languages I know because of how easy it is to learn and how much it can do.</p>
+
+<p>The CSS is pretty much complete at this point; we’ll develop it much more over the course of the game, and hopefully you’ll be able to write your own in the end.</p>
+
+<h3 id="14-finally-writin-up-some-js">1.4: Finally writin’ up some JS</h3>
+
+<p>Yay, the culmination of this chapter! The Javascript!</p>
+
+<p>I always begin a program with graphics instead of physics/logic. This is simply because the game logic, including physics, is the most prone-to-error part of the program, and if we can’t test it, it won’t work and the program will stop being fun and interesting. That said, we’d be kinda dumb to not start with very basic physics skeletons, the stuff that doesn’t fail, as they’re so integral to the game that we’d have to wholly refactor it to add them later. This code ought to go in <code class="language-plaintext highlighter-rouge">main.js</code>:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nx">PhysicsObject</span><span class="p">{</span>
+    <span class="kd">constructor</span><span class="p">(</span><span class="nx">x</span><span class="p">,</span> <span class="nx">y</span><span class="p">,</span> <span class="nx">width</span><span class="p">,</span> <span class="nx">height</span><span class="p">){</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">x</span> <span class="o">=</span> <span class="nx">x</span><span class="p">;</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">y</span> <span class="o">=</span> <span class="nx">y</span><span class="p">;</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">width</span> <span class="o">=</span> <span class="nx">width</span><span class="p">;</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">height</span> <span class="o">=</span> <span class="nx">height</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>This creates a <code class="language-plaintext highlighter-rouge">class</code>, which is wholly different from HTML and CSS classes: it holds <em>functions</em>, which contain code to run, and <em>member variables</em>, which store data. For various reasons, classes are integral for clean and extensible game code; I won’t go over the reasons now, but do note that it’s always cleanest to use classes.</p>
+
+<p>In this Javascript class, we have a <code class="language-plaintext highlighter-rouge">constructor</code> <em>function</em> defined. <em>Member functions</em>, the special breed of functions that are always on a class, must:</p>
+
+<ul>
+  <li>Be declared inside the curly braces of the class but nowhere else</li>
+  <li>Start with the name of the function (constructor is a special name, we’ll get to that soon)</li>
+  <li>Have an opening parenthesis</li>
+  <li>Optionally have arguments, which are just names separated by commas</li>
+  <li>Have a closing parenthesis</li>
+  <li>Have a pair of curly braces</li>
+  <li>Optionally have code inside the curly braces</li>
+</ul>
+
+<p>As you can see, this <em>constructor</em> satisfies all these requirements in order, which is necessary, and the code inside is just a bunch of lines of <code class="language-plaintext highlighter-rouge">this.value = value;</code>. The <code class="language-plaintext highlighter-rouge">this.value = value</code> syntax is very useful because it allows you to store data on the object of the class (a class is like a template, the objects are the things that store data); in this case, we just store all the arguments that are passed into the constructor.</p>
+
+<h4 id="a-briefish-word-on-objects-and-arguments">A brief(ish) word on objects and arguments</h4>
+
+<p>Arguments are a really efficient and simple way to allow the user to control what a function does. They are written as names with comma-separation and are always set to values when you call the function. Here’s a little example:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nx">testClass</span><span class="p">{</span>
+    <span class="nx">thingFunction</span><span class="p">(</span><span class="nx">value1</span><span class="p">){</span>
+        <span class="nx">alert</span><span class="p">(</span><span class="nx">value1</span><span class="p">);</span> <span class="c1">// Create an alert box with content being whatever "value1" is</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kd">var</span> <span class="nx">awesomeThing</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">testClass</span><span class="p">();</span> <span class="c1">// Create a new testClass object. Objects are ways of storing unique values.</span>
+
+<span class="nx">awesomeThing</span><span class="p">.</span><span class="nx">thingFunction</span><span class="p">(</span><span class="dl">"</span><span class="s2">haha</span><span class="dl">"</span><span class="p">);</span> <span class="c1">// Creates an Alert Box on your browser tab with the content "haha". Note the "awesomeThing." part, this tells the Javascript interpreter that you're accessing a function contained in an object called awesomeThing.</span>
+<span class="nx">awesomeThing</span><span class="p">.</span><span class="nx">thingFunction</span><span class="p">(</span><span class="dl">"</span><span class="s2">Nope</span><span class="dl">"</span><span class="p">);</span> <span class="c1">// Creates an Alert Box on your browser tab with the content "Nope"</span>
+</code></pre></div></div>
+
+<p>(You can put this in your code and it will alert “haha” and then “Nope” when you reload the browser tab! I recommend you delete it afterwards to keep your code decluttered.)</p>
+
+<p>Note: All classes can have a special function called <code class="language-plaintext highlighter-rouge">constructor</code> which is called when you use <code class="language-plaintext highlighter-rouge">new</code> on it. Here’s an example:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nx">anotherExample</span><span class="p">{</span>
+    <span class="kd">constructor</span><span class="p">(</span><span class="nx">yourName</span><span class="p">){</span>
+        <span class="nx">alert</span><span class="p">(</span><span class="dl">"</span><span class="s2">Hello, er...</span><span class="dl">"</span><span class="p">);</span>
+        <span class="nx">alert</span><span class="p">(</span><span class="nx">yourName</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kd">var</span> <span class="nx">exampleObject</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">anotherExample</span><span class="p">(</span><span class="dl">"</span><span class="s2">John</span><span class="dl">"</span><span class="p">);</span> <span class="c1">// Alert-boxes the words "Hello, er..." and then "John".</span>
+</code></pre></div></div>
+
+<p>If you’ve been paying attention (it’s fine if you haven’t, this is dull stuff), you’ll have seen that we always put “var “ before the name of our object. This is because we want Javascript to know that it’s a variable, pretty neat huh?</p>
+
+<p>If this confused you, you can get a much better explanation of it at <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Classes#prototype_methods">MDN</a>; I permalinked that to the useful bit but you should really read the rest as it’s very interesting.</p>
+
+<h4 id="back-to-the-javascript">Back to the Javascript</h4>
+
+<p>Ok, you have a slightly better understanding of classes and objects and functions and stuff, and we can get to the fun part: graphics! Let’s start by making a Brick class like so (put it in <code class="language-plaintext highlighter-rouge">main.js</code> after the PhysicsObject class):</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nx">Brick</span> <span class="kd">extends</span> <span class="nx">PhysicsObject</span><span class="p">{</span>
+    <span class="kd">constructor</span><span class="p">(</span><span class="nx">x</span><span class="p">,</span> <span class="nx">y</span><span class="p">,</span> <span class="nx">width</span><span class="p">,</span> <span class="nx">height</span><span class="p">,</span> <span class="nx">style</span><span class="p">,</span> <span class="nx">type</span><span class="p">){</span>
+        <span class="k">super</span><span class="p">(</span><span class="nx">x</span><span class="p">,</span> <span class="nx">y</span><span class="p">,</span> <span class="nx">width</span><span class="p">,</span> <span class="nx">height</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Wait, what? What’s with the <code class="language-plaintext highlighter-rouge">extend</code>? What’s with the <code class="language-plaintext highlighter-rouge">super</code>? That looks like a function, is it like a function we can call after creating an object of the class?</p>
+
+<p>No. First, remember that it has to be inside the curly braces of the class, not anywhere else, so it can’t be inside the curlies of the constructor. This is actually a function call that references the <em>superclass</em>. A <em>superclass</em> is just a normal class that you <code class="language-plaintext highlighter-rouge">extends</code> on: in this case, the superclass is PhysicsObject. Extending PhysicsObject keeps it clean so that we can use Bricks as physics objects, that allows our physics to be universal. We have to call <code class="language-plaintext highlighter-rouge">super</code> with all the arguments PhysicsObject’s constructor would normally take - <code class="language-plaintext highlighter-rouge">x</code>, <code class="language-plaintext highlighter-rouge">y</code>, <code class="language-plaintext highlighter-rouge">width</code>,  and<code class="language-plaintext highlighter-rouge">height</code>, and then it builds us a physics object brick. If this was confusing, here’s another <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Classes/extends">MDN article</a> which covers it pretty well and should help you follow the rest of this tutorial.</p>
+
+<p>Now, in the constructor of the Brick class, add <code class="language-plaintext highlighter-rouge">this.element = document.createElement("div");</code>. This stores <code class="language-plaintext highlighter-rouge">element</code> on the Brick object - and sets it to a new element created by <code class="language-plaintext highlighter-rouge">document.createElement("div")</code>. You can think of <code class="language-plaintext highlighter-rouge">document</code> like an object with functions you can call on it. In this case, the element is a <code class="language-plaintext highlighter-rouge">div</code>, the same thing as a <code class="language-plaintext highlighter-rouge">&lt;div&gt;</code> in HTML, one which is not currently inside any element. Let’s fix that by adding <code class="language-plaintext highlighter-rouge">document.getElementById("game").appendChild(this.element)</code>.</p>
+
+<p>That’s a doozy! Let’s go through it step by step:</p>
+
+<ul>
+  <li>The first part, <code class="language-plaintext highlighter-rouge">document.getElementById</code>: This is another function on <code class="language-plaintext highlighter-rouge">document</code> which takes the ID of any existing element and gives you that element.</li>
+  <li>Next up, <code class="language-plaintext highlighter-rouge">("game")</code>: The parenthesis mean “call this function”, and the <code class="language-plaintext highlighter-rouge">"game"</code> part is the ID of the element you want. This function should give you the <code class="language-plaintext highlighter-rouge">&lt;div id="game"&gt;</code> you made in the last section.</li>
+  <li><code class="language-plaintext highlighter-rouge">.appendChild</code>: This is a function <em>on the element <code class="language-plaintext highlighter-rouge">document.getElementById</code> gave you</em>. It adds an element to the child, doing the same thing as this HTML: <code class="language-plaintext highlighter-rouge">&lt;div id="game"&gt;&lt;div&gt;&lt;/div&gt;&lt;/div&gt;</code>, which has an untitled div inside the game.</li>
+  <li><code class="language-plaintext highlighter-rouge">(this.element)</code>: This is why we store things, people! You can access the element you created at any time with <code class="language-plaintext highlighter-rouge">this.element</code>, as long as it’s inside one of the Brick methods. This just puts the brick’s element in the game, so you can style it.</li>
+</ul>
+
+<p>Your <code class="language-plaintext highlighter-rouge">main.js</code> file should now look like this:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nx">PhysicsObject</span><span class="p">{</span>
+    <span class="kd">constructor</span><span class="p">(</span><span class="nx">x</span><span class="p">,</span> <span class="nx">y</span><span class="p">,</span> <span class="nx">width</span><span class="p">,</span> <span class="nx">height</span><span class="p">){</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">x</span> <span class="o">=</span> <span class="nx">x</span><span class="p">;</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">y</span> <span class="o">=</span> <span class="nx">y</span><span class="p">;</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">width</span> <span class="o">=</span> <span class="nx">width</span><span class="p">;</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">height</span> <span class="o">=</span> <span class="nx">height</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+
+<span class="kd">class</span> <span class="nx">Brick</span> <span class="kd">extends</span> <span class="nx">PhysicsObject</span><span class="p">{</span>
+    <span class="kd">constructor</span><span class="p">(</span><span class="nx">x</span><span class="p">,</span> <span class="nx">y</span><span class="p">,</span> <span class="nx">width</span><span class="p">,</span> <span class="nx">height</span><span class="p">,</span> <span class="nx">style</span><span class="p">,</span> <span class="nx">type</span><span class="p">){</span>
+        <span class="k">super</span><span class="p">(</span><span class="nx">x</span><span class="p">,</span> <span class="nx">y</span><span class="p">,</span> <span class="nx">width</span><span class="p">,</span> <span class="nx">height</span><span class="p">);</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">element</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">createElement</span><span class="p">(</span><span class="dl">"</span><span class="s2">div</span><span class="dl">"</span><span class="p">);</span>
+        <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="dl">"</span><span class="s2">game</span><span class="dl">"</span><span class="p">).</span><span class="nx">appendChild</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">element</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1">// Create bricks here, if you want to test it out</span>
+</code></pre></div></div>
+
+<p>You should try creating a new Brick object (outside of the Brick class) without the help of the following code:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">var</span> <span class="nx">brick</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Brick</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="dl">"</span><span class="s2">normal</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">solid</span><span class="dl">"</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>But if you need it, it’s there. Reload the browser tab and hit <code class="language-plaintext highlighter-rouge">ctrl + shift + i</code>: the developer toolbar will appear. First, click “console” and maybe resize your panes a bit: in “console”, you get all the errors. If you don’t have any, click your way over to “inspector” and look for the <code class="language-plaintext highlighter-rouge">div</code> with <code class="language-plaintext highlighter-rouge">id = "game"</code>. If you didn’t create a Brick, there’s nothing in it; you can go back to the Console and copy-paste the above brickmaking code in. If you don’t get any errors, you can go back to the inspector and there should be something inside the game <code class="language-plaintext highlighter-rouge">div</code>: an empty <code class="language-plaintext highlighter-rouge">div</code> element, the element of your Brick!</p>
+
+<h3 id="15-the-draw-function">1.5: The Draw Function</h3>
+
+<p>The div you created in section 1.4 doesn’t do much. Let’s fix that.</p>
+
+<p>Create a function on the Brick class called <code class="language-plaintext highlighter-rouge">draw</code>, it should take no arguments. Inside its curly braces, add</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">this</span><span class="p">.</span><span class="nx">element</span><span class="p">.</span><span class="nx">style</span><span class="p">.</span><span class="nx">width</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">width</span> <span class="o">+</span> <span class="dl">"</span><span class="s2">px</span><span class="dl">"</span><span class="p">;</span>
+<span class="k">this</span><span class="p">.</span><span class="nx">element</span><span class="p">.</span><span class="nx">style</span><span class="p">.</span><span class="nx">height</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">height</span> <span class="o">+</span> <span class="dl">"</span><span class="s2">px</span><span class="dl">"</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>You’ve probably guessed by now that <code class="language-plaintext highlighter-rouge">this.element</code> is actually an object, and indeed it has objects all the way down. In this case you access (with <code class="language-plaintext highlighter-rouge">.</code>) the <code class="language-plaintext highlighter-rouge">style</code> of <code class="language-plaintext highlighter-rouge">this.element</code>, and then the <code class="language-plaintext highlighter-rouge">width</code> of the <code class="language-plaintext highlighter-rouge">style</code>. You set it to <code class="language-plaintext highlighter-rouge">this.width + "px"</code>, which directly edits the CSS for the width property.</p>
+
+<p>Wait, what? Where’d <code class="language-plaintext highlighter-rouge">this.width</code> come from?</p>
+
+<p>Check all the way back up in <code class="language-plaintext highlighter-rouge">PhysicsObject</code>’s constructor. You’ll notice that it stores <code class="language-plaintext highlighter-rouge">width</code>, <code class="language-plaintext highlighter-rouge">height</code>, ` x<code class="language-plaintext highlighter-rouge">, and </code>y`. Yep, that code you wrote a while ago is helping you now.</p>
+
+<p>If you reload the page and there are no errors (if there are, you should probably check your syntax; the error gives you a line and column number), then create a brick without error, nothing will happen. This is because you haven’t told it to draw as soon as you make the brick yet. In the <code class="language-plaintext highlighter-rouge">Brick</code> class constructor, add the line <code class="language-plaintext highlighter-rouge">this.draw()</code>; at the very end. This will make it draw itself as soon as it’s created. Reload and go through the brickbuilding process once more, then check in the inspector: you should see that now the div it creates under the <code class="language-plaintext highlighter-rouge">game</code> has a <code class="language-plaintext highlighter-rouge">style</code> property, with some CSS in it. Hover over the element’s definition in the inspector with your mouse, and it will highlight an invisible block around the top-left corner of the screen. It works!</p>
+
+<p>Well, if it doesn’t work, you can check your code against this:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nx">PhysicsObject</span><span class="p">{</span>
+    <span class="kd">constructor</span><span class="p">(</span><span class="nx">x</span><span class="p">,</span> <span class="nx">y</span><span class="p">,</span> <span class="nx">width</span><span class="p">,</span> <span class="nx">height</span><span class="p">){</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">x</span> <span class="o">=</span> <span class="nx">x</span><span class="p">;</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">y</span> <span class="o">=</span> <span class="nx">y</span><span class="p">;</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">width</span> <span class="o">=</span> <span class="nx">width</span><span class="p">;</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">height</span> <span class="o">=</span> <span class="nx">height</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+
+<span class="kd">class</span> <span class="nx">Brick</span> <span class="kd">extends</span> <span class="nx">PhysicsObject</span><span class="p">{</span>
+    <span class="kd">constructor</span><span class="p">(</span><span class="nx">x</span><span class="p">,</span> <span class="nx">y</span><span class="p">,</span> <span class="nx">width</span><span class="p">,</span> <span class="nx">height</span><span class="p">,</span> <span class="nx">style</span><span class="p">,</span> <span class="nx">type</span><span class="p">){</span>
+        <span class="k">super</span><span class="p">(</span><span class="nx">x</span><span class="p">,</span> <span class="nx">y</span><span class="p">,</span> <span class="nx">width</span><span class="p">,</span> <span class="nx">height</span><span class="p">);</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">element</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">createElement</span><span class="p">(</span><span class="dl">"</span><span class="s2">div</span><span class="dl">"</span><span class="p">);</span>
+        <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="dl">"</span><span class="s2">game</span><span class="dl">"</span><span class="p">).</span><span class="nx">appendChild</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">element</span><span class="p">);</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">draw</span><span class="p">();</span>
+    <span class="p">}</span>
+
+    <span class="nx">draw</span><span class="p">(){</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">element</span><span class="p">.</span><span class="nx">style</span><span class="p">.</span><span class="nx">width</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">width</span> <span class="o">+</span> <span class="dl">"</span><span class="s2">px</span><span class="dl">"</span><span class="p">;</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">element</span><span class="p">.</span><span class="nx">style</span><span class="p">.</span><span class="nx">height</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">height</span> <span class="o">+</span> <span class="dl">"</span><span class="s2">px</span><span class="dl">"</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+
+<span class="kd">var</span> <span class="nx">brick</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Brick</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="dl">"</span><span class="s2">normal</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">solid</span><span class="dl">"</span><span class="p">);</span> <span class="c1">// Create a 50x50 brick at x 0, y 0</span>
+</code></pre></div></div>
+
+<p>If you just copy/pasted that, shame on you. I hate to be a stickler about education, but nobody ever learned anything by copy/pasting! You should really spend some time debugging your code, because you are absolutely going to be doing that in the future without a guide. Rather like attempting to go into free-diving without knowing to swim, more complicated projects are impossible if you don’t know how to debug them.</p>
+
+<p>We should probably make it so you can actually position bricks. This is important - if you’ve played platformer, you know that bricks usually look like they are where you put them. Not having that would be weird. I recommend you learn basic geometry (the coordinate plane) before doing video game development; basically, as X increases you go further towards the right side of the screen, and as Y increases you go further towards the bottom side of the screen. 0, 0 is the top-right-hand corner.</p>
+
+<p>The CSS properties for x and y are left and top respectively. I recommend you attempt to set them yourself, but here is the code that goes in the draw function:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">this</span><span class="p">.</span><span class="nx">element</span><span class="p">.</span><span class="nx">style</span><span class="p">.</span><span class="nx">left</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">x</span> <span class="o">+</span> <span class="dl">"</span><span class="s2">px</span><span class="dl">"</span><span class="p">;</span>
+<span class="k">this</span><span class="p">.</span><span class="nx">element</span><span class="p">.</span><span class="nx">style</span><span class="p">.</span><span class="nx">top</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">y</span> <span class="o">+</span> <span class="dl">"</span><span class="s2">px</span><span class="dl">"</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>Note: Most CSS properties need a unit. In this case, I measure in pixels (“px”); you can use inches (“in”) or centimeters (I don’t use centimeters on websites, you can google it) or whatever but you’ll have to change the brick sizing: 50 pixels generally looks good for the base block scale in Platformer and every object is aligned to a 50x50 square grid. We’ll go about enforcing this later.</p>
+
+<p>Now, in your block creation command, you have to set an X and a Y instead of 0. The template command:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">var</span> <span class="nx">my_brick_name</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Brick</span><span class="p">(</span><span class="nx">x</span><span class="p">,</span> <span class="nx">y</span><span class="p">,</span> <span class="nx">width</span><span class="p">,</span> <span class="nx">height</span><span class="p">);</span> <span class="c1">// Ignore style and type, those come in later.</span>
+</code></pre></div></div>
+
+<p>Thus, if you wanted a 50x100 block at 150(x), 250(y), you’d do:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">var</span> <span class="nx">brick</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Brick</span><span class="p">(</span><span class="mi">150</span><span class="p">,</span> <span class="mi">250</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">100</span><span class="p">);</span> <span class="c1">// Ignore style and type, those come in later.</span>
+</code></pre></div></div>
+
+<p>If you open developer tools and then expand it upwards, you’ll notice that a scrollbar appears: this is because your block no longer fits on the screen. This is undesirable as it ruins the user experience, scrollbars make positioning weird. You can fix this by editing <code class="language-plaintext highlighter-rouge">main.css</code> and adding this selector and rule:</p>
+
+<div class="language-css highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">body</span> <span class="p">{</span>
+    <span class="nl">overflow</span><span class="p">:</span> <span class="nb">hidden</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>The overflow property changes how the element handles overflowing things. In this case, the overflowing element is <code class="language-plaintext highlighter-rouge">body</code> (if you look, the <code class="language-plaintext highlighter-rouge">#game</code> element is still tiny and fixed at one place, this is because of how positioning influences element parenthood!), and we tell it to simply hide elements that overflow. Nice and clean and simple.</p>
+
+<h4 id="making-it-look-pretty">Making it look pretty</h4>
+
+<p>This doesn’t deserve to be a completely new section as it’s fairly straightforward: we need to visit the Brick constructor again.</p>
+
+<p>Inside the Brick constructor, we can add classes to our element like so: <code class="language-plaintext highlighter-rouge">this.element.classList.add("My-class-name")</code>. Theoretically, you could add style to bricks just like that; this is however not a desirable method as it decreases code cleanliness and makes it harder to change brick types. Instead, you should add:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">this</span><span class="p">.</span><span class="nx">type</span> <span class="o">=</span> <span class="nx">type</span><span class="p">;</span>
+<span class="k">this</span><span class="p">.</span><span class="nx">element</span><span class="p">.</span><span class="nx">classList</span><span class="p">.</span><span class="nx">add</span><span class="p">(</span><span class="nx">style</span><span class="p">);</span>
+<span class="k">this</span><span class="p">.</span><span class="nx">element</span><span class="p">.</span><span class="nx">classList</span><span class="p">.</span><span class="nx">add</span><span class="p">(</span><span class="nx">type</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>This just makes the style, one of the arguments to the function, a class. We also use type as a class, not because it’s meant for that, but because it makes it easier. While we’re at it, we also store type for later; this is useful for collisions code. Your constructor should now look like this (minus the comments, I added those for clarity):</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">constructor</span><span class="p">(</span><span class="nx">x</span><span class="p">,</span> <span class="nx">y</span><span class="p">,</span> <span class="nx">width</span><span class="p">,</span> <span class="nx">height</span><span class="p">,</span> <span class="nx">style</span><span class="p">,</span> <span class="nx">type</span><span class="p">){</span>
+    <span class="k">super</span><span class="p">(</span><span class="nx">x</span><span class="p">,</span> <span class="nx">y</span><span class="p">,</span> <span class="nx">width</span><span class="p">,</span> <span class="nx">height</span><span class="p">);</span> <span class="c1">// Initialize PhysicsObject</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">element</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">createElement</span><span class="p">(</span><span class="dl">"</span><span class="s2">div</span><span class="dl">"</span><span class="p">);</span> <span class="c1">// Create a block element and store it to this.element</span>
+    <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="dl">"</span><span class="s2">game</span><span class="dl">"</span><span class="p">).</span><span class="nx">appendChild</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">element</span><span class="p">);</span> <span class="c1">// Append the block element to the game element</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">type</span> <span class="o">=</span> <span class="nx">type</span><span class="p">;</span> <span class="c1">// Make this.type = type, so you can check it later in collision code (such as touching a death brick)</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">element</span><span class="p">.</span><span class="nx">classList</span><span class="p">.</span><span class="nx">add</span><span class="p">(</span><span class="nx">style</span><span class="p">);</span> <span class="c1">// Add the coloring style as a class</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">element</span><span class="p">.</span><span class="nx">classList</span><span class="p">.</span><span class="nx">add</span><span class="p">(</span><span class="nx">type</span><span class="p">);</span> <span class="c1">// Add the collision type as a class, so you can do fun stuff with it later</span>
+    <span class="c1">// This happens last!</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">draw</span><span class="p">();</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>If you run it and add a brick following the old method, you’ll see….. Nothing! You haven’t set a style yet. Here’s an example:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">var</span> <span class="nx">brick</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Brick</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="dl">"</span><span class="s2">normal</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">solid</span><span class="dl">"</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>Now you should see a new brick! Play around a bit and get familiar with it, maybe add some new types via CSS and JS? It’s designed to be very extensible.</p>
+
+<h3 id="16-wrapping-up">1.6: Wrapping Up</h3>
+
+<p>You now have 30-40 lines of code that create easily modified Platformer bricks!</p>
+
+<p>In the next chapter, we’ll add players, perspectives, and a game loop. See you then!</p>
+
+<p>You can view the full code for this chapter on GitHub <a href="https://github.com/LinuxRocks2000/platformer-from-scratch/tree/master/chapter-1">here</a>.</p>
+
+
+            <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2712681434853528"
+                 crossorigin="anonymous"></script>
+            <!-- Below the content -->
+            <ins class="adsbygoogle"
+                 style="display:block"
+                 data-ad-client="ca-pub-2712681434853528"
+                 data-ad-slot="5909811348"
+                 data-ad-format="auto"
+                 data-full-width-responsive="true"></ins>
+            <script>
+                 (adsbygoogle = window.adsbygoogle || []).push({});
+            </script>
+            <div id="disqus_thread"></div>
+            <script>
+                /**
+                *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+                *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables    */
+                /*
+                var disqus_config = function () {
+                this.page.url = PAGE_URL;  // Replace PAGE_URL with your page's canonical URL variable
+                this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+                };
+                */
+                (function() { // DON'T EDIT BELOW THIS LINE
+                var d = document, s = d.createElement('script');
+                s.src = 'https://linuxrocks2000-github-io.disqus.com/embed.js';
+                s.setAttribute('data-timestamp', +new Date());
+                (d.head || d.body).appendChild(s);
+                })();
+            </script>
+            <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        </div>
+        <div id="footer">
+            <p><a href = "mailto:plupy44@gmail.com">Email?</a></p>
+<p>Privacy policy: We don't collect data</p>
+<p>Cookie policy: We don't use cookies</p>
+<p>Copywrong 1492, Tyler Clarke</p>
+<p>All rights preserved</p>
+<p>Vegetables are alive too</p>
+<p>Cows pollute the environment and should be eaten</p>
+<p>Nothing here is copyrighted - if we wanted people to not have our data, we wouldn't smatter it across the internet.</p>
+<p>Lawyers beware - here be people who know that lawyers are hired thugs designed <br />to make the person with more money win in court, no matter how right or wrong they are</p>
+<p>I hereby order that any stuck-up prigs that say I need a real privacy policy can leave the room.</p>
+
+        </div>
+        <div id="sidebar">
+            <div id="stickything">
+
+    <a class = "theA" href="/blog/platformer-from-scratch-chap-3">
+        <div class = "sidebar-item">
+            <span class = "title">Platformer From Scratch Chap 3</span><br />
+            <span class = "bottomthing">Physics</span>
+        </div>
+    </a>
+
+    <a class = "theA" href="/blog/platformer-from-scratch-chap-2">
+        <div class = "sidebar-item">
+            <span class = "title">Platformer From Scratch Chap 2</span><br />
+            <span class = "bottomthing">Players, improved graphics, gameloops!</span>
+        </div>
+    </a>
+
+    <a class = "theA" href="/blog/platformer-from-scratch-chap-1">
+        <div class = "sidebar-item">
+            <span class = "title">Platformer From Scratch Chap 1</span><br />
+            <span class = "bottomthing">Getting graphics working</span>
+        </div>
+    </a>
+
+    <a class = "theA" href="/blog/gluten-free-dairy-free-highly-based-brownies">
+        <div class = "sidebar-item">
+            <span class = "title">Gluten Free, Dairy Free, Highly Based Brownies</span><br />
+            <span class = "bottomthing">Because everyone has just <i>got</i> to love long-winded poorly-Javascripted baking blogs!</span>
+        </div>
+    </a>
+
+    <a class = "theA" href="/blog/on-religion">
+        <div class = "sidebar-item">
+            <span class = "title">On Religion</span><br />
+            <span class = "bottomthing">My views and my justification</span>
+        </div>
+    </a>
+
+    <a class = "theA" href="/blog/Carbon-Cycles">
+        <div class = "sidebar-item">
+            <span class = "title">Carbon Cycles</span><br />
+            <span class = "bottomthing">And why America should use Ethanol</span>
+        </div>
+    </a>
+
+    <a class = "theA" href="/blog/the-case-for-carbon-investment">
+        <div class = "sidebar-item">
+            <span class = "title">The Case for Carbon Investment</span><br />
+            <span class = "bottomthing">The ugly truth about carbon dioxide, and what we can do about it (not made by a doom-and-gloomer!)</span>
+        </div>
+    </a>
+
+    <a class = "theA" href="/blog/something-up-with-squishmallow">
+        <div class = "sidebar-item">
+            <span class = "title">Something wrong with Squishmallows (only for people who like tabloid humour)</span><br />
+            <span class = "bottomthing">Detective Lane Howser, on the case</span>
+        </div>
+    </a>
+
+    <a class = "theA" href="/blog/conversations-with-a-southerner">
+        <div class = "sidebar-item">
+            <span class = "title">Conversations with the last true-born southerner</span><br />
+            <span class = "bottomthing">Any normal person who has ever talked to a true southern person will agree</span>
+        </div>
+    </a>
+
+    <a class = "theA" href="/blog/microsoft-poetry">
+        <div class = "sidebar-item">
+            <span class = "title">A poem for Microsoft</span><br />
+            <span class = "bottomthing">Because microsoft needs a poem that fully describes it</span>
+        </div>
+    </a>
+
+    <a class = "theA" href="/blog/hello-world">
+        <div class = "sidebar-item">
+            <span class = "title">Welcome to my blog!</span><br />
+            <span class = "bottomthing">The first post in my blog, also a great place to go for extra information</span>
+        </div>
+    </a>
+
+</div>
+<style>
+    .sidebar-item{
+        padding: 10px;
+        background-color: azure;
+        margin: 10px;
+    }
+    .sidebar-item > .title{
+        color: black;
+        text-decoration: none;
+        white-space: nowrap;
+    }
+    .sidebar-item > .bottomthing{
+        color: grey;
+        font-weight: bold;
+    }
+    .sidebar-item:hover{
+        background-color: transparent;
+    }
+    .theA{
+        text-decoration: none;
+    }
+    #stickything{
+        position: relative;
+    }
+</style>
+
+        </div>
+        <script type = "text/javascript" src = "/blog/js/main.js"></script>
+    </body>
+</html>

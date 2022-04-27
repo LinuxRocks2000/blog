@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+    <head>
+        <meta charset="utf-8">
+        <title>Platformer From Scratch Chap 2</title>
+        <link rel="stylesheet" href="/blog/css/main.css" />
+        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2712681434853528"
+     crossorigin="anonymous"></script>
+        <link rel="stylesheet"
+              href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/styles/default.min.css">
+        <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/highlight.min.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script>
+    </head>
+    <body>
+        <div id="topbar">
+            <nav>
+    <a href="/blog/">Blog</a>
+    <a href="/blog/about">About Me</a>
+    <a href="/">My comic</a>
+</nav>
+
+<style>
+    nav > a{
+        font-family: Arial;
+        font-size: 2em;
+        color: black;
+        text-decoration: none;
+        margin-left: 20px;
+    }
+</style>
+
+        </div>
+        <div id="body">
+            <p>Welcome back, padawan gamedevs! In this chapter of Platformer from Scratch, we’re going to: add a player and change our render code to support it, and add a game loop.</p>
+
+<h3 id="21-adding-the-player">2.1: Adding the Player</h3>
+
+<p>Because we’re doing object-oriented programming, there needs to be a Player class. Start with <code class="language-plaintext highlighter-rouge">class Player extends PhysicsObject</code> and add the customary curly braces and constructor. The constructor should, as always, take the arguments <code class="language-plaintext highlighter-rouge">x</code>, <code class="language-plaintext highlighter-rouge">y</code>, <code class="language-plaintext highlighter-rouge">width</code>, and <code class="language-plaintext highlighter-rouge">height</code> to feed the <code class="language-plaintext highlighter-rouge">super()</code> function; don’t add anything else yet. You should also create an element and store it to the player object, then give it the CSS class “player” (we’ve already done CSS for the player class!), then add it to the game object. Your class code should thus look like this:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nx">Player</span> <span class="kd">extends</span> <span class="nx">PhysicsObject</span><span class="p">{</span>
+    <span class="kd">constructor</span><span class="p">(</span><span class="nx">x</span><span class="p">,</span> <span class="nx">y</span><span class="p">,</span> <span class="nx">width</span><span class="p">,</span> <span class="nx">height</span><span class="p">){</span>
+        <span class="k">super</span><span class="p">(</span><span class="nx">x</span><span class="p">,</span> <span class="nx">y</span><span class="p">,</span> <span class="nx">width</span><span class="p">,</span> <span class="nx">height</span><span class="p">);</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">element</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">createElement</span><span class="p">(</span><span class="dl">"</span><span class="s2">div</span><span class="dl">"</span><span class="p">);</span>
+        <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="dl">"</span><span class="s2">game</span><span class="dl">"</span><span class="p">).</span><span class="nx">appendChild</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">element</span><span class="p">);</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">element</span><span class="p">.</span><span class="nx">classList</span><span class="p">.</span><span class="nx">add</span><span class="p">(</span><span class="dl">"</span><span class="s2">player</span><span class="dl">"</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Players need a draw function too, so let’s give it one. If you recall how we made the draw function in chapter 1, it should be basically the same thing, setting CSS properties.</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">draw</span><span class="p">(){</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">element</span><span class="p">.</span><span class="nx">style</span><span class="p">.</span><span class="nx">left</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">x</span> <span class="o">+</span> <span class="dl">"</span><span class="s2">px</span><span class="dl">"</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">element</span><span class="p">.</span><span class="nx">style</span><span class="p">.</span><span class="nx">top</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">y</span> <span class="o">+</span> <span class="dl">"</span><span class="s2">px</span><span class="dl">"</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">element</span><span class="p">.</span><span class="nx">style</span><span class="p">.</span><span class="nx">width</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">width</span> <span class="o">+</span> <span class="dl">"</span><span class="s2">px</span><span class="dl">"</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">element</span><span class="p">.</span><span class="nx">style</span><span class="p">.</span><span class="nx">height</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">height</span> <span class="o">+</span> <span class="dl">"</span><span class="s2">px</span><span class="dl">"</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>You can now create a player the same way you’d create a brick, just without the type and style arguments. However, there is something wrong with this! I’ll let you figure out what is omitted that prevents Player from displaying when you create it. Need a hint? We did the same thing in chapter 1 but for bricks.</p>
+
+<p>I’m just going to assume you found the issue because I’m annoying that way; if you didn’t, just check the code on GitHub. You should now have a working player render and it is time to start putting it all together in the Grand Unified Game Class!</p>
+
+<p>Your full Player class should thus look like:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nx">Player</span> <span class="kd">extends</span> <span class="nx">PhysicsObject</span><span class="p">{</span>
+    <span class="kd">constructor</span><span class="p">(</span><span class="nx">x</span><span class="p">,</span> <span class="nx">y</span><span class="p">,</span> <span class="nx">width</span><span class="p">,</span> <span class="nx">height</span><span class="p">){</span>
+        <span class="k">super</span><span class="p">(</span><span class="nx">x</span><span class="p">,</span> <span class="nx">y</span><span class="p">,</span> <span class="nx">width</span><span class="p">,</span> <span class="nx">height</span><span class="p">);</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">element</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">createElement</span><span class="p">(</span><span class="dl">"</span><span class="s2">div</span><span class="dl">"</span><span class="p">);</span>
+        <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="dl">"</span><span class="s2">game</span><span class="dl">"</span><span class="p">).</span><span class="nx">appendChild</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">element</span><span class="p">);</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">element</span><span class="p">.</span><span class="nx">classList</span><span class="p">.</span><span class="nx">add</span><span class="p">(</span><span class="dl">"</span><span class="s2">player</span><span class="dl">"</span><span class="p">);</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">draw</span><span class="p">();</span>
+    <span class="p">}</span>
+
+    <span class="nx">draw</span><span class="p">(){</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">element</span><span class="p">.</span><span class="nx">style</span><span class="p">.</span><span class="nx">left</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">x</span> <span class="o">+</span> <span class="dl">"</span><span class="s2">px</span><span class="dl">"</span><span class="p">;</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">element</span><span class="p">.</span><span class="nx">style</span><span class="p">.</span><span class="nx">top</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">y</span> <span class="o">+</span> <span class="dl">"</span><span class="s2">px</span><span class="dl">"</span><span class="p">;</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">element</span><span class="p">.</span><span class="nx">style</span><span class="p">.</span><span class="nx">width</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">width</span> <span class="o">+</span> <span class="dl">"</span><span class="s2">px</span><span class="dl">"</span><span class="p">;</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">element</span><span class="p">.</span><span class="nx">style</span><span class="p">.</span><span class="nx">height</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">height</span> <span class="o">+</span> <span class="dl">"</span><span class="s2">px</span><span class="dl">"</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h3 id="22-the-game-class-and-player-perspective">2.2: The Game Class and Player Perspective</h3>
+
+<p>Begin another class, name it <code class="language-plaintext highlighter-rouge">Game</code>, but this time don’t use <code class="language-plaintext highlighter-rouge">extends PhysicsObject</code>, because the game itself doesn’t collide with anything. The game’s job is to do updates, check collisions, and send render commands, not to be an active element of itself. Another thing the game does is create the world, including every brick, and that’s what we’re going to start with. The constructor of the Game class should take two arguments: blockWidth and blockHeight. Save them to the object with the <code class="language-plaintext highlighter-rouge">this.value = value</code> syntax. You also need to add a tileset list, your constructor should thus look like:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">constructor</span><span class="p">(</span><span class="nx">blockWidth</span><span class="p">,</span> <span class="nx">blockHeight</span><span class="p">){</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">blockWidth</span> <span class="o">=</span> <span class="nx">blockWidth</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">blockHeight</span> <span class="o">=</span> <span class="nx">blockHeight</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">tileset</span> <span class="o">=</span> <span class="p">[];</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Note that <code class="language-plaintext highlighter-rouge">[]</code> creates an empty list, and we use the <code class="language-plaintext highlighter-rouge">this.value = value</code> saving syntax to store it as <code class="language-plaintext highlighter-rouge">this.tileset</code>.</p>
+
+<p>Each game exists to hold a single player, so create a new player and store it to the game:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">this</span><span class="p">.</span><span class="nx">player</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Player</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">blockWidth</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">blockHeight</span> <span class="o">*</span> <span class="mi">2</span><span class="p">);</span> <span class="c1">// Players are usually 1x2 blocks. Feel free to change as you wish.</span>
+</code></pre></div></div>
+
+<p>Now, add another function, this one called <code class="language-plaintext highlighter-rouge">_create</code>, like so:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">_create</span><span class="p">(</span><span class="nx">x</span><span class="p">,</span> <span class="nx">y</span><span class="p">,</span> <span class="nx">width</span><span class="p">,</span> <span class="nx">height</span><span class="p">,</span> <span class="nx">style</span><span class="p">,</span> <span class="nx">type</span><span class="p">){</span>
+    <span class="kd">var</span> <span class="nx">b</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Brick</span><span class="p">(</span><span class="nx">x</span><span class="p">,</span> <span class="nx">y</span><span class="p">,</span> <span class="nx">width</span><span class="p">,</span> <span class="nx">height</span><span class="p">,</span> <span class="nx">style</span><span class="p">,</span> <span class="nx">type</span><span class="p">);</span> <span class="c1">// Put it in a variable so we can return it later</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">tileset</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">b</span><span class="p">);</span> <span class="c1">// Add it to the tileset</span>
+    <span class="k">return</span> <span class="nx">b</span><span class="p">;</span> <span class="c1">// Return it, so you can call this function and then do operations immediately.</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>This is clearly just a wrapper for bricks that appends them to the tileset, so we can control them later. Now, for the much sought-after size-aligned create function:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">create</span><span class="p">(</span><span class="nx">x</span><span class="p">,</span> <span class="nx">y</span><span class="p">,</span> <span class="nx">width</span><span class="p">,</span> <span class="nx">height</span><span class="p">,</span> <span class="nx">style</span><span class="p">,</span> <span class="nx">type</span><span class="p">){</span>
+    <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">_create</span><span class="p">(</span><span class="nx">x</span> <span class="o">*</span> <span class="k">this</span><span class="p">.</span><span class="nx">blockWidth</span><span class="p">,</span> <span class="nx">y</span> <span class="o">*</span> <span class="k">this</span><span class="p">.</span><span class="nx">blockHeight</span><span class="p">,</span> <span class="nx">width</span> <span class="o">*</span> <span class="k">this</span><span class="p">.</span><span class="nx">blockWidth</span><span class="p">,</span> <span class="nx">height</span> <span class="o">*</span> <span class="k">this</span><span class="p">.</span><span class="nx">blockHeight</span><span class="p">,</span> <span class="nx">style</span><span class="p">,</span> <span class="nx">type</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Another wrapper! This one multiplies every shape value by <code class="language-plaintext highlighter-rouge">this.blockWidth</code> and <code class="language-plaintext highlighter-rouge">this.blockHeight</code>, so if you call it with <code class="language-plaintext highlighter-rouge">(1, 1, 2, 1, "normal", "solid")</code> and your blockWidth and blockHeight are both 50, it will give you a 100x50 brick at (50, 50). Your full Game class code should look like this:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nx">Game</span> <span class="p">{</span>
+    <span class="kd">constructor</span><span class="p">(</span><span class="nx">blockWidth</span><span class="p">,</span> <span class="nx">blockHeight</span><span class="p">){</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">blockWidth</span> <span class="o">=</span> <span class="nx">blockWidth</span><span class="p">;</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">blockHeight</span> <span class="o">=</span> <span class="nx">blockHeight</span><span class="p">;</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">tileset</span> <span class="o">=</span> <span class="p">[];</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">player</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Player</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">blockWidth</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">blockHeight</span> <span class="o">*</span> <span class="mi">2</span><span class="p">);</span> <span class="c1">// Players are usually 1x2 blocks. Feel free to change as you wish.</span>
+    <span class="p">}</span>
+
+    <span class="nx">_create</span><span class="p">(</span><span class="nx">x</span><span class="p">,</span> <span class="nx">y</span><span class="p">,</span> <span class="nx">width</span><span class="p">,</span> <span class="nx">height</span><span class="p">,</span> <span class="nx">style</span><span class="p">,</span> <span class="nx">type</span><span class="p">){</span>
+        <span class="kd">var</span> <span class="nx">b</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Brick</span><span class="p">(</span><span class="nx">x</span><span class="p">,</span> <span class="nx">y</span><span class="p">,</span> <span class="nx">width</span><span class="p">,</span> <span class="nx">height</span><span class="p">,</span> <span class="nx">style</span><span class="p">,</span> <span class="nx">type</span><span class="p">);</span> <span class="c1">// Put it in a variable so we can return it later</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">tileset</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">b</span><span class="p">);</span> <span class="c1">// Add it to the tileset</span>
+        <span class="k">return</span> <span class="nx">b</span><span class="p">;</span> <span class="c1">// Return it, so you can call this function and then do operations immediately.</span>
+    <span class="p">}</span>
+
+    <span class="nx">create</span><span class="p">(</span><span class="nx">x</span><span class="p">,</span> <span class="nx">y</span><span class="p">,</span> <span class="nx">width</span><span class="p">,</span> <span class="nx">height</span><span class="p">,</span> <span class="nx">style</span><span class="p">,</span> <span class="nx">type</span><span class="p">){</span>
+        <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">_create</span><span class="p">(</span><span class="nx">x</span> <span class="o">*</span> <span class="k">this</span><span class="p">.</span><span class="nx">blockWidth</span><span class="p">,</span> <span class="nx">y</span> <span class="o">*</span> <span class="k">this</span><span class="p">.</span><span class="nx">blockHeight</span><span class="p">,</span> <span class="nx">width</span> <span class="o">*</span> <span class="k">this</span><span class="p">.</span><span class="nx">blockWidth</span><span class="p">,</span> <span class="nx">height</span> <span class="o">*</span> <span class="k">this</span><span class="p">.</span><span class="nx">blockHeight</span><span class="p">,</span> <span class="nx">style</span><span class="p">,</span> <span class="nx">type</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Now, we want to start adding perspective. Basically, perspective means that no matter what the player is always at the center of the screen: the first part is making it so that every time the player moves a pixel, the entire game <em>including the player</em> moves -1 pixels. We can achieve this through math, but we need to have access to the player object, so let’s change up the Brick constructor by adding a new argument <code class="language-plaintext highlighter-rouge">game</code> and storing it with <code class="language-plaintext highlighter-rouge">this.value = value</code> notation. You should insert it before the other arguments for ease.</p>
+
+<p>If your Brick constructor doesn’t look like this, you’re doing something wrong:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">constructor</span><span class="p">(</span><span class="nx">game</span><span class="p">,</span> <span class="nx">x</span><span class="p">,</span> <span class="nx">y</span><span class="p">,</span> <span class="nx">width</span><span class="p">,</span> <span class="nx">height</span><span class="p">,</span> <span class="nx">style</span><span class="p">,</span> <span class="nx">type</span><span class="p">){</span>
+    <span class="k">super</span><span class="p">(</span><span class="nx">x</span><span class="p">,</span> <span class="nx">y</span><span class="p">,</span> <span class="nx">width</span><span class="p">,</span> <span class="nx">height</span><span class="p">);</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">game</span> <span class="o">=</span> <span class="nx">game</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">element</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">createElement</span><span class="p">(</span><span class="dl">"</span><span class="s2">div</span><span class="dl">"</span><span class="p">);</span>
+    <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="dl">"</span><span class="s2">game</span><span class="dl">"</span><span class="p">).</span><span class="nx">appendChild</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">element</span><span class="p">);</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">type</span> <span class="o">=</span> <span class="nx">type</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">element</span><span class="p">.</span><span class="nx">classList</span><span class="p">.</span><span class="nx">add</span><span class="p">(</span><span class="nx">style</span><span class="p">);</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">element</span><span class="p">.</span><span class="nx">classList</span><span class="p">.</span><span class="nx">add</span><span class="p">(</span><span class="nx">type</span><span class="p">);</span>
+    <span class="c1">// This happens last!</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">draw</span><span class="p">();</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Now, change up the <code class="language-plaintext highlighter-rouge">_create</code> function to pass in <code class="language-plaintext highlighter-rouge">this</code> to the Brick constructor (<code class="language-plaintext highlighter-rouge">this</code> is a reference to the context of the function, which is in this case the game). It should now look like this:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">_create</span><span class="p">(</span><span class="nx">x</span><span class="p">,</span> <span class="nx">y</span><span class="p">,</span> <span class="nx">width</span><span class="p">,</span> <span class="nx">height</span><span class="p">,</span> <span class="nx">style</span><span class="p">,</span> <span class="nx">type</span><span class="p">){</span>
+    <span class="kd">var</span> <span class="nx">b</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Brick</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="nx">x</span><span class="p">,</span> <span class="nx">y</span><span class="p">,</span> <span class="nx">width</span><span class="p">,</span> <span class="nx">height</span><span class="p">,</span> <span class="nx">style</span><span class="p">,</span> <span class="nx">type</span><span class="p">);</span> <span class="c1">// Put it in a variable so we can return it later</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">tileset</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">b</span><span class="p">);</span> <span class="c1">// Add it to the tileset</span>
+    <span class="k">return</span> <span class="nx">b</span><span class="p">;</span> <span class="c1">// Return it, so you can call this function and then do operations immediately.</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Only one tiny change; I promise the next ones will be larger and more complicated.</p>
+
+<p>The formula for <em>x</em> of a brick with the perspective <em>playerX</em> of a player is just <em>perspectiveX</em> = <em>x</em> - <em>playerX</em>. This calculation should ONLY happen in render code; the player is the thing that is moving, but it drags the camera with it.</p>
+
+<p>Note: The formula for Y is the same.</p>
+
+<p>Now, edit the <code class="language-plaintext highlighter-rouge">Brick</code> <code class="language-plaintext highlighter-rouge">draw</code> function to use this formula. Note that you don’t have to actually copy the formula; just use it as a baseline. Your brick’s draw code should look thus:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">draw</span><span class="p">(){</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">element</span><span class="p">.</span><span class="nx">style</span><span class="p">.</span><span class="nx">width</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">width</span> <span class="o">+</span> <span class="dl">"</span><span class="s2">px</span><span class="dl">"</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">element</span><span class="p">.</span><span class="nx">style</span><span class="p">.</span><span class="nx">height</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">height</span> <span class="o">+</span> <span class="dl">"</span><span class="s2">px</span><span class="dl">"</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">element</span><span class="p">.</span><span class="nx">style</span><span class="p">.</span><span class="nx">left</span> <span class="o">=</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">x</span> <span class="o">-</span> <span class="k">this</span><span class="p">.</span><span class="nx">game</span><span class="p">.</span><span class="nx">player</span><span class="p">.</span><span class="nx">x</span><span class="p">)</span> <span class="o">+</span> <span class="dl">"</span><span class="s2">px</span><span class="dl">"</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">element</span><span class="p">.</span><span class="nx">style</span><span class="p">.</span><span class="nx">top</span> <span class="o">=</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">y</span> <span class="o">-</span> <span class="k">this</span><span class="p">.</span><span class="nx">game</span><span class="p">.</span><span class="nx">player</span><span class="p">.</span><span class="nx">y</span><span class="p">)</span> <span class="o">+</span> <span class="dl">"</span><span class="s2">px</span><span class="dl">"</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Now, if you put the player at a different x or y position, it moves and the brick moves backwards. This is a problem! The player should never move. We can fix this pretty easily, however, in the draw function. Can you figure out how? Here’s a hint: if you do it the way you did it the Brick <code class="language-plaintext highlighter-rouge">draw</code>, it’s not the most efficient method. As always, the optimized version is in the code.</p>
+
+<p>If we want it to be centered, which is certainly desirable, we need to do one more computation. The formula for centering any object relative to an external width and the object’s width is just <code class="language-plaintext highlighter-rouge">(outer_width - inner_width) / 2</code>, which is the averaging formula. The outer width in this case is stored in <code class="language-plaintext highlighter-rouge">window.innerWidth</code> and the height in <code class="language-plaintext highlighter-rouge">window.innerHeight</code> (as you can see, the formula is the same for y). Change it up in the <code class="language-plaintext highlighter-rouge">Player</code> <code class="language-plaintext highlighter-rouge">draw</code> function, the part where you set <code class="language-plaintext highlighter-rouge">top</code> and <code class="language-plaintext highlighter-rouge">left</code> should now look like:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">this</span><span class="p">.</span><span class="nx">element</span><span class="p">.</span><span class="nx">style</span><span class="p">.</span><span class="nx">left</span> <span class="o">=</span> <span class="p">(</span><span class="nb">window</span><span class="p">.</span><span class="nx">innerWidth</span> <span class="o">-</span> <span class="k">this</span><span class="p">.</span><span class="nx">width</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">+</span> <span class="dl">"</span><span class="s2">px</span><span class="dl">"</span><span class="p">;</span>
+<span class="k">this</span><span class="p">.</span><span class="nx">element</span><span class="p">.</span><span class="nx">style</span><span class="p">.</span><span class="nx">top</span> <span class="o">=</span> <span class="p">(</span><span class="nb">window</span><span class="p">.</span><span class="nx">innerHeight</span> <span class="o">-</span> <span class="k">this</span><span class="p">.</span><span class="nx">height</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">+</span> <span class="dl">"</span><span class="s2">px</span><span class="dl">"</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>Load it again - you’ll see Player in the middle of the screen. If you draw a brick, however, it’s still in the same place! What happened? This is because all you changed is how it looks, not anything about where it is in the game’s memory. We can also change this in the brick code, but remember that it has to be relative to the <em>player</em>’s width and height, not the brick’s width and height. The referenced part of the brick draw function should now be like this:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">this</span><span class="p">.</span><span class="nx">element</span><span class="p">.</span><span class="nx">style</span><span class="p">.</span><span class="nx">left</span> <span class="o">=</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">x</span> <span class="o">-</span> <span class="k">this</span><span class="p">.</span><span class="nx">game</span><span class="p">.</span><span class="nx">player</span><span class="p">.</span><span class="nx">x</span> <span class="o">+</span> <span class="p">(</span><span class="nb">window</span><span class="p">.</span><span class="nx">innerWidth</span> <span class="o">-</span> <span class="k">this</span><span class="p">.</span><span class="nx">game</span><span class="p">.</span><span class="nx">player</span><span class="p">.</span><span class="nx">width</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="dl">"</span><span class="s2">px</span><span class="dl">"</span><span class="p">;</span>
+<span class="k">this</span><span class="p">.</span><span class="nx">element</span><span class="p">.</span><span class="nx">style</span><span class="p">.</span><span class="nx">top</span> <span class="o">=</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">y</span> <span class="o">-</span> <span class="k">this</span><span class="p">.</span><span class="nx">game</span><span class="p">.</span><span class="nx">player</span><span class="p">.</span><span class="nx">y</span> <span class="o">+</span> <span class="p">(</span><span class="nb">window</span><span class="p">.</span><span class="nx">innerHeight</span> <span class="o">-</span> <span class="k">this</span><span class="p">.</span><span class="nx">game</span><span class="p">.</span><span class="nx">player</span><span class="p">.</span><span class="nx">height</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="dl">"</span><span class="s2">px</span><span class="dl">"</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>Yay, now everything is perspectived against the player!</p>
+
+<h3 id="23-gameloop">2.3: Gameloop</h3>
+
+<p>The game loop is one of the less strenuous parts of the program to code. It’s just a function under the <code class="language-plaintext highlighter-rouge">Game</code> class, one which: calls every block’s <code class="language-plaintext highlighter-rouge">loop</code> (not created yet) and <code class="language-plaintext highlighter-rouge">draw</code> functions, then calls the player’s <code class="language-plaintext highlighter-rouge">loop</code> (not yet created) and <code class="language-plaintext highlighter-rouge">draw</code> functions. Eventually, we’ll implement <code class="language-plaintext highlighter-rouge">loop</code> as part of PhysicsObject and we’ll be able to do actual physics with velocities, but for now those functions will do nothing. Let’s start by adding the new function to avoid errors: in <code class="language-plaintext highlighter-rouge">PhysicsObject</code>, add a new <code class="language-plaintext highlighter-rouge">loop</code> function in front of <code class="language-plaintext highlighter-rouge">constructor</code>. <code class="language-plaintext highlighter-rouge">PhysicsObject</code> should now look like this:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nx">PhysicsObject</span><span class="p">{</span>
+    <span class="kd">constructor</span><span class="p">(</span><span class="nx">x</span><span class="p">,</span> <span class="nx">y</span><span class="p">,</span> <span class="nx">width</span><span class="p">,</span> <span class="nx">height</span><span class="p">){</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">x</span> <span class="o">=</span> <span class="nx">x</span><span class="p">;</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">y</span> <span class="o">=</span> <span class="nx">y</span><span class="p">;</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">width</span> <span class="o">=</span> <span class="nx">width</span><span class="p">;</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">height</span> <span class="o">=</span> <span class="nx">height</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="nx">loop</span><span class="p">(){</span>
+        
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Now, we can add the loop to the Game class! First, create a function <code class="language-plaintext highlighter-rouge">loop</code>, the same way as you did on PhysicsObject, but on Game. Remember, nothing in the parenthesis! Now, we must visit an interesting concept: the <code class="language-plaintext highlighter-rouge">forEach</code>. A <code class="language-plaintext highlighter-rouge">forEach</code> iterates over every value in an array, giving a <em>callback</em> the value and the index. The callback is often an <em>arrow function</em>, defined like so:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// This is an Arrow Function example; it shouldn't go in your main code.</span>
+<span class="kd">var</span> <span class="nx">arrowFun</span> <span class="o">=</span> <span class="p">(</span><span class="nx">value</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+    <span class="nx">alert</span><span class="p">(</span><span class="nx">value</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="nx">arrowFun</span><span class="p">(</span><span class="dl">"</span><span class="s2">Hello!</span><span class="dl">"</span><span class="p">);</span> <span class="c1">// Alerts "hello"</span>
+</code></pre></div></div>
+
+<p>Thus, you can use <code class="language-plaintext highlighter-rouge">.forEach</code> like this:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">myArray</span> <span class="o">=</span> <span class="p">[</span><span class="dl">"</span><span class="s2">hello</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">world</span><span class="dl">"</span><span class="p">];</span> <span class="c1">// The block array uses .push instead of directly initializing it like right here</span>
+
+<span class="nx">myArray</span><span class="p">.</span><span class="nx">forEach</span><span class="p">((</span><span class="nx">item</span><span class="p">,</span> <span class="nx">i</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+    <span class="nx">alert</span><span class="p">(</span><span class="nx">item</span><span class="p">);</span>
+<span class="p">});</span>
+
+<span class="c1">// Should alert, in order, "hello" and "world". You can add more to the array the same way.</span>
+</code></pre></div></div>
+
+<p>Thus, this would go in the <code class="language-plaintext highlighter-rouge">loop</code> function:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">this</span><span class="p">.</span><span class="nx">tileset</span><span class="p">.</span><span class="nx">forEach</span><span class="p">((</span><span class="nx">item</span><span class="p">,</span> <span class="nx">i</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+   <span class="c1">// Your code per block here. </span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<p>And then, inside the arrow function, place <code class="language-plaintext highlighter-rouge">item.loop();</code> and <code class="language-plaintext highlighter-rouge">item.draw();</code>.</p>
+
+<p>Outside the arrow function, inside the normal function space, add <code class="language-plaintext highlighter-rouge">this.player.loop()</code> and <code class="language-plaintext highlighter-rouge">this.player.draw()</code>. Your overall function should now look like:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">loop</span><span class="p">(){</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">tileset</span><span class="p">.</span><span class="nx">forEach</span><span class="p">((</span><span class="nx">item</span><span class="p">,</span> <span class="nx">i</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+        <span class="nx">item</span><span class="p">.</span><span class="nx">loop</span><span class="p">();</span>
+        <span class="nx">item</span><span class="p">.</span><span class="nx">draw</span><span class="p">();</span>
+    <span class="p">});</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">player</span><span class="p">.</span><span class="nx">loop</span><span class="p">();</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">player</span><span class="p">.</span><span class="nx">draw</span><span class="p">();</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>You can reload and….. Nothing changed. This is because we defined functions but never called them. We need to create a frame-update function, and for this we must use <code class="language-plaintext highlighter-rouge">window.requestAnimationFrame</code>, a function which tells the browser to run another function that you pass it on the next frame of animation. This makes animation cleaner and allows you to align it to the window frame updating, which is very efficient because it means you don’t interrupt the browser while it renders a page; it can also improve performance by preventing you from computing superfluous frames. <code class="language-plaintext highlighter-rouge">requestAnimationFrame</code> can also be called inside a function in which <code class="language-plaintext highlighter-rouge">requestAnimationFrame</code> was called, allowing you to do infinite loops; this is actually recommended by <a href="https://developer.mozilla.org/en-US/docs/Web/API/window/requestAnimationFrame">MDN</a>. An example game loop is this (add it to your code, you’ll have to anyways):</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">function</span> <span class="nx">mainloop</span><span class="p">(){</span>
+    <span class="c1">// Your code here</span>
+    <span class="nb">window</span><span class="p">.</span><span class="nx">requestAnimationFrame</span><span class="p">(</span><span class="nx">mainloop</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="nb">window</span><span class="p">.</span><span class="nx">requestAnimationFrame</span><span class="p">(</span><span class="nx">mainloop</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>For this to work, however, it must have a global game that it can loop every frame. A global variable is simply a variable that any function and any scope can access; they are defined outside of functions and classes. Technically a class definition is a global variable, but that’s just more JS being annoyingly intuitive. In fact, you’ve probably already done this for testing; if you didn’t, just declare a new game like so:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">var</span> <span class="nx">game</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Game</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mi">50</span><span class="p">);</span> <span class="c1">// To truly customize it, you can make it things that aren't 50x50, but you should usually keep the blockWidth and blockHeight the same.</span>
+</code></pre></div></div>
+
+<p>Now, you can add <code class="language-plaintext highlighter-rouge">game.loop()</code> to your mainloop at that comment, like so:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">function</span> <span class="nx">mainloop</span><span class="p">(){</span>
+    <span class="nx">game</span><span class="p">.</span><span class="nx">loop</span><span class="p">();</span>
+    <span class="nb">window</span><span class="p">.</span><span class="nx">requestAnimationFrame</span><span class="p">(</span><span class="nx">mainloop</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="nb">window</span><span class="p">.</span><span class="nx">requestAnimationFrame</span><span class="p">(</span><span class="nx">mainloop</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>And you’re done with mainloops!</p>
+
+<h3 id="24-motion">2.4: Motion</h3>
+
+<p>We’ve already covered the goals for this chapter and it’s a little short, so let’s start on making things move. The first thing you must do is update the PhysicsObject class, adding a <code class="language-plaintext highlighter-rouge">move</code> function, with two arguments: <code class="language-plaintext highlighter-rouge">xm</code> and <code class="language-plaintext highlighter-rouge">ym</code>. It should add <code class="language-plaintext highlighter-rouge">xm</code> to it’s x position, and <code class="language-plaintext highlighter-rouge">ym</code> to it’s y position; a useful operator you can use is <code class="language-plaintext highlighter-rouge">variable_name += value</code> which adds a value to a variable. If you set <code class="language-plaintext highlighter-rouge">x = 3</code> and you did <code class="language-plaintext highlighter-rouge">x += 3</code>, <code class="language-plaintext highlighter-rouge">x</code> would be equal to <code class="language-plaintext highlighter-rouge">6</code>. Here’s the code for a <code class="language-plaintext highlighter-rouge">move</code> command for reference (or copy/paste, but that’s not nearly as fun!):</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">move</span><span class="p">(</span><span class="nx">xm</span><span class="p">,</span> <span class="nx">ym</span><span class="p">){</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">x</span> <span class="o">+=</span> <span class="nx">xm</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">y</span> <span class="o">+=</span> <span class="nx">ym</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>The PhysicsObject class should now look like this:</p>
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nx">PhysicsObject</span><span class="p">{</span>
+    <span class="kd">constructor</span><span class="p">(</span><span class="nx">x</span><span class="p">,</span> <span class="nx">y</span><span class="p">,</span> <span class="nx">width</span><span class="p">,</span> <span class="nx">height</span><span class="p">){</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">x</span> <span class="o">=</span> <span class="nx">x</span><span class="p">;</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">y</span> <span class="o">=</span> <span class="nx">y</span><span class="p">;</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">width</span> <span class="o">=</span> <span class="nx">width</span><span class="p">;</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">height</span> <span class="o">=</span> <span class="nx">height</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="nx">loop</span><span class="p">(){</span>
+
+    <span class="p">}</span>
+
+    <span class="nx">move</span><span class="p">(</span><span class="nx">xm</span><span class="p">,</span> <span class="nx">ym</span><span class="p">){</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">x</span> <span class="o">+=</span> <span class="nx">xm</span><span class="p">;</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">y</span> <span class="o">+=</span> <span class="nx">ym</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Run your program and enter the developer menu (<code class="language-plaintext highlighter-rouge">ctrl + shift + i</code> on most modern browsers), then in the console create a new brick with <code class="language-plaintext highlighter-rouge">var brick = game.create(1, 1, 1, 1, "normal", "solid");</code>. From here, you can do <code class="language-plaintext highlighter-rouge">brick.move(10, 0);</code> and the brick will move by 10 pixels to the right! Play with it a bit, and see you in chapter 3!</p>
+
+<h3 id="25-wrapping-up">2.5: Wrapping Up</h3>
+
+<p>In this chapter, we went over building a gameloop, players, and motion, and finished our render engine. You should now be able to create and move bricks with relative intellectual ease; the next chapter will be a doozy if you can’t.</p>
+
+<p>In chapter 3, we’ll go over adding velocity, collisions, and if we have time player motion. We’ll build a small block world for prototyping, you may want to design that now if you want customization. See you then!</p>
+
+<p>You can view the full code for this chapter at https://github.com/LinuxRocks2000/platformer-from-scratch/tree/master/chapter-2.</p>
+
+            <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2712681434853528"
+                 crossorigin="anonymous"></script>
+            <!-- Below the content -->
+            <ins class="adsbygoogle"
+                 style="display:block"
+                 data-ad-client="ca-pub-2712681434853528"
+                 data-ad-slot="5909811348"
+                 data-ad-format="auto"
+                 data-full-width-responsive="true"></ins>
+            <script>
+                 (adsbygoogle = window.adsbygoogle || []).push({});
+            </script>
+            <div id="disqus_thread"></div>
+            <script>
+                /**
+                *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+                *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables    */
+                /*
+                var disqus_config = function () {
+                this.page.url = PAGE_URL;  // Replace PAGE_URL with your page's canonical URL variable
+                this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+                };
+                */
+                (function() { // DON'T EDIT BELOW THIS LINE
+                var d = document, s = d.createElement('script');
+                s.src = 'https://linuxrocks2000-github-io.disqus.com/embed.js';
+                s.setAttribute('data-timestamp', +new Date());
+                (d.head || d.body).appendChild(s);
+                })();
+            </script>
+            <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        </div>
+        <div id="footer">
+            <p><a href = "mailto:plupy44@gmail.com">Email?</a></p>
+<p>Privacy policy: We don't collect data</p>
+<p>Cookie policy: We don't use cookies</p>
+<p>Copywrong 1492, Tyler Clarke</p>
+<p>All rights preserved</p>
+<p>Vegetables are alive too</p>
+<p>Cows pollute the environment and should be eaten</p>
+<p>Nothing here is copyrighted - if we wanted people to not have our data, we wouldn't smatter it across the internet.</p>
+<p>Lawyers beware - here be people who know that lawyers are hired thugs designed <br />to make the person with more money win in court, no matter how right or wrong they are</p>
+<p>I hereby order that any stuck-up prigs that say I need a real privacy policy can leave the room.</p>
+
+        </div>
+        <div id="sidebar">
+            <div id="stickything">
+
+    <a class = "theA" href="/blog/platformer-from-scratch-chap-3">
+        <div class = "sidebar-item">
+            <span class = "title">Platformer From Scratch Chap 3</span><br />
+            <span class = "bottomthing">Physics</span>
+        </div>
+    </a>
+
+    <a class = "theA" href="/blog/platformer-from-scratch-chap-2">
+        <div class = "sidebar-item">
+            <span class = "title">Platformer From Scratch Chap 2</span><br />
+            <span class = "bottomthing">Players, improved graphics, gameloops!</span>
+        </div>
+    </a>
+
+    <a class = "theA" href="/blog/platformer-from-scratch-chap-1">
+        <div class = "sidebar-item">
+            <span class = "title">Platformer From Scratch Chap 1</span><br />
+            <span class = "bottomthing">Getting graphics working</span>
+        </div>
+    </a>
+
+    <a class = "theA" href="/blog/gluten-free-dairy-free-highly-based-brownies">
+        <div class = "sidebar-item">
+            <span class = "title">Gluten Free, Dairy Free, Highly Based Brownies</span><br />
+            <span class = "bottomthing">Because everyone has just <i>got</i> to love long-winded poorly-Javascripted baking blogs!</span>
+        </div>
+    </a>
+
+    <a class = "theA" href="/blog/on-religion">
+        <div class = "sidebar-item">
+            <span class = "title">On Religion</span><br />
+            <span class = "bottomthing">My views and my justification</span>
+        </div>
+    </a>
+
+    <a class = "theA" href="/blog/Carbon-Cycles">
+        <div class = "sidebar-item">
+            <span class = "title">Carbon Cycles</span><br />
+            <span class = "bottomthing">And why America should use Ethanol</span>
+        </div>
+    </a>
+
+    <a class = "theA" href="/blog/the-case-for-carbon-investment">
+        <div class = "sidebar-item">
+            <span class = "title">The Case for Carbon Investment</span><br />
+            <span class = "bottomthing">The ugly truth about carbon dioxide, and what we can do about it (not made by a doom-and-gloomer!)</span>
+        </div>
+    </a>
+
+    <a class = "theA" href="/blog/something-up-with-squishmallow">
+        <div class = "sidebar-item">
+            <span class = "title">Something wrong with Squishmallows (only for people who like tabloid humour)</span><br />
+            <span class = "bottomthing">Detective Lane Howser, on the case</span>
+        </div>
+    </a>
+
+    <a class = "theA" href="/blog/conversations-with-a-southerner">
+        <div class = "sidebar-item">
+            <span class = "title">Conversations with the last true-born southerner</span><br />
+            <span class = "bottomthing">Any normal person who has ever talked to a true southern person will agree</span>
+        </div>
+    </a>
+
+    <a class = "theA" href="/blog/microsoft-poetry">
+        <div class = "sidebar-item">
+            <span class = "title">A poem for Microsoft</span><br />
+            <span class = "bottomthing">Because microsoft needs a poem that fully describes it</span>
+        </div>
+    </a>
+
+    <a class = "theA" href="/blog/hello-world">
+        <div class = "sidebar-item">
+            <span class = "title">Welcome to my blog!</span><br />
+            <span class = "bottomthing">The first post in my blog, also a great place to go for extra information</span>
+        </div>
+    </a>
+
+</div>
+<style>
+    .sidebar-item{
+        padding: 10px;
+        background-color: azure;
+        margin: 10px;
+    }
+    .sidebar-item > .title{
+        color: black;
+        text-decoration: none;
+        white-space: nowrap;
+    }
+    .sidebar-item > .bottomthing{
+        color: grey;
+        font-weight: bold;
+    }
+    .sidebar-item:hover{
+        background-color: transparent;
+    }
+    .theA{
+        text-decoration: none;
+    }
+    #stickything{
+        position: relative;
+    }
+</style>
+
+        </div>
+        <script type = "text/javascript" src = "/blog/js/main.js"></script>
+    </body>
+</html>

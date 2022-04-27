@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+    <head>
+        <meta charset="utf-8">
+        <title>Platformer From Scratch Chap 3</title>
+        <link rel="stylesheet" href="/blog/css/main.css" />
+        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2712681434853528"
+     crossorigin="anonymous"></script>
+        <link rel="stylesheet"
+              href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/styles/default.min.css">
+        <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/highlight.min.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script>
+    </head>
+    <body>
+        <div id="topbar">
+            <nav>
+    <a href="/blog/">Blog</a>
+    <a href="/blog/about">About Me</a>
+    <a href="/">My comic</a>
+</nav>
+
+<style>
+    nav > a{
+        font-family: Arial;
+        font-size: 2em;
+        color: black;
+        text-decoration: none;
+        margin-left: 20px;
+    }
+</style>
+
+        </div>
+        <div id="body">
+            <p>Welcome, friendly JS developers, to the third installment of Platformer From Scratch! In this chapter, we’ll finish the physics engine: velocity, collisions, and true player control.</p>
+
+<h3 id="31-velocity-and-motion">3.1: Velocity and Motion</h3>
+
+<p>Because collisions are fairly complicated and require lots of testing, let’s first prepare the velocity system. In PhysicsObject’s <code class="language-plaintext highlighter-rouge">constructor</code>, store two new values: <code class="language-plaintext highlighter-rouge">xv</code> and <code class="language-plaintext highlighter-rouge">yv</code>, and set them both to zero. We’ll make this more configurable later.</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">constructor</span><span class="p">(</span><span class="nx">x</span><span class="p">,</span> <span class="nx">y</span><span class="p">,</span> <span class="nx">width</span><span class="p">,</span> <span class="nx">height</span><span class="p">){</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">x</span> <span class="o">=</span> <span class="nx">x</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">y</span> <span class="o">=</span> <span class="nx">y</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">width</span> <span class="o">=</span> <span class="nx">width</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">height</span> <span class="o">=</span> <span class="nx">height</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">xv</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">yv</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Xv stands for X Velocity, and yv stands for Y Velocity. Every frame, we’ll move the object by those velocities, and we can apply friction and gravity to them. For friction and gravity, save two more values in the aforementioned constructor: <code class="language-plaintext highlighter-rouge">friction</code> and <code class="language-plaintext highlighter-rouge">gravity</code>. Gravity should be around 1 because it’s linear acceleration, and friction should be around 0.8 because it’s exponential deceleration; you can customize it all you want, however. (Linear acceleration means it accelerates by the same amount every frame, exponential deceleration means it decreases by a smaller amount every frame as the initial value decreases, like real friction).</p>
+
+<p>Now, in the “loop” function, add two calls: <code class="language-plaintext highlighter-rouge">this.yv += this.gravity;</code> and <code class="language-plaintext highlighter-rouge">this.xv *= this.friction</code>.<collapsible-footnote citationname="[1]">The *= operator multiplies a variable by something, then sets the variable to that. An expansion of this is <code class="language-plaintext">this.xv = this.xv * this.friction;</code></collapsible-footnote> Every frame, gravity makes Y velocity increase, and friction makes X velocity decrease. We still don’t actually use these modified values; we can do it with two statements: <code class="language-plaintext highlighter-rouge">this.move(this.xv, 0);</code> and <code class="language-plaintext highlighter-rouge">this.move(0, this.yv)</code>. Do you notice something wrong? Yep, you’re right! We could just do <code class="language-plaintext highlighter-rouge">this.move(this.xv, this.yv)</code>, however, collisions are handled one velocity at a time, rather than both velocities at once, so we have to split up the command. Your PhysicsObject <code class="language-plaintext highlighter-rouge">loop</code> should now look like this:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">loop</span><span class="p">(){</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">xv</span> <span class="o">*=</span> <span class="k">this</span><span class="p">.</span><span class="nx">friction</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">yv</span> <span class="o">+=</span> <span class="k">this</span><span class="p">.</span><span class="nx">gravity</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">move</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">xv</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">move</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">yv</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>If you run this, you’ll notice something peculiar: the brick moves downwards at a constant rate. This is because the player is moving too, which counteracts the acceleration. We need to make it so only the player moves; we can do this by specifying a boolean<collapsible-footnote citationname="[2]">A boolean is either <code class="language-plaintext">true</code> or <code class="language-plaintext">false</code>.</collapsible-footnote> property specifying whether an object is <em>static</em> or not. A static object, quite simply, does not have any physics; it only exists for collisions. Add a new argument <code class="language-plaintext highlighter-rouge">isStatic</code> to the constructor of PhysicsObject, and store it with <code class="language-plaintext highlighter-rouge">this.value = value</code> syntax, then in the <code class="language-plaintext highlighter-rouge">loop</code> function of PhysicsObject add <code class="language-plaintext highlighter-rouge">if (!this.isStatic){</code> at the very start, tab up the function code after it (in Atom, just select it all and click tab), then create a newline and add <code class="language-plaintext highlighter-rouge">}</code> on it, to close the if statement. Congratulations, you’ve wrapped code in an <code class="language-plaintext highlighter-rouge">if</code> statement; if you look, you’ll see the curly braces are formed the same way as a function. Inside the parenthesis is a <em>boolean expression</em>, which starts with <code class="language-plaintext highlighter-rouge">!</code>, also known as logical not<collapsible-footnote citationname="[3]">Logical Not just takes a boolean value and flips it, so <code>true</code> becomes <code>false</code> and <code>false</code> becomes <code>true</code></collapsible-footnote>, runs it on <code class="language-plaintext highlighter-rouge">this.isStatic</code>, and then if that evaluates to <code class="language-plaintext highlighter-rouge">true</code>, runs the code in the curly braces. Thus, if <code class="language-plaintext highlighter-rouge">this.isStatic == false</code>, it <em>is not</em> static, and runs physics; otherwise, it ignores physics. Your PhysicsObject code should now look like this:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nx">PhysicsObject</span><span class="p">{</span>
+    <span class="kd">constructor</span><span class="p">(</span><span class="nx">x</span><span class="p">,</span> <span class="nx">y</span><span class="p">,</span> <span class="nx">width</span><span class="p">,</span> <span class="nx">height</span><span class="p">,</span> <span class="nx">isStatic</span><span class="p">){</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">x</span> <span class="o">=</span> <span class="nx">x</span><span class="p">;</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">y</span> <span class="o">=</span> <span class="nx">y</span><span class="p">;</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">width</span> <span class="o">=</span> <span class="nx">width</span><span class="p">;</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">height</span> <span class="o">=</span> <span class="nx">height</span><span class="p">;</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">xv</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">yv</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">gravity</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">friction</span> <span class="o">=</span> <span class="mf">0.8</span><span class="p">;</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">isStatic</span> <span class="o">=</span> <span class="nx">isStatic</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="nx">loop</span><span class="p">(){</span>
+        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="k">this</span><span class="p">.</span><span class="nx">isStatic</span><span class="p">){</span>
+            <span class="k">this</span><span class="p">.</span><span class="nx">xv</span> <span class="o">*=</span> <span class="k">this</span><span class="p">.</span><span class="nx">friction</span><span class="p">;</span>
+            <span class="k">this</span><span class="p">.</span><span class="nx">yv</span> <span class="o">+=</span> <span class="k">this</span><span class="p">.</span><span class="nx">gravity</span><span class="p">;</span>
+            <span class="k">this</span><span class="p">.</span><span class="nx">move</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">xv</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+            <span class="k">this</span><span class="p">.</span><span class="nx">move</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">yv</span><span class="p">);</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="nx">move</span><span class="p">(</span><span class="nx">xm</span><span class="p">,</span> <span class="nx">ym</span><span class="p">){</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">x</span> <span class="o">+=</span> <span class="nx">xm</span><span class="p">;</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">y</span> <span class="o">+=</span> <span class="nx">ym</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>If you run it, it’ll still do the same thing! We need to actually define some entities as static or not. Fortunately, our API supports this: edit the <code class="language-plaintext highlighter-rouge">_create</code> function in <code class="language-plaintext highlighter-rouge">class Game</code> to set the brick’s<code class="language-plaintext highlighter-rouge">isStatic</code> to <code class="language-plaintext highlighter-rouge">true</code> when the constructor is called, it should now look like this:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">_create</span><span class="p">(</span><span class="nx">x</span><span class="p">,</span> <span class="nx">y</span><span class="p">,</span> <span class="nx">width</span><span class="p">,</span> <span class="nx">height</span><span class="p">,</span> <span class="nx">style</span><span class="p">,</span> <span class="nx">type</span><span class="p">){</span>
+    <span class="kd">var</span> <span class="nx">b</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Brick</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="nx">x</span><span class="p">,</span> <span class="nx">y</span><span class="p">,</span> <span class="nx">width</span><span class="p">,</span> <span class="nx">height</span><span class="p">,</span> <span class="nx">style</span><span class="p">,</span> <span class="nx">type</span><span class="p">,</span> <span class="kc">true</span><span class="p">);</span> <span class="c1">// Put it in a variable so we can return it later</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">tileset</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">b</span><span class="p">);</span> <span class="c1">// Add it to the tileset</span>
+    <span class="k">return</span> <span class="nx">b</span><span class="p">;</span> <span class="c1">// Return it, so you can call this function and then do operations immediately.</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Run it, and nothing changed. This is because the <code class="language-plaintext highlighter-rouge">class Brick</code> constructor doesn’t support static yet! In the constructor of <code class="language-plaintext highlighter-rouge">Brick</code>, add a new argument: <code class="language-plaintext highlighter-rouge">isStatic</code>, and pass it into the <code class="language-plaintext highlighter-rouge">super()</code> call like so:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">constructor</span><span class="p">(</span><span class="nx">game</span><span class="p">,</span> <span class="nx">x</span><span class="p">,</span> <span class="nx">y</span><span class="p">,</span> <span class="nx">width</span><span class="p">,</span> <span class="nx">height</span><span class="p">,</span> <span class="nx">style</span><span class="p">,</span> <span class="nx">type</span><span class="p">,</span> <span class="nx">isStatic</span><span class="p">){</span>
+    <span class="k">super</span><span class="p">(</span><span class="nx">x</span><span class="p">,</span> <span class="nx">y</span><span class="p">,</span> <span class="nx">width</span><span class="p">,</span> <span class="nx">height</span><span class="p">,</span> <span class="nx">isStatic</span><span class="p">);</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">game</span> <span class="o">=</span> <span class="nx">game</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">element</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">createElement</span><span class="p">(</span><span class="dl">"</span><span class="s2">div</span><span class="dl">"</span><span class="p">);</span>
+    <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="dl">"</span><span class="s2">game</span><span class="dl">"</span><span class="p">).</span><span class="nx">appendChild</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">element</span><span class="p">);</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">type</span> <span class="o">=</span> <span class="nx">type</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">element</span><span class="p">.</span><span class="nx">classList</span><span class="p">.</span><span class="nx">add</span><span class="p">(</span><span class="nx">style</span><span class="p">);</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">element</span><span class="p">.</span><span class="nx">classList</span><span class="p">.</span><span class="nx">add</span><span class="p">(</span><span class="nx">type</span><span class="p">);</span>
+    <span class="c1">// This happens last!</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">draw</span><span class="p">();</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>If you run it, the brick should accelerate up rapidly! This is because it’s perspectived - the player is falling. You might also notice something strange about the code: the player doesn’t have any isStatic set, and yet it works! This is because in Javascript, if you don’t set something, it defaults to <code class="language-plaintext highlighter-rouge">undefined</code>, and <code class="language-plaintext highlighter-rouge">!undefined</code> is <code class="language-plaintext highlighter-rouge">true</code>. Nice and intuitive!</p>
+
+<h3 id="32-prototype-map">3.2: Prototype Map</h3>
+
+<p>In the next section, we’ll build the collisions engine; but we need things to collide with. Let’s build a simple map that the player will eventually land on. You can simply use the basic 6-block line: <code class="language-plaintext highlighter-rouge">game.create(-2, 4, 6, 1, "normal", "solid");</code>. There is no need to store it to a variable. I recommend you play with it a bit: a more fun and more effective testing level would be:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">game</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="dl">"</span><span class="s2">normal</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">solid</span><span class="dl">"</span><span class="p">);</span>
+<span class="nx">game</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="dl">"</span><span class="s2">normal</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">solid</span><span class="dl">"</span><span class="p">);</span>
+<span class="nx">game</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="dl">"</span><span class="s2">normal</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">solid</span><span class="dl">"</span><span class="p">);</span> <span class="c1">// This is just the basic rimmed floating platform, it's good for testing X collisions.</span>
+</code></pre></div></div>
+
+<p>Variations of that one are my favorite type of test level.</p>
+
+<h3 id="33-beginning-the-physics-engine">3.3: Beginning the physics engine</h3>
+
+<p>Let’s start on the physics engine (in the next section, we’ll enable more advanced physics). Start by creating a new function on the <code class="language-plaintext highlighter-rouge">Game</code> class:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">checkCollision</span><span class="p">(</span><span class="nx">object</span><span class="p">,</span> <span class="nx">objects</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">tileset</span><span class="p">){</span>
+    
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Immediately, you will notice something strange. Did we just declare a variable as an argument? No. It’s called a default argument (or parameter if you prefer that), and it’s used in the case that we don’t always want to pass an argument. If you need more clarification, zip right over to our best friends <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Default_parameters">MDN</a>! We expect <code class="language-plaintext highlighter-rouge">objects</code> to always be an array of <code class="language-plaintext highlighter-rouge">PhysicsObjects</code> (or PhysicsObject child types, like Bricks or Players), so it allows us to refine collisions. Basically, when we do a collision check, if it turns out to be touching things, we have to go backwards until it’s not touching. This gets very computationally expensive for large tilesets, so we can make it faster by simply only re-checking the things that we’re already touching. (<code class="language-plaintext highlighter-rouge">object</code> is the thing we’re checking for, it should be a <code class="language-plaintext highlighter-rouge">PhysicsObject</code>.) We must now use forEach:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">checkCollision</span><span class="p">(</span><span class="nx">object</span><span class="p">,</span> <span class="nx">objects</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">tileset</span><span class="p">){</span>
+	<span class="nx">objects</span><span class="p">.</span><span class="nx">forEach</span><span class="p">((</span><span class="nx">item</span><span class="p">,</span> <span class="nx">index</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span> <span class="c1">// Arrow functions yay!</span>
+        
+    <span class="p">});</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>And thennn….. What? Well, we have to use the rectangle overlapping formula, which is happily not expensive at all and is very simplistic. Basically, two rectangles overlap on the X axis in the case that all these conditions are satisfied:</p>
+
+<ul>
+  <li>The second edge of the first rectangle is further to the right than the first edge of the second rectangle, and</li>
+  <li>The first edge of the first rectangle is further to the left than the second edge of the second rectangle</li>
+</ul>
+
+<p>And the same rule applies for the Y axis but the conditions are slightly different:</p>
+
+<ul>
+  <li>The bottom edge of the first rectangle is further down than the top edge of the second rectangle, and</li>
+  <li>The top edge of the first rectangle is further up than the bottom edge of the second rectangle</li>
+</ul>
+
+<p>Here’s an example collision code between two PhysicsObjects (you can copy/paste this, but you shouldn’t):</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Assuming there are two PhysicsObjects, one called Rect1 and the other called Rect2. You'll have to create them to test this.</span>
+<span class="k">if</span> <span class="p">(</span><span class="nx">rect1</span><span class="p">.</span><span class="nx">x</span> <span class="o">+</span> <span class="nx">rect1</span><span class="p">.</span><span class="nx">width</span> <span class="o">&gt;</span> <span class="nx">rect2</span><span class="p">.</span><span class="nx">x</span> <span class="o">&amp;&amp;</span> <span class="c1">// &amp;&amp; means "and"</span>
+    <span class="nx">rect1</span><span class="p">.</span><span class="nx">x</span> <span class="o">&lt;</span> <span class="nx">rect2</span><span class="p">.</span><span class="nx">x</span> <span class="o">+</span> <span class="nx">rect2</span><span class="p">.</span><span class="nx">width</span> <span class="o">&amp;&amp;</span>
+   	<span class="nx">rect1</span><span class="p">.</span><span class="nx">y</span> <span class="o">+</span> <span class="nx">rect1</span><span class="p">.</span><span class="nx">height</span> <span class="o">&gt;</span> <span class="nx">rect2</span><span class="p">.</span><span class="nx">y</span> <span class="o">&amp;&amp;</span>
+   	<span class="nx">rect1</span><span class="p">.</span><span class="nx">y</span> <span class="o">&lt;</span> <span class="nx">rect2</span><span class="p">.</span><span class="nx">y</span> <span class="o">+</span> <span class="nx">rect2</span><span class="p">.</span><span class="nx">height</span><span class="p">){</span>
+    <span class="nx">alert</span><span class="p">(</span><span class="dl">"</span><span class="s2">They collide!</span><span class="dl">"</span><span class="p">);</span> <span class="c1">// If you want, you can actually test this; the alert will tell you if it worked or not!</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>The <code class="language-plaintext highlighter-rouge">checkCollision</code> function should now look like this:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">checkCollision</span><span class="p">(</span><span class="nx">object</span><span class="p">,</span> <span class="nx">objects</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">tileset</span><span class="p">){</span>
+    <span class="nx">objects</span><span class="p">.</span><span class="nx">forEach</span><span class="p">((</span><span class="nx">item</span><span class="p">,</span> <span class="nx">i</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">object</span><span class="p">.</span><span class="nx">x</span> <span class="o">+</span> <span class="nx">object</span><span class="p">.</span><span class="nx">width</span> <span class="o">&gt;</span> <span class="nx">item</span><span class="p">.</span><span class="nx">x</span> <span class="o">&amp;&amp;</span> <span class="c1">// &amp;&amp; means "and"</span>
+            <span class="nx">object</span><span class="p">.</span><span class="nx">x</span> <span class="o">&lt;</span> <span class="nx">item</span><span class="p">.</span><span class="nx">x</span> <span class="o">+</span> <span class="nx">item</span><span class="p">.</span><span class="nx">width</span> <span class="o">&amp;&amp;</span>
+            <span class="nx">object</span><span class="p">.</span><span class="nx">y</span> <span class="o">+</span> <span class="nx">object</span><span class="p">.</span><span class="nx">height</span> <span class="o">&gt;</span> <span class="nx">item</span><span class="p">.</span><span class="nx">y</span> <span class="o">&amp;&amp;</span>
+            <span class="nx">object</span><span class="p">.</span><span class="nx">y</span> <span class="o">&lt;</span> <span class="nx">item</span><span class="p">.</span><span class="nx">y</span> <span class="o">+</span> <span class="nx">item</span><span class="p">.</span><span class="nx">height</span><span class="p">){</span>
+            <span class="c1">// Your collision code here</span>
+        <span class="p">}</span>
+    <span class="p">});</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Now, define a collisions dictionary like this:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">var</span> <span class="nx">collisionsDict</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="dl">"</span><span class="s2">solid</span><span class="dl">"</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">[]],</span> <span class="c1">// Remember the word "solid" from when you created a brick? This references that!</span>
+    <span class="dl">"</span><span class="s2">allBricks</span><span class="dl">"</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">[]],</span> <span class="c1">// Each entry stores an array containing a number (the number of things in it) and another array, the things themselves.</span>
+    <span class="dl">"</span><span class="s2">allPlayers</span><span class="dl">"</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">[]],</span> <span class="c1">// Every player in the collision. Above is every block.</span>
+    <span class="dl">"</span><span class="s2">all</span><span class="dl">"</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">[]]</span> <span class="c1">// Everything.</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>We aren’t going to worry about players yet (that’s for enemy physics), but we should start with making “all” work. Inside that big hairy collision <code class="language-plaintext highlighter-rouge">if</code>, add</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">if</span> <span class="p">(</span><span class="nx">item</span><span class="p">.</span><span class="nx">type</span> <span class="o">!=</span> <span class="kc">undefined</span><span class="p">){</span> <span class="c1">// Don't do this for items that don't have a type, it'll break if you do!</span>
+    <span class="nx">collisionsDict</span><span class="p">[</span><span class="nx">item</span><span class="p">.</span><span class="nx">type</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">++</span><span class="p">;</span> <span class="c1">// Increment the first item (javascript is 0 indexed, meaning 0 is the first item in a list)</span>
+    <span class="nx">collisionsDict</span><span class="p">[</span><span class="nx">item</span><span class="p">.</span><span class="nx">type</span><span class="p">][</span><span class="mi">1</span><span class="p">].</span><span class="nx">push</span><span class="p">(</span><span class="nx">item</span><span class="p">);</span> <span class="c1">// Add the item to the array at index 1 (the second element)</span>
+<span class="p">}</span>
+<span class="nx">collisionsDict</span><span class="p">[</span><span class="dl">"</span><span class="s2">all</span><span class="dl">"</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">++</span><span class="p">;</span> <span class="c1">// Same but for "all". Note that this is not inside the type-protection if; all things are treated equally here.</span>
+<span class="nx">collisionsDict</span><span class="p">[</span><span class="dl">"</span><span class="s2">all</span><span class="dl">"</span><span class="p">][</span><span class="mi">1</span><span class="p">].</span><span class="nx">push</span><span class="p">(</span><span class="nx">item</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>Finally, we must return the <code class="language-plaintext highlighter-rouge">collisionsDict</code> so it can be used by the physics object that calls the <code class="language-plaintext highlighter-rouge">checkCollision</code> function by putting <code class="language-plaintext highlighter-rouge">return collisionsDict;</code> at the end of the function.</p>
+
+<p>Your <code class="language-plaintext highlighter-rouge">checkCollision</code> function should now look like:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">checkCollision</span><span class="p">(</span><span class="nx">object</span><span class="p">,</span> <span class="nx">objects</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">tileset</span><span class="p">){</span>
+    <span class="kd">var</span> <span class="nx">collisionsDict</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="dl">"</span><span class="s2">solid</span><span class="dl">"</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">[]],</span> <span class="c1">// Remember the word "solid" from when you created a brick? This references that!</span>
+        <span class="dl">"</span><span class="s2">allBricks</span><span class="dl">"</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">[]],</span> <span class="c1">// Each entry stores an array containing a number (the number of things in it) and another array, the things themselves.</span>
+        <span class="dl">"</span><span class="s2">allPlayers</span><span class="dl">"</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">[]],</span> <span class="c1">// Every player in the collision. Above is every block.</span>
+        <span class="dl">"</span><span class="s2">all</span><span class="dl">"</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">[]]</span> <span class="c1">// Everything.</span>
+    <span class="p">}</span>
+    <span class="nx">objects</span><span class="p">.</span><span class="nx">forEach</span><span class="p">((</span><span class="nx">item</span><span class="p">,</span> <span class="nx">i</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">object</span><span class="p">.</span><span class="nx">x</span> <span class="o">+</span> <span class="nx">object</span><span class="p">.</span><span class="nx">width</span> <span class="o">&gt;</span> <span class="nx">item</span><span class="p">.</span><span class="nx">x</span> <span class="o">&amp;&amp;</span> <span class="c1">// &amp;&amp; means "and"</span>
+            <span class="nx">object</span><span class="p">.</span><span class="nx">x</span> <span class="o">&lt;</span> <span class="nx">item</span><span class="p">.</span><span class="nx">x</span> <span class="o">+</span> <span class="nx">item</span><span class="p">.</span><span class="nx">width</span> <span class="o">&amp;&amp;</span>
+            <span class="nx">object</span><span class="p">.</span><span class="nx">y</span> <span class="o">+</span> <span class="nx">object</span><span class="p">.</span><span class="nx">height</span> <span class="o">&gt;</span> <span class="nx">item</span><span class="p">.</span><span class="nx">y</span> <span class="o">&amp;&amp;</span>
+            <span class="nx">object</span><span class="p">.</span><span class="nx">y</span> <span class="o">&lt;</span> <span class="nx">item</span><span class="p">.</span><span class="nx">y</span> <span class="o">+</span> <span class="nx">item</span><span class="p">.</span><span class="nx">height</span><span class="p">){</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nx">item</span><span class="p">.</span><span class="nx">type</span> <span class="o">!=</span> <span class="kc">undefined</span><span class="p">){</span> <span class="c1">// Don't do this for items that don't have a type, it'll break if you do!</span>
+                <span class="nx">collisionsDict</span><span class="p">[</span><span class="nx">item</span><span class="p">.</span><span class="nx">type</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">++</span><span class="p">;</span> <span class="c1">// Increment the first item (javascript is 0 indexed, meaning 0 is the first item in a list)</span>
+                <span class="nx">collisionsDict</span><span class="p">[</span><span class="nx">item</span><span class="p">.</span><span class="nx">type</span><span class="p">][</span><span class="mi">1</span><span class="p">].</span><span class="nx">push</span><span class="p">(</span><span class="nx">item</span><span class="p">);</span> <span class="c1">// Add the item to the array at index 1 (the second element)</span>
+            <span class="p">}</span>
+            <span class="nx">collisionsDict</span><span class="p">[</span><span class="dl">"</span><span class="s2">all</span><span class="dl">"</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">++</span><span class="p">;</span> <span class="c1">// Same but for "all". Note that this is not inside the type-protection if; all things are treated equally here.</span>
+            <span class="nx">collisionsDict</span><span class="p">[</span><span class="dl">"</span><span class="s2">all</span><span class="dl">"</span><span class="p">][</span><span class="mi">1</span><span class="p">].</span><span class="nx">push</span><span class="p">(</span><span class="nx">item</span><span class="p">);</span>
+        <span class="p">}</span>
+    <span class="p">});</span>
+    <span class="k">return</span> <span class="nx">collisionsDict</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Now, let’s start making PhysicsObject use it. Before we can do anything else, we need to define collision typing: add in the PhysicsObject constructor two new saved arrays, <code class="language-plaintext highlighter-rouge">collisions</code> and <code class="language-plaintext highlighter-rouge">specialCollisions</code>. <code class="language-plaintext highlighter-rouge">collisions</code> should contain things that it collides with as solid, and <code class="language-plaintext highlighter-rouge">specialCollisions</code> things that it reports as having collided but doesn’t process as solid. The constructor should now look like this:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">constructor</span><span class="p">(</span><span class="nx">x</span><span class="p">,</span> <span class="nx">y</span><span class="p">,</span> <span class="nx">width</span><span class="p">,</span> <span class="nx">height</span><span class="p">,</span> <span class="nx">isStatic</span><span class="p">){</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">x</span> <span class="o">=</span> <span class="nx">x</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">y</span> <span class="o">=</span> <span class="nx">y</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">width</span> <span class="o">=</span> <span class="nx">width</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">height</span> <span class="o">=</span> <span class="nx">height</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">xv</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">yv</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">gravity</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">friction</span> <span class="o">=</span> <span class="mf">0.8</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">isStatic</span> <span class="o">=</span> <span class="nx">isStatic</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">collisions</span> <span class="o">=</span> <span class="p">[</span><span class="dl">"</span><span class="s2">solid</span><span class="dl">"</span><span class="p">];</span> <span class="c1">// Solid is always a collision!</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">specialCollisions</span> <span class="o">=</span> <span class="p">[];</span> <span class="c1">// No default special collisions.</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Now that that’s done, define a new function on PhysicsObject called <code class="language-plaintext highlighter-rouge">doCollision</code>, it should take a collision dictionary (argument name <code class="language-plaintext highlighter-rouge">coll</code>):</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">doCollision</span><span class="p">(</span><span class="nx">coll</span><span class="p">){</span>
+    
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>The idea is that it will return <code class="language-plaintext highlighter-rouge">true</code> if there’s still an acknowledged solid collision, and <code class="language-plaintext highlighter-rouge">false</code> (or <code class="language-plaintext highlighter-rouge">undefined</code>) otherwise; and calling <code class="language-plaintext highlighter-rouge">return</code> in an arrow function just ends the arrow function (so it doesn’t work in <code class="language-plaintext highlighter-rouge">forEach</code>), we must define a returner variable that we can edit from within an arrow function: <code class="language-plaintext highlighter-rouge">var returner = [false, []];</code> at the very start of the <code class="language-plaintext highlighter-rouge">doCollision</code> function should work, and we can define the <code class="language-plaintext highlighter-rouge">forEach</code> on… what? It doesn’t work on dictionaries like the collision dictionary, and that would be superfluous anyways; we want to iterate over things that it considers to be solid; <code class="language-plaintext highlighter-rouge">this.collisions.forEach</code> (you can fill in the rest of the <code class="language-plaintext highlighter-rouge">forEach</code> call) should do it.</p>
+
+<p>In the forEach, you need to now check if the appropriate collision type is non-zero:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">if</span> <span class="p">(</span><span class="nx">coll</span><span class="p">[</span><span class="nx">item</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">){</span>
+    <span class="nx">returner</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+    <span class="nx">returner</span><span class="p">[</span><span class="mi">1</span><span class="p">].</span><span class="nx">push</span><span class="p">(...</span><span class="nx">coll</span><span class="p">[</span><span class="nx">item</span><span class="p">][</span><span class="mi">1</span><span class="p">]);</span> <span class="c1">// This is unpacking magic.</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>This semi-magical part is harder to explain and a full explanation is out of the scope of this tutorial; for now I will simply link you to the relevant MDN articles for <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_syntax">unpacking (spreading)</a> and <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/push">pushing data to a list</a>. Basically, if it’s touching something that applies, it pushes all of the applying elements to the return list and sets the return to true. It may set the return to true many times, but it only actually means anything once; the element application is, however, useful.</p>
+
+<p>Finally, to finish up our function, we must add a <code class="language-plaintext highlighter-rouge">return returner;</code> at the end. Does this look somewhat familiar? This is just a filter designed to wrap over <code class="language-plaintext highlighter-rouge">checkCollision</code>; it has to return a value as well. Your entire function - under <code class="language-plaintext highlighter-rouge">PhysicsObject</code> - should thus now look like:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">doCollision</span><span class="p">(</span><span class="nx">coll</span><span class="p">){</span>
+    <span class="kd">var</span> <span class="nx">returner</span> <span class="o">=</span> <span class="p">[</span><span class="kc">false</span><span class="p">,</span> <span class="p">[]];</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">collisions</span><span class="p">.</span><span class="nx">forEach</span><span class="p">((</span><span class="nx">item</span><span class="p">,</span> <span class="nx">i</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+        <span class="nx">returner</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+        <span class="nx">returner</span><span class="p">[</span><span class="mi">1</span><span class="p">].</span><span class="nx">push</span><span class="p">(...</span><span class="nx">coll</span><span class="p">[</span><span class="nx">item</span><span class="p">][</span><span class="mi">1</span><span class="p">]);</span> <span class="c1">// This is unpacking magic.</span>
+    <span class="p">});</span>
+    <span class="k">return</span> <span class="nx">returner</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>In chapter 4, we’ll implement special collisions and callback methods; for now, this doCollision function is sufficient.</p>
+
+<h3 id="34-finishing-the-collision-engine">3.4: Finishing the collision engine</h3>
+
+<p>Now we need to use the methods we’ve been developing to do actual collisions. Start by changing up the constructor of PhysicsObject: adding and storing a <code class="language-plaintext highlighter-rouge">game</code>. I recommend putting it before <code class="language-plaintext highlighter-rouge">x</code> in the arguments list for cleanliness. In the <code class="language-plaintext highlighter-rouge">Brick</code> constructor, pass <code class="language-plaintext highlighter-rouge">game</code> into the <code class="language-plaintext highlighter-rouge">super</code> call in the proper order, this is for you to figure out too. Add it in the same way to Player (you’ll have to get a new argument and pass it in when the player is created in the Game constructor). The PhysicsObject, Brick, Game, and Player constructors should now look like below:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Brick</span>
+<span class="kd">constructor</span><span class="p">(</span><span class="nx">game</span><span class="p">,</span> <span class="nx">x</span><span class="p">,</span> <span class="nx">y</span><span class="p">,</span> <span class="nx">width</span><span class="p">,</span> <span class="nx">height</span><span class="p">,</span> <span class="nx">style</span><span class="p">,</span> <span class="nx">type</span><span class="p">,</span> <span class="nx">isStatic</span><span class="p">){</span>
+    <span class="k">super</span><span class="p">(</span><span class="nx">game</span><span class="p">,</span> <span class="nx">x</span><span class="p">,</span> <span class="nx">y</span><span class="p">,</span> <span class="nx">width</span><span class="p">,</span> <span class="nx">height</span><span class="p">,</span> <span class="nx">isStatic</span><span class="p">);</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">game</span> <span class="o">=</span> <span class="nx">game</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">element</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">createElement</span><span class="p">(</span><span class="dl">"</span><span class="s2">div</span><span class="dl">"</span><span class="p">);</span>
+    <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="dl">"</span><span class="s2">game</span><span class="dl">"</span><span class="p">).</span><span class="nx">appendChild</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">element</span><span class="p">);</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">type</span> <span class="o">=</span> <span class="nx">type</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">element</span><span class="p">.</span><span class="nx">classList</span><span class="p">.</span><span class="nx">add</span><span class="p">(</span><span class="nx">style</span><span class="p">);</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">element</span><span class="p">.</span><span class="nx">classList</span><span class="p">.</span><span class="nx">add</span><span class="p">(</span><span class="nx">type</span><span class="p">);</span>
+    <span class="c1">// This happens last!</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">draw</span><span class="p">();</span>
+<span class="p">}</span>
+
+<span class="c1">// PhysicsObject</span>
+<span class="kd">constructor</span><span class="p">(</span><span class="nx">game</span><span class="p">,</span> <span class="nx">x</span><span class="p">,</span> <span class="nx">y</span><span class="p">,</span> <span class="nx">width</span><span class="p">,</span> <span class="nx">height</span><span class="p">,</span> <span class="nx">isStatic</span><span class="p">){</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">game</span> <span class="o">=</span> <span class="nx">game</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">x</span> <span class="o">=</span> <span class="nx">x</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">y</span> <span class="o">=</span> <span class="nx">y</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">width</span> <span class="o">=</span> <span class="nx">width</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">height</span> <span class="o">=</span> <span class="nx">height</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">xv</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">yv</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">gravity</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">friction</span> <span class="o">=</span> <span class="mf">0.8</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">isStatic</span> <span class="o">=</span> <span class="nx">isStatic</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">collisions</span> <span class="o">=</span> <span class="p">[</span><span class="dl">"</span><span class="s2">solid</span><span class="dl">"</span><span class="p">];</span> <span class="c1">// Solid is always a collision!</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">specialCollisions</span> <span class="o">=</span> <span class="p">[];</span> <span class="c1">// No default special collisions.</span>
+<span class="p">}</span>
+
+<span class="c1">// Player</span>
+<span class="kd">constructor</span><span class="p">(</span><span class="nx">game</span><span class="p">,</span> <span class="nx">x</span><span class="p">,</span> <span class="nx">y</span><span class="p">,</span> <span class="nx">width</span><span class="p">,</span> <span class="nx">height</span><span class="p">){</span>
+    <span class="k">super</span><span class="p">(</span><span class="nx">game</span><span class="p">,</span> <span class="nx">x</span><span class="p">,</span> <span class="nx">y</span><span class="p">,</span> <span class="nx">width</span><span class="p">,</span> <span class="nx">height</span><span class="p">);</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">element</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">createElement</span><span class="p">(</span><span class="dl">"</span><span class="s2">div</span><span class="dl">"</span><span class="p">);</span>
+    <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="dl">"</span><span class="s2">game</span><span class="dl">"</span><span class="p">).</span><span class="nx">appendChild</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">element</span><span class="p">);</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">element</span><span class="p">.</span><span class="nx">classList</span><span class="p">.</span><span class="nx">add</span><span class="p">(</span><span class="dl">"</span><span class="s2">player</span><span class="dl">"</span><span class="p">);</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">draw</span><span class="p">();</span>
+<span class="p">}</span>
+
+<span class="c1">// Game</span>
+<span class="kd">constructor</span><span class="p">(</span><span class="nx">blockWidth</span><span class="p">,</span> <span class="nx">blockHeight</span><span class="p">){</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">blockWidth</span> <span class="o">=</span> <span class="nx">blockWidth</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">blockHeight</span> <span class="o">=</span> <span class="nx">blockHeight</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">tileset</span> <span class="o">=</span> <span class="p">[];</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">player</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Player</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">blockWidth</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">blockHeight</span> <span class="o">*</span> <span class="mi">2</span><span class="p">);</span> <span class="c1">// Players are usually 1x2 blocks. Feel free to change as you wish.</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>You should next go into the <code class="language-plaintext highlighter-rouge">PhysicsObject</code> <code class="language-plaintext highlighter-rouge">loop</code> function, right after the second <code class="language-plaintext highlighter-rouge">this.move</code> call (should be the one for yv) and do <code class="language-plaintext highlighter-rouge">var coll = this.doCollision(this.game.checkCollision(this));</code>. This is rather knotty and gnarled, so let’s go through it step-by-step:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">var coll =</code>: <code class="language-plaintext highlighter-rouge">var</code> is the variable keyword, so this tells it to create a new variable called <code class="language-plaintext highlighter-rouge">coll</code> and set it to whatever is after the <code class="language-plaintext highlighter-rouge">=</code>.</li>
+  <li><code class="language-plaintext highlighter-rouge">this.doCollision</code>: We just defined this function. It weeds out collision candidates from a collision dictionary.</li>
+  <li><code class="language-plaintext highlighter-rouge">this.game.checkCollision(this)</code>: Get a collision dictionary from an object.</li>
+</ul>
+
+<p>Now, we want to check if it hit anything:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">if</span> <span class="p">(</span><span class="nx">coll</span><span class="p">[</span><span class="mi">0</span><span class="p">]){</span>
+    <span class="c1">// Code in here runs if it's hitting something</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Because we set <code class="language-plaintext highlighter-rouge">coll[0]</code> to <code class="language-plaintext highlighter-rouge">true</code> if it hits something, we can just check it in the if statement, this makes code easy. The next part, which goes inside the <code class="language-plaintext highlighter-rouge">if</code> statement, isn’t nearly so simple:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">while</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">doCollision</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">game</span><span class="p">.</span><span class="nx">checkCollision</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="nx">coll</span><span class="p">[</span><span class="mi">1</span><span class="p">]))[</span><span class="mi">0</span><span class="p">]){</span>
+    <span class="c1">// The code in here runs until it stops hitting things.</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Let’s disect this.</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">while</code>: Like <code class="language-plaintext highlighter-rouge">if</code>, while does something based on a boolean case; unlike <code class="language-plaintext highlighter-rouge">if</code>, <code class="language-plaintext highlighter-rouge">while</code> keeps doing it until the test case returns false.</li>
+  <li><code class="language-plaintext highlighter-rouge">this.doCollision(this.game.checkCollision())</code>: We’ve already seen this, so I’m not going to explain it again.</li>
+  <li><code class="language-plaintext highlighter-rouge">this</code>: Yep, old news.</li>
+  <li><code class="language-plaintext highlighter-rouge">coll[1]</code>: This is more interesting. It tells the checkCollision code to only iterate over the bricks it’s touching right now, which makes it significantly faster for larger levels (I’ve explained the optimization reason once before, if this sounds familiar).</li>
+  <li><code class="language-plaintext highlighter-rouge">[0]</code>: Check the first value of the returned array, which is a boolean: <code class="language-plaintext highlighter-rouge">true</code> for touching, <code class="language-plaintext highlighter-rouge">false</code> for not.</li>
+</ul>
+
+<p>If you run it now, the player will drop, hover over the bricks for a couple seconds, then your browser will either crash or tell you the page is slowing it down. This is because the while loop never terminates - the player doesn’t move backwards yet. In the while loop, add <code class="language-plaintext highlighter-rouge">this.move(0, -Math.abs(this.yv)/this.yv)</code>: Uh-oh, yet another hairy one! We’d better disect this.</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">this.move</code>: This moves a PhysicsObject.</li>
+  <li><code class="language-plaintext highlighter-rouge">0</code>: Don’t move on the x-axis, we need to rebound on the y-axis.</li>
+  <li><code class="language-plaintext highlighter-rouge">-Math.abs(this.yv)</code>: the <code class="language-plaintext highlighter-rouge">Math.abs</code> function returns the distance from 0, so a negative number will become positive and a positive number will stay positive. The <code class="language-plaintext highlighter-rouge">-</code> sign basically inverts it, so it will always return a negative number, the negative value of <code class="language-plaintext highlighter-rouge">this.yv</code>.</li>
+  <li><code class="language-plaintext highlighter-rouge">/this.yv</code>: This is a trick of arithmetic. A number divided by itself always returns 1, but a number divided by -itself is always -1, right? Because of the negative abs function, we know that if <code class="language-plaintext highlighter-rouge">this.yv</code> is, say, 4 it will become -1, so it will <em>move backwards</em>, and if it’s -4, it will return 1, still <em>moving backwards</em>.</li>
+</ul>
+
+<p>If you run this now, Player will hit the platform and stay there for a couple seconds, before falling back through at tremendous speed. This happens because <code class="language-plaintext highlighter-rouge">yv</code> keeps accumulating, and eventually gets so high that Player can pass through the platform without hitting it (because of the way xv and yv are controlled). This can, however, be solved by setting <code class="language-plaintext highlighter-rouge">yv</code> to zero when it hits the platform, so it can’t build up enough speed to puncture through. We can do that now, by adding <code class="language-plaintext highlighter-rouge">this.yv = 0;</code> at the end of the <code class="language-plaintext highlighter-rouge">if</code> statement (after the <code class="language-plaintext highlighter-rouge">while</code>). Your full <code class="language-plaintext highlighter-rouge">loop</code> function should now look like this:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">loop</span><span class="p">(){</span>
+    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="k">this</span><span class="p">.</span><span class="nx">isStatic</span><span class="p">){</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">xv</span> <span class="o">*=</span> <span class="k">this</span><span class="p">.</span><span class="nx">friction</span><span class="p">;</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">yv</span> <span class="o">+=</span> <span class="k">this</span><span class="p">.</span><span class="nx">gravity</span><span class="p">;</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">move</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">xv</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">move</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">yv</span><span class="p">);</span>
+        <span class="kd">var</span> <span class="nx">collY</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">doCollision</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">game</span><span class="p">.</span><span class="nx">checkCollision</span><span class="p">(</span><span class="k">this</span><span class="p">));</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">collY</span><span class="p">[</span><span class="mi">0</span><span class="p">]){</span>
+            <span class="k">while</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">doCollision</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">game</span><span class="p">.</span><span class="nx">checkCollision</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="nx">collY</span><span class="p">[</span><span class="mi">1</span><span class="p">]))[</span><span class="mi">0</span><span class="p">]){</span>
+                <span class="k">this</span><span class="p">.</span><span class="nx">move</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="nb">Math</span><span class="p">.</span><span class="nx">abs</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">yv</span><span class="p">)</span><span class="o">/</span><span class="k">this</span><span class="p">.</span><span class="nx">yv</span><span class="p">);</span>
+            <span class="p">}</span>
+            <span class="k">this</span><span class="p">.</span><span class="nx">yv</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Note: if the display seems fuzzy or jittery, it’s because you put the collision code after the xv code instead of the yv.</p>
+
+<p>Let’s add the same thing to xv, which fortunately shouldn’t be too hard as we can just copy/paste and replace yv with xv (you should rewrite it yourself if you don’t have a firm grasp on the logic, though). Do make sure to flip the 0 and the math in the rebound move command, though, otherwise it’ll break. Your final loop code should look very similar to this:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">loop</span><span class="p">(){</span>
+    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="k">this</span><span class="p">.</span><span class="nx">isStatic</span><span class="p">){</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">xv</span> <span class="o">*=</span> <span class="k">this</span><span class="p">.</span><span class="nx">friction</span><span class="p">;</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">yv</span> <span class="o">+=</span> <span class="k">this</span><span class="p">.</span><span class="nx">gravity</span><span class="p">;</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">move</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">xv</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+        <span class="kd">var</span> <span class="nx">collX</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">doCollision</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">game</span><span class="p">.</span><span class="nx">checkCollision</span><span class="p">(</span><span class="k">this</span><span class="p">));</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">collX</span><span class="p">[</span><span class="mi">0</span><span class="p">]){</span>
+            <span class="k">while</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">doCollision</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">game</span><span class="p">.</span><span class="nx">checkCollision</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="nx">collX</span><span class="p">[</span><span class="mi">1</span><span class="p">]))[</span><span class="mi">0</span><span class="p">]){</span>
+                <span class="k">this</span><span class="p">.</span><span class="nx">move</span><span class="p">(</span><span class="o">-</span><span class="nb">Math</span><span class="p">.</span><span class="nx">abs</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">xv</span><span class="p">)</span><span class="o">/</span><span class="k">this</span><span class="p">.</span><span class="nx">xv</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+            <span class="p">}</span>
+            <span class="k">this</span><span class="p">.</span><span class="nx">xv</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">move</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">yv</span><span class="p">);</span>
+        <span class="kd">var</span> <span class="nx">collY</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">doCollision</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">game</span><span class="p">.</span><span class="nx">checkCollision</span><span class="p">(</span><span class="k">this</span><span class="p">));</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">collY</span><span class="p">[</span><span class="mi">0</span><span class="p">]){</span>
+            <span class="k">while</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">doCollision</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">game</span><span class="p">.</span><span class="nx">checkCollision</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="nx">collY</span><span class="p">[</span><span class="mi">1</span><span class="p">]))[</span><span class="mi">0</span><span class="p">]){</span>
+                <span class="k">this</span><span class="p">.</span><span class="nx">move</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="nb">Math</span><span class="p">.</span><span class="nx">abs</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">yv</span><span class="p">)</span><span class="o">/</span><span class="k">this</span><span class="p">.</span><span class="nx">yv</span><span class="p">);</span>
+            <span class="p">}</span>
+            <span class="k">this</span><span class="p">.</span><span class="nx">yv</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>You can move the player around and make it jump by changing <code class="language-plaintext highlighter-rouge">game.player.xv</code> and <code class="language-plaintext highlighter-rouge">game.player.yv</code> in the console, such as <code class="language-plaintext highlighter-rouge">game.player.xv += 10</code> or <code class="language-plaintext highlighter-rouge">game.player.yv -= 20</code> to jump. You’ll find that it actually works very well and beauteous; everything seems solid now!</p>
+
+<p>There’s one final change we need to make. Right now, the player can hit things, but we don’t know what part of the player is hitting what, which is a problem. We can start fixing it by using four new values in the PhysicsObject loop function: <code class="language-plaintext highlighter-rouge">touchingTop</code>, <code class="language-plaintext highlighter-rouge">touchingBottom</code>, <code class="language-plaintext highlighter-rouge">touchingLeft</code>, and <code class="language-plaintext highlighter-rouge">touchingRight</code>. They should all be set to false each iteration, like so:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// All of this goes before the rest of the physics code</span>
+<span class="k">this</span><span class="p">.</span><span class="nx">touchingTop</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+<span class="k">this</span><span class="p">.</span><span class="nx">touchingBottom</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+<span class="k">this</span><span class="p">.</span><span class="nx">touchingLeft</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+<span class="k">this</span><span class="p">.</span><span class="nx">touchingRight</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>You might notice something wrong with this: they are never initialized in the constructor! We can, however ignore that; this is yet another quirk of Javascript: you can define new members in any function, not just <code class="language-plaintext highlighter-rouge">constructor</code>. As long as they’re set before you attempt to read them, it works perfectly.</p>
+
+<p>Now, in your PhysicsObject collision code for y, add this:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">...</span> <span class="c1">// Don't actually put three dots there, these three dots reference the code before.</span>
+<span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">yv</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">){</span> <span class="c1">// Positive velocity = moving down</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">touchingBottom</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">yv</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">){</span> <span class="c1">// Negative velocity = moving up</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">touchingTop</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="k">this</span><span class="p">.</span><span class="nx">yv</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="c1">// This is the original one, not a new one; it serves to demonstrate where to place the new code.</span>
+</code></pre></div></div>
+
+<p>This works because if Y velocity is positive, it’s moving downwards and hitting with the bottom part of the rectangle. Knowing that, the logic applies to everything else. Knowing this logic, add this for x:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">...</span>
+<span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">xv</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">){</span> <span class="c1">// Positive velocity = moving right</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">touchingRight</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">xv</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">){</span> <span class="c1">// Negative velocity =  moving left</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">touchingLeft</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="k">this</span><span class="p">.</span><span class="nx">xv</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="c1">// This is the original one, not a new one; it serves to demonstrate where to place the new code.</span>
+</code></pre></div></div>
+
+<p>That was a bunch of confusing stuff, so if you have issues you can use this code as a reference (I disabled copy/paste for just this one):</p>
+
+<pre class="noselect">
+<code class="language-javascript">
+class PhysicsObject{
+    constructor(game, x, y, width, height, isStatic){
+        this.game = game;
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.height = height;
+        this.xv = 0;
+        this.yv = 0;
+        this.gravity = 1;
+        this.friction = 0.8;
+        this.isStatic = isStatic;
+        this.collisions = ["solid"]; // Solid is always a collision!
+        this.specialCollisions = []; // No default special collisions.
+    }
+
+    loop(){
+        if (!this.isStatic){
+            this.touchingTop = false;
+            this.touchingBottom = false;
+            this.touchingLeft = false;
+            this.touchingRight = false;
+            this.xv *= this.friction;
+            this.yv += this.gravity;
+            this.move(this.xv, 0);
+            var collX = this.doCollision(this.game.checkCollision(this));
+            if (collX[0]){
+                while (this.doCollision(this.game.checkCollision(this, collX[1]))[0]){
+                    this.move(-Math.abs(this.xv)/this.xv, 0);
+                }
+                if (this.xv &gt; 0){ // Positive velocity = moving right
+                    this.touchingRight = true;
+                }
+                else if (this.xv &lt; 0){ // Negative velocity =  moving left
+                    this.touchingLeft = true;
+                }
+                this.xv = 0;
+            }
+            this.move(0, this.yv);
+            var collY = this.doCollision(this.game.checkCollision(this));
+            if (collY[0]){
+                while (this.doCollision(this.game.checkCollision(this, collY[1]))[0]){
+                    this.move(0, -Math.abs(this.yv)/this.yv);
+                }
+                if (this.yv &gt; 0){ // Positive velocity = moving down
+                    this.touchingBottom = true;
+                }
+                else if (this.yv &lt; 0){ // Negative velocity = moving up
+                    this.touchingTop = true;
+                }
+                this.yv = 0;
+            }
+        }
+    }
+    
+    doCollision(coll){
+        var returner = [false, []];
+        this.collisions.forEach((item, i) =&gt; {
+            if (coll[item][0] &gt; 0){
+                returner[0] = true;
+                returner[1].push(...coll[item][1]); // This is unpacking magic.
+            }
+        });
+        return returner;
+    }
+    
+    move(xm, ym){
+        this.x += xm;
+        this.y += ym;
+    }
+}
+</code>
+</pre>
+
+<p>You can play with it a bit more, you’ll notice that only for one frame do the <code class="language-plaintext highlighter-rouge">game.player.touchingLeft</code> and <code class="language-plaintext highlighter-rouge">game.player.touchingRight</code> stay true when you hit one of the sidewalls! This is because the “rebound” prevents the player from ever actually touching them when xv reaches 0.</p>
+
+<h3 id="35-keyboard-controls">3.5: Keyboard Controls</h3>
+
+<p>Now that we have a physics engine, we can start on player interaction. First, define a <code class="language-plaintext highlighter-rouge">Jump</code> function on the Player class; it should take no arguments. Inside it, put</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">touchingBottom</span><span class="p">){</span>
+	<span class="k">this</span><span class="p">.</span><span class="nx">yv</span> <span class="o">=</span> <span class="o">-</span><span class="mi">20</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>It should thus look like:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">Jump</span><span class="p">(){</span>
+    <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">touchingBottom</span><span class="p">){</span>
+		<span class="k">this</span><span class="p">.</span><span class="nx">yv</span> <span class="o">=</span> <span class="o">-</span><span class="mi">20</span><span class="p">;</span>
+	<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>You can run now, then in the console type <code class="language-plaintext highlighter-rouge">game.player.Jump()</code> (if you don’t have a Game defined called <code class="language-plaintext highlighter-rouge">game</code>, you didn’t pay any attention to chapter 2) and it will jump! You can try it in quick succession, and you’ll notice you can not jump unless you’re touching the ground.</p>
+
+<p>Note: in original Platformer, which I wrote several years ago meaning the code is somewhat awful, I have a bug that I will never fix (it’s too integral to the game) that allows you to multijump under some conditions. I will not demonstrate how to do that in this tutorial, unless I include a snippet in chapter 5; in any case, Platformer from Scratch’s physics engine has this bug fully fixed.</p>
+
+<p>Now, add two more functions: <code class="language-plaintext highlighter-rouge">Left</code> and <code class="language-plaintext highlighter-rouge">Right</code>. These should simply change xv, I’ll let you figure it out and tweak it about until it feels good (as always, a finalized code is in the chapter folder on github, linked below). You can test them in the console with <code class="language-plaintext highlighter-rouge">game.player.Left()</code> or <code class="language-plaintext highlighter-rouge">game.player.Right()</code>.</p>
+
+<p>Let’s start adding keyboard input. This is a fairly simple task, just a matter of storing keyboard values. Add this in the Player constructor, to start out:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">this</span><span class="p">.</span><span class="nx">keysHeld</span> <span class="o">=</span> <span class="p">{};</span> <span class="c1">// {} means a new dictionary-like object.</span>
+<span class="nb">document</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="dl">"</span><span class="s2">keydown</span><span class="dl">"</span><span class="p">,</span> <span class="p">(</span><span class="nx">event</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+   <span class="k">this</span><span class="p">.</span><span class="nx">keysHeld</span><span class="p">[</span><span class="nx">event</span><span class="p">.</span><span class="nx">key</span><span class="p">]</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span> 
+<span class="p">});</span>
+<span class="nb">document</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="dl">"</span><span class="s2">keyup</span><span class="dl">"</span><span class="p">,</span> <span class="p">(</span><span class="nx">event</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">keysHeld</span><span class="p">[</span><span class="nx">event</span><span class="p">.</span><span class="nx">key</span><span class="p">]</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<p>You can probably guess from context that this waits until a key is pressed, then sets that key’s entry in <code class="language-plaintext highlighter-rouge">this.keysHeld</code> to <code class="language-plaintext highlighter-rouge">true</code>; if that key is released (up), it sets the value to <code class="language-plaintext highlighter-rouge">false</code>. <code class="language-plaintext highlighter-rouge">document.addEventListener</code> takes two arguments: a name and a function. In this case we use an arrow function. The names of the events are “keydown” and “keyup”, which mean exactly what you might think!</p>
+
+<p>We can now use <code class="language-plaintext highlighter-rouge">this.keysHeld</code> for actual player motion. In <code class="language-plaintext highlighter-rouge">Player</code>, create a new function <code class="language-plaintext highlighter-rouge">loop</code>. The first command in it should be <code class="language-plaintext highlighter-rouge">super.loop()</code>, because we want the PhysicsObject loop to run. Add this code to it:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">keysHeld</span><span class="p">[</span><span class="dl">"</span><span class="s2">ArrowUp</span><span class="dl">"</span><span class="p">]){</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">Jump</span><span class="p">();</span>
+<span class="p">}</span>
+<span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">keysHeld</span><span class="p">[</span><span class="dl">"</span><span class="s2">ArrowLeft</span><span class="dl">"</span><span class="p">]){</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">Left</span><span class="p">();</span>
+<span class="p">}</span>
+<span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">keysHeld</span><span class="p">[</span><span class="dl">"</span><span class="s2">ArrowRight</span><span class="dl">"</span><span class="p">]){</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">Right</span><span class="p">();</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>It just checks which keys are pressed, and if they are, does the appropriate motion. Nice and simple! Your <code class="language-plaintext highlighter-rouge">Player</code>’s <code class="language-plaintext highlighter-rouge">loop</code> function should now look like this:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">loop</span><span class="p">(){</span>
+    <span class="k">super</span><span class="p">.</span><span class="nx">loop</span><span class="p">();</span>
+    <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">keysHeld</span><span class="p">[</span><span class="dl">"</span><span class="s2">ArrowUp</span><span class="dl">"</span><span class="p">]){</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">Jump</span><span class="p">();</span>
+    <span class="p">}</span>
+    <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">keysHeld</span><span class="p">[</span><span class="dl">"</span><span class="s2">ArrowLeft</span><span class="dl">"</span><span class="p">]){</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">Left</span><span class="p">();</span>
+    <span class="p">}</span>
+    <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">keysHeld</span><span class="p">[</span><span class="dl">"</span><span class="s2">ArrowRight</span><span class="dl">"</span><span class="p">]){</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">Right</span><span class="p">();</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Now, assuming everything worked, you should be able to actually play your basic level!</p>
+
+<h3 id="36-wrapping-up">3.6: Wrapping Up</h3>
+
+<p>Over this chapter, we went from having basic moving graphics to having an actual running physics engine and player motion! In chapter 4, we’ll add custom blocks (with custom physics rules), which include coins and enemies, until then, play around with making your own maps via create commands. See ya soon!</p>
+
+<p>As always, you can view the code for this chapter <a href="https://github.com/LinuxRocks2000/platformer-from-scratch/tree/master/chapter-3">here</a>.</p>
+
+
+            <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2712681434853528"
+                 crossorigin="anonymous"></script>
+            <!-- Below the content -->
+            <ins class="adsbygoogle"
+                 style="display:block"
+                 data-ad-client="ca-pub-2712681434853528"
+                 data-ad-slot="5909811348"
+                 data-ad-format="auto"
+                 data-full-width-responsive="true"></ins>
+            <script>
+                 (adsbygoogle = window.adsbygoogle || []).push({});
+            </script>
+            <div id="disqus_thread"></div>
+            <script>
+                /**
+                *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+                *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables    */
+                /*
+                var disqus_config = function () {
+                this.page.url = PAGE_URL;  // Replace PAGE_URL with your page's canonical URL variable
+                this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+                };
+                */
+                (function() { // DON'T EDIT BELOW THIS LINE
+                var d = document, s = d.createElement('script');
+                s.src = 'https://linuxrocks2000-github-io.disqus.com/embed.js';
+                s.setAttribute('data-timestamp', +new Date());
+                (d.head || d.body).appendChild(s);
+                })();
+            </script>
+            <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        </div>
+        <div id="footer">
+            <p><a href = "mailto:plupy44@gmail.com">Email?</a></p>
+<p>Privacy policy: We don't collect data</p>
+<p>Cookie policy: We don't use cookies</p>
+<p>Copywrong 1492, Tyler Clarke</p>
+<p>All rights preserved</p>
+<p>Vegetables are alive too</p>
+<p>Cows pollute the environment and should be eaten</p>
+<p>Nothing here is copyrighted - if we wanted people to not have our data, we wouldn't smatter it across the internet.</p>
+<p>Lawyers beware - here be people who know that lawyers are hired thugs designed <br />to make the person with more money win in court, no matter how right or wrong they are</p>
+<p>I hereby order that any stuck-up prigs that say I need a real privacy policy can leave the room.</p>
+
+        </div>
+        <div id="sidebar">
+            <div id="stickything">
+
+    <a class = "theA" href="/blog/platformer-from-scratch-chap-3">
+        <div class = "sidebar-item">
+            <span class = "title">Platformer From Scratch Chap 3</span><br />
+            <span class = "bottomthing">Physics</span>
+        </div>
+    </a>
+
+    <a class = "theA" href="/blog/platformer-from-scratch-chap-2">
+        <div class = "sidebar-item">
+            <span class = "title">Platformer From Scratch Chap 2</span><br />
+            <span class = "bottomthing">Players, improved graphics, gameloops!</span>
+        </div>
+    </a>
+
+    <a class = "theA" href="/blog/platformer-from-scratch-chap-1">
+        <div class = "sidebar-item">
+            <span class = "title">Platformer From Scratch Chap 1</span><br />
+            <span class = "bottomthing">Getting graphics working</span>
+        </div>
+    </a>
+
+    <a class = "theA" href="/blog/gluten-free-dairy-free-highly-based-brownies">
+        <div class = "sidebar-item">
+            <span class = "title">Gluten Free, Dairy Free, Highly Based Brownies</span><br />
+            <span class = "bottomthing">Because everyone has just <i>got</i> to love long-winded poorly-Javascripted baking blogs!</span>
+        </div>
+    </a>
+
+    <a class = "theA" href="/blog/on-religion">
+        <div class = "sidebar-item">
+            <span class = "title">On Religion</span><br />
+            <span class = "bottomthing">My views and my justification</span>
+        </div>
+    </a>
+
+    <a class = "theA" href="/blog/Carbon-Cycles">
+        <div class = "sidebar-item">
+            <span class = "title">Carbon Cycles</span><br />
+            <span class = "bottomthing">And why America should use Ethanol</span>
+        </div>
+    </a>
+
+    <a class = "theA" href="/blog/the-case-for-carbon-investment">
+        <div class = "sidebar-item">
+            <span class = "title">The Case for Carbon Investment</span><br />
+            <span class = "bottomthing">The ugly truth about carbon dioxide, and what we can do about it (not made by a doom-and-gloomer!)</span>
+        </div>
+    </a>
+
+    <a class = "theA" href="/blog/something-up-with-squishmallow">
+        <div class = "sidebar-item">
+            <span class = "title">Something wrong with Squishmallows (only for people who like tabloid humour)</span><br />
+            <span class = "bottomthing">Detective Lane Howser, on the case</span>
+        </div>
+    </a>
+
+    <a class = "theA" href="/blog/conversations-with-a-southerner">
+        <div class = "sidebar-item">
+            <span class = "title">Conversations with the last true-born southerner</span><br />
+            <span class = "bottomthing">Any normal person who has ever talked to a true southern person will agree</span>
+        </div>
+    </a>
+
+    <a class = "theA" href="/blog/microsoft-poetry">
+        <div class = "sidebar-item">
+            <span class = "title">A poem for Microsoft</span><br />
+            <span class = "bottomthing">Because microsoft needs a poem that fully describes it</span>
+        </div>
+    </a>
+
+    <a class = "theA" href="/blog/hello-world">
+        <div class = "sidebar-item">
+            <span class = "title">Welcome to my blog!</span><br />
+            <span class = "bottomthing">The first post in my blog, also a great place to go for extra information</span>
+        </div>
+    </a>
+
+</div>
+<style>
+    .sidebar-item{
+        padding: 10px;
+        background-color: azure;
+        margin: 10px;
+    }
+    .sidebar-item > .title{
+        color: black;
+        text-decoration: none;
+        white-space: nowrap;
+    }
+    .sidebar-item > .bottomthing{
+        color: grey;
+        font-weight: bold;
+    }
+    .sidebar-item:hover{
+        background-color: transparent;
+    }
+    .theA{
+        text-decoration: none;
+    }
+    #stickything{
+        position: relative;
+    }
+</style>
+
+        </div>
+        <script type = "text/javascript" src = "/blog/js/main.js"></script>
+    </body>
+</html>
