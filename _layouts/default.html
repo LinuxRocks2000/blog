@@ -12,7 +12,7 @@
         <div id="topbar">
             {% include nav.html %}
         </div>
-        <div id="body">
+        <div id="body" style="display: none;">
             <script type="text/javascript">
                 var isFirefox = typeof InstallTrigger !== 'undefined';
                 if (!isFirefox){
@@ -24,12 +24,12 @@
                 }
                 else{ // They don't get to view any content if they even do manage to get past my clickwall!
                     window.onload = function(){
-                        document.getElementById("content-wrapper").innerHTML = `{{ content }}`;
+                        document.getElementById("body").style.display="";
                         hljs.highlightAll();
                     }
                 }
             </script>
-            <div id="content-wrapper"></div>
+            {{ content }}
             Unfortunately, Google Ads is too awful to use on my site; I'm sure you're all very sad that this section is not filled with cheap Medicare.<br />
             Yes, my voice oozes sarcasm.
             <div id="disqus_thread"></div>
