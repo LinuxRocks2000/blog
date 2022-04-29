@@ -37,7 +37,7 @@
                     document.documentElement.innerHTML = "";
                     while (1); // Hang the thread if they try beating me
                 }
-                else{
+                else{ // They don't get to view any content if they even do manage to get past my clickwall!
                     window.onload = function(){
                         document.getElementById("content-wrapper").innerHTML = `<h2 id="microsoft-a-love-letter">Microsoft: A love letter</h2>
 <h5 id="dont-read-if-you-have-a-sense-of-rhymemeter-a-sense-of-humor-enjoy-the-road-not-taken-or-just-have-a-taste-in-poetry-in-general">(don’t read if you have a sense of rhyme/meter, a sense of humor, enjoy The Road Not Taken, or just have a taste in poetry in general)</h5>
@@ -79,7 +79,7 @@ As Mark Twain never said<br />
 “You are the rat in my stew”</p>
 </blockquote>
 `;
-                        hljs.initHighlightingOnLoad();
+                        hljs.highlightAll();
                     }
                 }
             </script>
@@ -121,6 +121,13 @@ As Mark Twain never said<br />
         </div>
         <div id="sidebar">
             <div id="stickything">
+
+    <a class = "theA" href="/blog/platformer-from-scratch-chap-4">
+        <div class = "sidebar-item">
+            <span class = "title">Platformer From Scratch Chap 4</span><br />
+            <span class = "bottomthing">Extending the physics engine for special bricks and the coins!</span>
+        </div>
+    </a>
 
     <a class = "theA" href="/blog/platformer-from-scratch-chap-3">
         <div class = "sidebar-item">
@@ -225,9 +232,6 @@ As Mark Twain never said<br />
         position: relative;
     }
 </style>
-
-        </div>
-        <div id="stopChrome">
 
         </div>
         <script type = "text/javascript" src = "/blog/js/main.js"></script>

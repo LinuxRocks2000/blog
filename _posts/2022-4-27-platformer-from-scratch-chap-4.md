@@ -1,7 +1,6 @@
 ---
 name: "Platformer From Scratch chapter 4"
 bottomthing: "Extending the physics engine for special bricks and the coins!"
-published: false
 ---
 
 Welcome to the fourth episode of Platformer From Scratch! In this chapter, we'll put the finishing touches on the physics engine and add lava, coins, and basic enemies, as well as implement player death. Finally, we'll add a minimum-extent clause to the `_create` command which allows us to kill the player if it falls off a platform. Let's get started!
@@ -321,4 +320,378 @@ If you observe, you'll notice that there is no `deleteBrick` function on `Game`.
 * `this.tileset.indexOf(brick)`: Ah yes something new. This finds the index in an array of an element. If you have an array like`var myArray = ["a", "b", "c"];` and you run `myArray.indexOf("b")`, you'll get 1; if you run `myArray.indexOf("d")`, you'll get -1 which signifies that it doesn't exist. For more, view the most acclaimed [MDN article](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/indexOf).
 * `, 1`: Splice for one index only, so we only delete one brick. We can at this point let the garbage collector do the rest and know that, being no longer held anywhere, the Brick object will simply be truly deleted.
 
-Note: If you're uncommonly observant, you might notice that the brick in question is probably not going to be deleted immediately because it's stored in a `coll` array somewhere. To put it simply, that `coll` array will be eventually thrown out too, so you don't have a memory leak.
+Note: If you're uncommonly observant, you might notice that the brick in question is probably not going to be deleted immediately because it's stored in a `coll` array somewhere. To put it simply, that `coll` array will be eventually thrown out too, so you don't have a memory leak. Your `deleteBrick` code should look like this now:
+
+```javascript
+deleteBrick(brick){
+    brick.remove();
+    this.tileset.splice(this.tileset.indexOf(brick), 1);
+}
+```
+
+Reload and run into the coin - no errors, it deletes! You don't have a score counter yet, however, so let's implement that. Store a value `this._score` to `0` in `Player`'s `constructor`, like this: `this._score = 0;`. The reason why we use `_score` instead of `score` is a fairly obscure (yet very well-known) Javascript feature: in Javascript, on a class, you can define special functions that run every time you try accessing or editing a value on an object of that class. These are called "getters" and "setters", and they can be used to run a code, such as updating the score on screen every time the score is updated. If you still don't understand, here's the beautiful MDN articles on the subject: [getter](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/get), [setter](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/set). We define the `score` getter like so:
+
+```javascript
+get score(){
+    return this._score;
+}
+```
+
+Nice and easy, right? Since `_score` is the actual variable that gets edited, we can just return it. The reason we need this extra `_score` is so we can define a setter:
+
+```python
+set score(val){
+    this._score = val;
+    this.element.innerHTML = this._score;
+}
+```
+
+(These should both be on the player class). You can test it like this in the console: `game.player.score = 10;`, you should see a score counter appear! Your player class should now look like this (yes, I disabled selecting):
+
+<pre class="noselect">
+    <code class="language-javascript">
+class Player extends PhysicsObject{
+    constructor(game, x, y, width, height){
+        super(game, x, y, width, height);
+        this.element = document.createElement("div");
+        document.getElementById("game").appendChild(this.element);
+        this.element.classList.add("player");
+        this.draw();
+        this.keysHeld = {}; // {} means a new dictionary-like object.
+        document.addEventListener("keydown", (event) => {
+           this.keysHeld[event.key] = true;
+        });
+        document.addEventListener("keyup", (event) => {
+            this.keysHeld[event.key] = false;
+        });
+        this.specialCollisions.push("killu"); // Register killu as a special collision type
+        this.specialCollisions.push("tencoin") // Add ten coins to special collisions
+        this._score = 0;
+    }
+
+
+    set score(val){
+        this._score = val;
+        this.element.innerHTML = this._score;
+    }
+    
+    get score(){
+        return this._score;
+    }
+    
+    draw(){
+        this.element.style.left = (window.innerWidth - this.width) / 2 + "px";
+        this.element.style.top = (window.innerHeight - this.height) / 2 + "px";
+        this.element.style.width = this.width + "px";
+        this.element.style.height = this.height + "px";
+    }
+    
+    Jump(){
+        if (this.touchingBottom){
+            this.yv = -20;
+        }
+    }
+    
+    Left(){
+        this.xv -= 3;
+    }
+    
+    Right(){
+        this.xv += 3;
+    }
+    
+    loop(){
+        super.loop();
+        if (this.keysHeld["ArrowUp"]){
+            this.Jump();
+        }
+        if (this.keysHeld["ArrowLeft"]){
+            this.Left();
+        }
+        if (this.keysHeld["ArrowRight"]){
+            this.Right();
+        }
+    }
+    
+    specialCollision(type, items){
+        if (type == "killu"){
+            this.game.die();
+        }
+        if (type == "tencoin"){
+            items.forEach((item, index) => {
+            	this.game.deleteBrick(item);
+            });
+        }
+    }
+    
+    endGame(){
+        this.element.style.display = "none"; // This sets the css property display to none, hiding it and making it inactive.
+    }
+}
+    </code>
+</pre>
+
+Now, we can change up the `Player` `specialCollision` function to increment the score counter when it touches a coin, by adding `this.score += 10;` in the deletion loop, like so:
+
+```javascript
+if (type == "tencoin"){
+    items.forEach((item, index) => {
+        this.game.deleteBrick(item);
+        this.score += 10;
+    });
+}
+```
+
+Run the game, hit the coin, and.... You get a score counter and ten points!
+
+### 4.3: Making coins not ugly
+
+Your code works well, however, the coin is pretty ugly, so let's fix the CSS a bit. Go into `main.css` and, under `.tencoin`, add this rule: `border-radius: 100%`. Border-radius rounds the edges of any element, so you can turn rectangles into circles; 100% means it rounds it completely. Your coin style should now look like this:
+
+```css
+.coin{
+    background-color: yellow;
+    border-radius: 100%;
+}
+```
+
+It's hard to understand the coin type without having some text, so let's add this in the `Brick` constructor:
+
+```javascript
+if (type == "tencoin"){
+    this.element.innerHTML = "<span>10</span>";
+}
+```
+
+(This should be after element create code). This creates a new `span` element with the content "10" and puts it inside the coin element; if you run it now, you should see the "10" on the coin, but it looks absolutely contemptible. Let's add this little piece of CSS to a new rule `.coin > span` (which controls that span), like so:
+
+```css
+.coin > span{
+    display: inline-block;
+    position: relative; /* Relative is easier to read than absolute in this case - it should be placed *relative* to the outer brick */
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+```
+
+Yay, now the "10" is centered! We'll add 50 coins, animation, and the rest of the style in the next chapter; for now, you should play with it to try and make it your own.
+
+### 4.4: Custom brick JS
+
+Right now, we have fixed-position bricks that don't do a lot, but our physics engine is much more powerful than that! Let's start on enemies. Define a new class extending `Brick` called `NormalEnemy`, like so:
+
+```javascript
+class NormalEnemy extends Brick{
+    constructor(game, x, y, width, height, style, type, config){
+        
+    }
+}
+```
+
+We can ignore `config` for now - we'll use it for things like speed later - but we can use all the other arguments in `super`, like this: `super(game, x, y, width, height, style, type);`, this ensures that the player will collide with it as a lava. Also, add `this.xv = 5`, so that it starts off moving, and `this.friction = 1;` so it doesn't decelerate. Finally, make it not static with `this.isStatic = false`; otherwise no physics code will run. Note that our `NormalEnemy` can be any brick type, we want it to usually be `lava killu`. It should look like this:
+
+```javascript
+class NormalEnemy extends Brick{
+    constructor(game, x, y, width, height, style, type, config){
+        super(game, x, y, width, height, style, type);
+        this.xv = 5;
+        this.friction = 1;
+        this.isStatic = false;
+    }
+}
+```
+
+Now we need to revamp our create commands. Rather than explain all the tedious code, I'll just give it to you with comments; because this isn't distinctly related to the rest and is fairly complex, I don't want to waste 500 words on it. Here's your new create function code:
+
+```javascript
+_create(x, y, width, height, style, type, bricktype = Brick){ // Pass a class as an argument, so we can pass custom classes.
+    var b = new bricktype(this, x, y, width, height, style, type, true); // Create a new "bricktype", which is by default equal to Brick.
+    this.tileset.push(b); // Add it to the tileset
+    return b; // Return it, so you can call this function and then do operations immediately.
+}
+
+create(x, y, width, height, style, type, bricktype = Brick){ // Same thing pretty much but uses _create.
+    return this._create(x * this.blockWidth, y * this.blockHeight, width * this.blockWidth, height * this.blockHeight, style, type, bricktype);
+}
+```
+
+Where you do your test level, add a new `game.create(<x>, <y>, 1, 1,  "lava", "killu", NormalEnemy);`. You might want to add a bit more to the level to make it more suitable for a player to survive without being hit; here's the test level I'm using:
+
+```javascript
+
+// Demo
+var game = new Game(50, 50);
+
+game.create(-2, 4, 14, 1, "normal", "solid");
+game.create(-2, 3, 1, 1, "normal", "solid");
+game.create(4, 3, 1, 1, "normal", "solid");
+game.create(11, 3, 1, 1, "normal", "solid");
+game.create(8, 2, 1, 1,  "lava", "killu", NormalEnemy);
+
+function mainloop(){
+    game.loop();
+    window.requestAnimationFrame(mainloop);
+}
+window.requestAnimationFrame(mainloop);
+```
+
+Run it and you should see a weird red brick fall and then push into the wall. It doesn't bounce back! That's because we haven't defined any collision functions; let's do that now. In `NormalEnemy` add the functions `hitLeft` and `hitRight` like below:
+
+```javascript
+hitLeft(){
+    this.xv *= -1;
+}
+
+hitRight(){
+    this.xv *= -1;
+}
+```
+
+Both of these just do the same thing, this is because of the way we defined our physics engine: if you want to catch collisions on the left and collisions on the right, you have to define for both. The `*= -1` just reverses it: if it's positive, it becomes negative, if it's negative, it becomes positive. If you try it... Nothing happens! That's because when you collide, `xv` is set to 0. Let's add two new physics options to PhysicsObject (just store the value on the object), like this:
+
+````javascript
+this.zeroOnHitX = true;
+this.zeroOnHitY = true;
+````
+
+And now, where you set `this.xv = 0;` and `this.yv = 0;`, wrap them in an `if` statement like this:
+
+```javascript
+if (this.zeroOnHit/*X or Y depending on if this is Xv or Yv*/){
+    // the old zero code.
+}
+```
+
+I'll be nice and give you the full PhysicsObject code now:
+
+<pre class="noselect">
+    <code class="language-javascript">
+class PhysicsObject{
+    constructor(game, x, y, width, height, isStatic){
+        this.game = game;
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.height = height;
+        this.xv = 0;
+        this.yv = 0;
+        this.gravity = 1;
+        this.friction = 0.8;
+        this.isStatic = isStatic;
+        this.collisions = ["solid"]; // Solid is always a collision!
+        this.specialCollisions = []; // No default special collisions.
+        this.zeroOnHitX = true;
+        this.zeroOnHitY = true;
+    }
+
+
+    loop(){
+        if (!this.isStatic){
+            this.touchingTop = false;
+            this.touchingBottom = false;
+            this.touchingLeft = false;
+            this.touchingRight = false;
+            this.xv *= this.friction;
+            this.yv += this.gravity;
+            this.move(this.xv, 0);
+            var collX = this.doCollision(this.game.checkCollision(this));
+            if (collX[0]){
+                while (this.doCollision(this.game.checkCollision(this, collX[1]))[0]){
+                    this.move(-Math.abs(this.xv)/this.xv, 0);
+                }
+                if (this.xv > 0){ // Positive velocity = moving right
+                    this.touchingRight = true;
+                    this.hitRight();
+                }
+                else if (this.xv < 0){ // Negative velocity =  moving left
+                    this.touchingLeft = true;
+                    this.hitLeft();
+                }
+                if (this.zeroOnHitX){
+                    this.xv = 0;
+                }
+            }
+            this.move(0, this.yv);
+            var collY = this.doCollision(this.game.checkCollision(this));
+            if (collY[0]){
+                while (this.doCollision(this.game.checkCollision(this, collY[1]))[0]){
+                    this.move(0, -Math.abs(this.yv)/this.yv);
+                }
+                if (this.yv > 0){ // Positive velocity = moving down
+                    this.touchingBottom = true;
+                    this.hitBottom();
+                }
+                else if (this.yv < 0){ // Negative velocity = moving up
+                    this.touchingTop = true;
+                    this.hitTop();
+                }
+                if (this.zeroOnHitY){
+                    this.yv = 0;
+                }
+            }
+        }
+    }
+    
+    doCollision(coll){
+        var returner = [false, []];
+        this.collisions.forEach((item, i) => {
+            if (coll[item][0] > 0){
+                returner[0] = true;
+                returner[1].push(...coll[item][1]); // This is unpacking magic.
+            }
+        });
+        this.specialCollisions.forEach((item, index) => {
+            if (coll[item][0] > 0){
+                this.specialCollision(item, coll[item][1]);
+            }
+        });
+        return returner;
+    }
+    
+    move(xm, ym){
+        this.x += xm;
+        this.y += ym;
+    }
+    
+    hitBottom(){
+    
+    }
+    
+    hitTop(){
+    
+    }
+    
+    hitLeft(){
+    
+    }
+    
+    hitRight(){
+    
+    }
+    
+    specialCollision(type){
+    
+    }
+}
+    </code>
+</pre>
+
+Of course, I disabled selecting. Now that we have this, let's add to the NormalEnemy constructor: `this.zeroOnHitX = false;`, so it doesn't zero and you rebound properly. Note that we don't want to set `this.zeroOnHitY`, if we do the enemy will perform well until it suddenly falls out of the platform because it never zeroed YV and eventually got moving so fast it went right through it. Reload the code and... It bounces and moves! Try hitting it... you die! Yay, our first enemy!
+
+### 4.5 Wrapping Up
+
+In this chapter, we made coins and custom bricks, and finished the physics engine. Most of our code is actually finished, so in chapter 5 we'll finish adding the rest of the features:
+
+* 50 coins and coin animation
+* Flyer enemies
+* Jump-through platforms
+* Ice
+* Tar
+* Gunners enemies (which shoot flyers)
+* Bat enemies (which drop to the ground then turn into flyers)
+
+And in chapter 6, we'll finish the series with a full level menu and saved games.
+For now, play with it a bit and hopefully add some more features of your own; see you in chapter 5!
+
+As always, you can view the code for this chapter on [Github](https://github.com/LinuxRocks2000/platformer-from-scratch/tree/master/chapter-4/).

@@ -15,3 +15,5 @@ plugins:
     - jemoji
 emoji:
   src: "https://github.githubassets.com/images/icons/"
+markdown: kramdown
+highlighter: rouge

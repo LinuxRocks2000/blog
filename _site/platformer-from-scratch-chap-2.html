@@ -37,7 +37,7 @@
                     document.documentElement.innerHTML = "";
                     while (1); // Hang the thread if they try beating me
                 }
-                else{
+                else{ // They don't get to view any content if they even do manage to get past my clickwall!
                     window.onload = function(){
                         document.getElementById("content-wrapper").innerHTML = `<p>Welcome back, padawan gamedevs! In this chapter of Platformer from Scratch, we’re going to: add a player and change our render code to support it, and add a game loop.</p>
 
@@ -328,7 +328,7 @@
 
 <p>You can view the full code for this chapter at https://github.com/LinuxRocks2000/platformer-from-scratch/tree/master/chapter-2.</p>
 `;
-                        hljs.initHighlightingOnLoad();
+                        hljs.highlightAll();
                     }
                 }
             </script>
@@ -370,6 +370,13 @@
         </div>
         <div id="sidebar">
             <div id="stickything">
+
+    <a class = "theA" href="/blog/platformer-from-scratch-chap-4">
+        <div class = "sidebar-item">
+            <span class = "title">Platformer From Scratch Chap 4</span><br />
+            <span class = "bottomthing">Extending the physics engine for special bricks and the coins!</span>
+        </div>
+    </a>
 
     <a class = "theA" href="/blog/platformer-from-scratch-chap-3">
         <div class = "sidebar-item">
@@ -474,9 +481,6 @@
         position: relative;
     }
 </style>
-
-        </div>
-        <div id="stopChrome">
 
         </div>
         <script type = "text/javascript" src = "/blog/js/main.js"></script>

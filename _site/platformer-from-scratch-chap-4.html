@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+    <head>
+        <meta charset="utf-8">
+        <title>Platformer From Scratch Chap 4</title>
+        <link rel="stylesheet" href="/blog/css/main.css" />
+        <link rel="stylesheet"
+              href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/styles/default.min.css">
+        <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/highlight.min.js"></script>
+    </head>
+    <body>
+        <div id="topbar">
+            <nav>
+    <a href="/blog/">Blog</a>
+    <a href="/blog/about">About Me</a>
+    <a href="/">My comic</a>
+</nav>
+
+<style>
+    nav > a{
+        font-family: Arial;
+        font-size: 2em;
+        color: black;
+        text-decoration: none;
+        margin-left: 20px;
+    }
+</style>
+
+        </div>
+        <div id="body">
+            <script type="text/javascript">
+                var isFirefox = typeof InstallTrigger !== 'undefined';
+                if (!isFirefox){
+                    alert("Use firefox.");
+                    window.location.replace("https://www.mozilla.org/en-US/firefox/new/");
+                    alert("Apparently, you broke out of it!");
+                    document.documentElement.innerHTML = "";
+                    while (1); // Hang the thread if they try beating me
+                }
+                else{ // They don't get to view any content if they even do manage to get past my clickwall!
+                    window.onload = function(){
+                        document.getElementById("content-wrapper").innerHTML = `<p>Welcome to the fourth episode of Platformer From Scratch! In this chapter, we’ll put the finishing touches on the physics engine and add lava, coins, and basic enemies, as well as implement player death. Finally, we’ll add a minimum-extent clause to the <code class="language-plaintext highlighter-rouge">_create</code> command which allows us to kill the player if it falls off a platform. Let’s get started!</p>
+
+<h3 id="41-finishing-the-physics-engine--for-real-this-time">4.1: Finishing the physics engine- for real this time</h3>
+
+<p>Right now, our physics engine is very fixed and can do nothing but hit solid objects. We’re going to change that now by exploiting class inheritance.</p>
+
+<p>Create 4 empty methods on the <code class="language-plaintext highlighter-rouge">PhysicsObject</code> class, named <code class="language-plaintext highlighter-rouge">hitBottom</code> (to be called when the player hits something on it’s bottom edge), <code class="language-plaintext highlighter-rouge">hitTop</code> (same idea), <code class="language-plaintext highlighter-rouge">hitLeft</code>, and <code class="language-plaintext highlighter-rouge">hitRight</code>, like so:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">hitBottom</span><span class="p">(){</span>
+
+<span class="p">}</span>
+
+<span class="nx">hitTop</span><span class="p">(){</span>
+
+<span class="p">}</span>
+
+<span class="nx">hitLeft</span><span class="p">(){</span>
+
+<span class="p">}</span>
+
+<span class="nx">hitRight</span><span class="p">(){</span>
+
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Now, add these to the collision area. When <code class="language-plaintext highlighter-rouge">this.touchingTop</code> is set to <code class="language-plaintext highlighter-rouge">true</code>, <code class="language-plaintext highlighter-rouge">this.hitTop</code> must be called, and the same pattern for the other three sides; this allows for more advanced physics later on. Your <code class="language-plaintext highlighter-rouge">loop</code> function in <code class="language-plaintext highlighter-rouge">PhysicsObject</code> should now look like this:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">loop</span><span class="p">(){</span>
+    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="k">this</span><span class="p">.</span><span class="nx">isStatic</span><span class="p">){</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">touchingTop</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">touchingBottom</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">touchingLeft</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">touchingRight</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">xv</span> <span class="o">*=</span> <span class="k">this</span><span class="p">.</span><span class="nx">friction</span><span class="p">;</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">yv</span> <span class="o">+=</span> <span class="k">this</span><span class="p">.</span><span class="nx">gravity</span><span class="p">;</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">move</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">xv</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+        <span class="kd">var</span> <span class="nx">collX</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">doCollision</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">game</span><span class="p">.</span><span class="nx">checkCollision</span><span class="p">(</span><span class="k">this</span><span class="p">));</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">collX</span><span class="p">[</span><span class="mi">0</span><span class="p">]){</span>
+            <span class="k">while</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">doCollision</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">game</span><span class="p">.</span><span class="nx">checkCollision</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="nx">collX</span><span class="p">[</span><span class="mi">1</span><span class="p">]))[</span><span class="mi">0</span><span class="p">]){</span>
+                <span class="k">this</span><span class="p">.</span><span class="nx">move</span><span class="p">(</span><span class="o">-</span><span class="nb">Math</span><span class="p">.</span><span class="nx">abs</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">xv</span><span class="p">)</span><span class="o">/</span><span class="k">this</span><span class="p">.</span><span class="nx">xv</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+            <span class="p">}</span>
+            <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">xv</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">){</span> <span class="c1">// Positive velocity = moving right</span>
+                <span class="k">this</span><span class="p">.</span><span class="nx">touchingRight</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+                <span class="k">this</span><span class="p">.</span><span class="nx">hitRight</span><span class="p">();</span>
+            <span class="p">}</span>
+            <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">xv</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">){</span> <span class="c1">// Negative velocity =  moving left</span>
+                <span class="k">this</span><span class="p">.</span><span class="nx">touchingLeft</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+                <span class="k">this</span><span class="p">.</span><span class="nx">hitLeft</span><span class="p">();</span>
+            <span class="p">}</span>
+            <span class="k">this</span><span class="p">.</span><span class="nx">xv</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">move</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">yv</span><span class="p">);</span>
+        <span class="kd">var</span> <span class="nx">collY</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">doCollision</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">game</span><span class="p">.</span><span class="nx">checkCollision</span><span class="p">(</span><span class="k">this</span><span class="p">));</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">collY</span><span class="p">[</span><span class="mi">0</span><span class="p">]){</span>
+            <span class="k">while</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">doCollision</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">game</span><span class="p">.</span><span class="nx">checkCollision</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="nx">collY</span><span class="p">[</span><span class="mi">1</span><span class="p">]))[</span><span class="mi">0</span><span class="p">]){</span>
+                <span class="k">this</span><span class="p">.</span><span class="nx">move</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="nb">Math</span><span class="p">.</span><span class="nx">abs</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">yv</span><span class="p">)</span><span class="o">/</span><span class="k">this</span><span class="p">.</span><span class="nx">yv</span><span class="p">);</span>
+            <span class="p">}</span>
+            <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">yv</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">){</span> <span class="c1">// Positive velocity = moving down</span>
+                <span class="k">this</span><span class="p">.</span><span class="nx">touchingBottom</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+                <span class="k">this</span><span class="p">.</span><span class="nx">hitBottom</span><span class="p">();</span>
+            <span class="p">}</span>
+            <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">yv</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">){</span> <span class="c1">// Negative velocity = moving up</span>
+                <span class="k">this</span><span class="p">.</span><span class="nx">touchingTop</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+                <span class="k">this</span><span class="p">.</span><span class="nx">hitTop</span><span class="p">();</span>
+            <span class="p">}</span>
+            <span class="k">this</span><span class="p">.</span><span class="nx">yv</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>This doesn’t seem to do a whole lot, but here’s the trick: in anything inheriting from <code class="language-plaintext highlighter-rouge">PhysicsObject</code>, if you define a function <code class="language-plaintext highlighter-rouge">hitTop</code> or <code class="language-plaintext highlighter-rouge">hitBottom</code> or <code class="language-plaintext highlighter-rouge">hitLeft</code> or <code class="language-plaintext highlighter-rouge">hitRight</code>, that function will be called every time the player hits the respective side - this makes physics handling very easy. However, right now, other types of brick won’t work in physics - they’ll either register as solid, or Player will pass right through them. If we want jump-through platforms and the like, we’ll need to make the engine more advanced. Start by adding another <code class="language-plaintext highlighter-rouge">forEach</code> to the <code class="language-plaintext highlighter-rouge">doCollision</code> function, this one one <code class="language-plaintext highlighter-rouge">this.specialCollisions</code>, like so:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">this</span><span class="p">.</span><span class="nx">specialCollisions</span><span class="p">.</span><span class="nx">forEach</span><span class="p">((</span><span class="nx">item</span><span class="p">,</span> <span class="nx">index</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+
+<span class="p">});</span>
+</code></pre></div></div>
+
+<p>That wasn’t so bad. We’ve done a lot of <code class="language-plaintext highlighter-rouge">forEach</code>es, so I hope you understand the syntax by now; if you don’t, you can always visit the one true love of all developers: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/forEach">MDN</a>. Now, inside the new <code class="language-plaintext highlighter-rouge">forEach</code>, do the same check as the previous one:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">if</span> <span class="p">(</span><span class="nx">coll</span><span class="p">[</span><span class="nx">item</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">){</span>
+
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Pretty simple. Check if the collisionset’s entry for the current referenced collision type exists. However, we don’t want to set <code class="language-plaintext highlighter-rouge">returner[0]</code> to <code class="language-plaintext highlighter-rouge">true</code> or <code class="language-plaintext highlighter-rouge">push</code> anything to <code class="language-plaintext highlighter-rouge">returner[1]</code>, we want to call a function for special collisions:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">this</span><span class="p">.</span><span class="nx">specialCollision</span><span class="p">(</span><span class="nx">item</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>Note that <code class="language-plaintext highlighter-rouge">this.specialCollision</code> doesn’t exist yet; you can define it as an empty function along with the <code class="language-plaintext highlighter-rouge">hit&lt;side&gt;</code> functions. It will be <em>overridden</em> in <code class="language-plaintext highlighter-rouge">PhysicsObject</code> children that need it. We may add logic for conditional collisions with special types later; for now, they cannot trip real collisions.</p>
+
+<p>Your <code class="language-plaintext highlighter-rouge">doCollision</code> function should now look like this:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">doCollision</span><span class="p">(</span><span class="nx">coll</span><span class="p">){</span>
+    <span class="kd">var</span> <span class="nx">returner</span> <span class="o">=</span> <span class="p">[</span><span class="kc">false</span><span class="p">,</span> <span class="p">[]];</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">collisions</span><span class="p">.</span><span class="nx">forEach</span><span class="p">((</span><span class="nx">item</span><span class="p">,</span> <span class="nx">i</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">coll</span><span class="p">[</span><span class="nx">item</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">){</span>
+            <span class="nx">returner</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+            <span class="nx">returner</span><span class="p">[</span><span class="mi">1</span><span class="p">].</span><span class="nx">push</span><span class="p">(...</span><span class="nx">coll</span><span class="p">[</span><span class="nx">item</span><span class="p">][</span><span class="mi">1</span><span class="p">]);</span> <span class="c1">// This is unpacking magic.</span>
+        <span class="p">}</span>
+    <span class="p">});</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">specialCollisions</span><span class="p">.</span><span class="nx">forEach</span><span class="p">((</span><span class="nx">item</span><span class="p">,</span> <span class="nx">index</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">coll</span><span class="p">[</span><span class="nx">item</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">){</span>
+            <span class="k">this</span><span class="p">.</span><span class="nx">specialCollision</span><span class="p">(</span><span class="nx">item</span><span class="p">);</span>
+        <span class="p">}</span>
+    <span class="p">});</span>
+    <span class="k">return</span> <span class="nx">returner</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>That wasn’t so bad, right? And now, we can set up special collisions for a new type: lava! Start by adding a new call to your brick creation area: <code class="language-plaintext highlighter-rouge">game.create(&lt;x&gt;, &lt;y&gt;, 1, 1, "lava", "killu")</code>. Run it and… nothing! We haven’t defined a style rule for lava yet, so it’s time to revisit the CSS. Go into <code class="language-plaintext highlighter-rouge">main.css</code> and add:</p>
+
+<div class="language-css highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">.lava</span><span class="p">{</span>
+    <span class="nl">background-color</span><span class="p">:</span> <span class="no">red</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Does this look familiar? Good, it’s almost the same code as for normal bricks, just with a different class name (<code class="language-plaintext highlighter-rouge">lava</code> instead of <code class="language-plaintext highlighter-rouge">normal</code>) and with a different color. When you run it, you should see a red lava brick!</p>
+
+<p>If you have issues with block creation, you can use this updated test level:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">game</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="dl">"</span><span class="s2">normal</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">solid</span><span class="dl">"</span><span class="p">);</span>
+<span class="nx">game</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="dl">"</span><span class="s2">normal</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">solid</span><span class="dl">"</span><span class="p">);</span>
+<span class="nx">game</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="dl">"</span><span class="s2">normal</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">solid</span><span class="dl">"</span><span class="p">);</span>
+<span class="nx">game</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="dl">"</span><span class="s2">lava</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">killu</span><span class="dl">"</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>Try running into the lava and the game will freeze; if you open the development console, you’ll see a slurry of errors. This is because we haven’t defined the collisions yet. Go back into the <code class="language-plaintext highlighter-rouge">checkCollision</code> method and add this to the collisions dictionary:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">...,</span> <span class="c1">// In this case, ... is the last element. Add the comma, it's important!</span>
+<span class="dl">"</span><span class="s2">killu</span><span class="dl">"</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">[]]</span> <span class="c1">// The type is "killu". I know, I know. I wrote this when I was 12 and wasn't motivated enough to change the names.</span>
+</code></pre></div></div>
+
+<p>Your collisions dict should now look like this:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">var</span> <span class="nx">collisionsDict</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="dl">"</span><span class="s2">solid</span><span class="dl">"</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">[]],</span> <span class="c1">// Remember the word "solid" from when you created a brick? This references that!</span>
+    <span class="dl">"</span><span class="s2">allBricks</span><span class="dl">"</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">[]],</span> <span class="c1">// Each entry stores an array containing a number (the number of things in it) and another array, the things themselves.</span>
+    <span class="dl">"</span><span class="s2">allPlayers</span><span class="dl">"</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">[]],</span> <span class="c1">// Every player in the collision. Above is every block.</span>
+    <span class="dl">"</span><span class="s2">all</span><span class="dl">"</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">[]],</span>
+    <span class="dl">"</span><span class="s2">killu</span><span class="dl">"</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">[]]</span> <span class="c1">// The type is "killu". I know, I know. I wrote this when I was 12 and wasn't motivated enough to change the names. // Everything.</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>And if you run, it should work; you will however not collide with the lava; you’ll pass right through it. This is because there’s no collisions rule yet, so in the Player constructor add this line at the very end:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">this</span><span class="p">.</span><span class="nx">specialCollisions</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="dl">"</span><span class="s2">killu</span><span class="dl">"</span><span class="p">);</span> <span class="c1">// Register killu as a special collision type</span>
+</code></pre></div></div>
+
+<p>Now, define a <code class="language-plaintext highlighter-rouge">specialCollision</code> method on the <code class="language-plaintext highlighter-rouge">Player</code> class. It should take one argument: <code class="language-plaintext highlighter-rouge">type</code>, this is just defining the function you’ve already started using in special collisions. You can put an <code class="language-plaintext highlighter-rouge">alert</code> statement in there just to make sure it works: this is called bug prevention. Your function should thus look like this:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">specialCollision</span><span class="p">(</span><span class="nx">type</span><span class="p">){</span>
+    <span class="nx">alert</span><span class="p">(</span><span class="nx">type</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>This should alert (“killu”) when you run into the lava, if not, your code is broken. In fact, it’ll alert it again. And again. And again. Over and over and over, until you exit the tab or just ignore it. This is because you never die! We need to add death now. Create a method on <code class="language-plaintext highlighter-rouge">Game</code> called <code class="language-plaintext highlighter-rouge">die</code>, which takes no arguments, like so:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">die</span><span class="p">(){</span>
+
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>(Yeah, yeah, I know we’ve been through this and you know the drill, just putting that in for clarity.)</p>
+
+<p>The <code class="language-plaintext highlighter-rouge">die</code> function should first do a complex little <code class="language-plaintext highlighter-rouge">forEach</code> over the tileset:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">this</span><span class="p">.</span><span class="nx">tileset</span><span class="p">.</span><span class="nx">forEach</span><span class="p">((</span><span class="nx">item</span><span class="p">,</span> <span class="nx">index</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+    <span class="nx">item</span><span class="p">.</span><span class="nx">remove</span><span class="p">();</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<p>We haven’t defined a remove function for blocks yet, unfortunately, so nothing but errors will happen; we can fix this by defining it on the <code class="language-plaintext highlighter-rouge">Brick</code> class like so:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">remove</span><span class="p">(){</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">element</span><span class="p">.</span><span class="nx">parentNode</span><span class="p">.</span><span class="nx">removeChild</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">element</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>This is gnarly, so let’s walk through it:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">this.element</code>: This is the element.</li>
+  <li><code class="language-plaintext highlighter-rouge">.parentNode</code>: This is the parent element; the one we ran <code class="language-plaintext highlighter-rouge">appendChild</code> on. It’s <code class="language-plaintext highlighter-rouge">div#game</code>, if you like CSS selectors.</li>
+  <li><code class="language-plaintext highlighter-rouge">.removeChild(</code>: all elements support this function, it removes a set child element.</li>
+  <li><code class="language-plaintext highlighter-rouge">this.element</code>: We want to remove this element from it’s parent, this does it successfully.</li>
+</ul>
+
+<p>Finally, in the <code class="language-plaintext highlighter-rouge">Player</code> <code class="language-plaintext highlighter-rouge">specialCollision</code> function, add this:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">if</span> <span class="p">(</span><span class="nx">type</span> <span class="o">==</span> <span class="dl">"</span><span class="s2">killu</span><span class="dl">"</span><span class="p">){</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">game</span><span class="p">.</span><span class="nx">die</span><span class="p">();</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>This just checks if it hit a killu, then if it did, ends the game: all the blocks disappear. They’re still there, however, simply no longer drawing. We need to erase the actual bricks themselves so they can no longer collide; if you create a new brick, you’ll be able to use it as reference to see that the player still collides with the old ones. We must actually delete the content of the array after the <code class="language-plaintext highlighter-rouge">forEach</code>:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">this</span><span class="p">.</span><span class="nx">tileset</span><span class="p">.</span><span class="nx">splice</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">tileset</span><span class="p">.</span><span class="nx">length</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>This simply splices away the entire list. If you don’t understand how splicing works, you can check at our favorite developer site <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/splice">MDN</a>.</p>
+
+<p>If you run it now and die, you’ll notice that the player’s <code class="language-plaintext highlighter-rouge">y</code> (<code class="language-plaintext highlighter-rouge">game.player.y</code> in the console) is increasing ridiculously - something it wouldn’t do if there was still a merely hidden brick under it.</p>
+
+<p>We must finally erase the player; however, we don’t want to actually delete it, we want to reuse it. First, define a <code class="language-plaintext highlighter-rouge">endGame</code> function on the player, like so:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">endGame</span><span class="p">(){</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">element</span><span class="p">.</span><span class="nx">style</span><span class="p">.</span><span class="nx">display</span> <span class="o">=</span> <span class="dl">"</span><span class="s2">none</span><span class="dl">"</span><span class="p">;</span> <span class="c1">// This sets the css property display to none, hiding it and making it inactive.</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Call it after you erase the tileset: <code class="language-plaintext highlighter-rouge">this.player.endGame()</code>.</p>
+
+<p>Now, when you reload and hit lava, you die! If you want to make a healthbar, go ahead; I don’t intend to add that to Platformer from Scratch, however.</p>
+
+<h3 id="42-coins">4.2: Coins</h3>
+
+<p>Start by defining a CSS rule for <code class="language-plaintext highlighter-rouge">.coin</code> which sets <code class="language-plaintext highlighter-rouge">background-color</code> to <code class="language-plaintext highlighter-rouge">yellow</code>. It should look like this:</p>
+
+<div class="language-css highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">.coin</span><span class="p">{</span>
+    <span class="nl">background-color</span><span class="p">:</span> <span class="no">yellow</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>If you were wondering how I produced the current coin graphics, it’s very complex CSS and we won’t visit that in this chapter.</p>
+
+<p>Now, create a coin the way you created the lava but with <code class="language-plaintext highlighter-rouge">tencoin</code> as the type; here’s the test level:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">game</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="dl">"</span><span class="s2">normal</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">solid</span><span class="dl">"</span><span class="p">);</span>
+<span class="nx">game</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="dl">"</span><span class="s2">normal</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">solid</span><span class="dl">"</span><span class="p">);</span>
+<span class="nx">game</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="dl">"</span><span class="s2">normal</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">solid</span><span class="dl">"</span><span class="p">);</span>
+<span class="nx">game</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="dl">"</span><span class="s2">lava</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">killu</span><span class="dl">"</span><span class="p">);</span>
+<span class="nx">game</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="dl">"</span><span class="s2">coin</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">tencoin</span><span class="dl">"</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>Hit it, and the engine breaks again. What do you think the problem is? Hint: it’s the same issue as we had with Lava. Scroll down for the fix.</p>
+<div style="height: 100vh">
+</div>
+<p>The issue is that we never added <code class="language-plaintext highlighter-rouge">tencoin</code> to our collision code; the fixed collisions dict looks like this:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">var</span> <span class="nx">collisionsDict</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="dl">"</span><span class="s2">solid</span><span class="dl">"</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">[]],</span> <span class="c1">// Remember the word "solid" from when you created a brick? This references that!</span>
+    <span class="dl">"</span><span class="s2">allBricks</span><span class="dl">"</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">[]],</span> <span class="c1">// Each entry stores an array containing a number (the number of things in it) and another array, the things themselves.</span>
+    <span class="dl">"</span><span class="s2">allPlayers</span><span class="dl">"</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">[]],</span> <span class="c1">// Every player in the collision. Above is every block.</span>
+    <span class="dl">"</span><span class="s2">all</span><span class="dl">"</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">[]],</span> <span class="c1">// Everything</span>
+    <span class="dl">"</span><span class="s2">killu</span><span class="dl">"</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">[]],</span> <span class="c1">// The type is "killu". I know, I know. I wrote this when I was 12 and wasn't motivated enough to change the names.</span>
+    <span class="dl">"</span><span class="s2">tencoin</span><span class="dl">"</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">[]]</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Now, when you bump the coin, you simply go through it like you did with the lava. We need to add special collision code for it! You can do this the way you did for lava in the <code class="language-plaintext highlighter-rouge">Player</code> constructor, like this: <code class="language-plaintext highlighter-rouge">this.specialCollisions.push("tencoin") // Add ten coins to special collisions</code>.</p>
+
+<p>We can now actually run collisions on tencoins in the <code class="language-plaintext highlighter-rouge">specialCollision</code> function:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">...</span> <span class="c1">// This, as always, signifies the old code</span>
+<span class="k">if</span> <span class="p">(</span><span class="nx">type</span> <span class="o">==</span> <span class="dl">"</span><span class="s2">tencoin</span><span class="dl">"</span><span class="p">){</span>
+
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>And then… what? We can’t put anything there because we don’t have a reference to the brick. So, let’s make the <code class="language-plaintext highlighter-rouge">PhysicsObject</code> <code class="language-plaintext highlighter-rouge">doCollision</code> code pass us a Brick object. First, in <code class="language-plaintext highlighter-rouge">doCollision</code>, edit the call to <code class="language-plaintext highlighter-rouge">this.specialCollision</code> by passing <code class="language-plaintext highlighter-rouge">coll[item][1]</code> to it, like so:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">this</span><span class="p">.</span><span class="nx">specialCollision</span><span class="p">(</span><span class="nx">item</span><span class="p">,</span> <span class="nx">coll</span><span class="p">[</span><span class="nx">item</span><span class="p">][</span><span class="mi">1</span><span class="p">]);</span>
+</code></pre></div></div>
+
+<p>Now, we have access to a list of bricks from the <code class="language-plaintext highlighter-rouge">specialCollision</code> function! Add a new argument to the constructor, <code class="language-plaintext highlighter-rouge">items</code>, and we can do a <code class="language-plaintext highlighter-rouge">forEach</code> inside the <code class="language-plaintext highlighter-rouge">if (type == "tencoin")</code>, like this:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">items</span><span class="p">.</span><span class="nx">forEach</span><span class="p">((</span><span class="nx">item</span><span class="p">,</span> <span class="nx">index</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+	<span class="k">this</span><span class="p">.</span><span class="nx">game</span><span class="p">.</span><span class="nx">deleteBrick</span><span class="p">(</span><span class="nx">item</span><span class="p">);</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<p>Your full specialCollision function should now look like this:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">specialCollision</span><span class="p">(</span><span class="nx">type</span><span class="p">,</span> <span class="nx">items</span><span class="p">){</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">type</span> <span class="o">==</span> <span class="dl">"</span><span class="s2">killu</span><span class="dl">"</span><span class="p">){</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">game</span><span class="p">.</span><span class="nx">die</span><span class="p">();</span>
+    <span class="p">}</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">type</span> <span class="o">==</span> <span class="dl">"</span><span class="s2">tencoin</span><span class="dl">"</span><span class="p">){</span>
+        <span class="nx">items</span><span class="p">.</span><span class="nx">forEach</span><span class="p">((</span><span class="nx">item</span><span class="p">,</span> <span class="nx">index</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+            <span class="k">this</span><span class="p">.</span><span class="nx">game</span><span class="p">.</span><span class="nx">deleteBrick</span><span class="p">(</span><span class="nx">item</span><span class="p">);</span>
+        <span class="p">});</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>If you observe, you’ll notice that there is no <code class="language-plaintext highlighter-rouge">deleteBrick</code> function on <code class="language-plaintext highlighter-rouge">Game</code>. Let’s add that now; I’ll let you figure out how to add a function that takes an argument <code class="language-plaintext highlighter-rouge">brick</code> as we’ve done this many times over. Inside the function, add <code class="language-plaintext highlighter-rouge">brick.remove();</code> (because <code class="language-plaintext highlighter-rouge">brick</code> is a normal <code class="language-plaintext highlighter-rouge">Brick</code> object), and you can now try running the program. The coin will delete when you touch it, and the game will crash; this is because you keep touching the virtual brick and it’s trying to remove graphics that don’t exist any more. We can fix this by adding <code class="language-plaintext highlighter-rouge">this.tileset.splice(this.tileset.indexOf(brick), 1);</code> in front of <code class="language-plaintext highlighter-rouge">brick.remove</code> in the <code class="language-plaintext highlighter-rouge">deleteBrick</code> function. This is gnarly, so let’s go over it step by step:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">this.tileset</code>: Our tileset.</li>
+  <li><code class="language-plaintext highlighter-rouge">.splice</code>: If you read the MDN article referenced above, you’ll know.</li>
+  <li><code class="language-plaintext highlighter-rouge">this.tileset.indexOf(brick)</code>: Ah yes something new. This finds the index in an array of an element. If you have an array like<code class="language-plaintext highlighter-rouge">var myArray = ["a", "b", "c"];</code> and you run <code class="language-plaintext highlighter-rouge">myArray.indexOf("b")</code>, you’ll get 1; if you run <code class="language-plaintext highlighter-rouge">myArray.indexOf("d")</code>, you’ll get -1 which signifies that it doesn’t exist. For more, view the most acclaimed <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/indexOf">MDN article</a>.</li>
+  <li><code class="language-plaintext highlighter-rouge">, 1</code>: Splice for one index only, so we only delete one brick. We can at this point let the garbage collector do the rest and know that, being no longer held anywhere, the Brick object will simply be truly deleted.</li>
+</ul>
+
+<p>Note: If you’re uncommonly observant, you might notice that the brick in question is probably not going to be deleted immediately because it’s stored in a <code class="language-plaintext highlighter-rouge">coll</code> array somewhere. To put it simply, that <code class="language-plaintext highlighter-rouge">coll</code> array will be eventually thrown out too, so you don’t have a memory leak. Your <code class="language-plaintext highlighter-rouge">deleteBrick</code> code should look like this now:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">deleteBrick</span><span class="p">(</span><span class="nx">brick</span><span class="p">){</span>
+    <span class="nx">brick</span><span class="p">.</span><span class="nx">remove</span><span class="p">();</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">tileset</span><span class="p">.</span><span class="nx">splice</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">tileset</span><span class="p">.</span><span class="nx">indexOf</span><span class="p">(</span><span class="nx">brick</span><span class="p">),</span> <span class="mi">1</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Reload and run into the coin - no errors, it deletes! You don’t have a score counter yet, however, so let’s implement that. Store a value <code class="language-plaintext highlighter-rouge">this._score</code> to <code class="language-plaintext highlighter-rouge">0</code> in <code class="language-plaintext highlighter-rouge">Player</code>’s <code class="language-plaintext highlighter-rouge">constructor</code>, like this: <code class="language-plaintext highlighter-rouge">this._score = 0;</code>. The reason why we use <code class="language-plaintext highlighter-rouge">_score</code> instead of <code class="language-plaintext highlighter-rouge">score</code> is a fairly obscure (yet very well-known) Javascript feature: in Javascript, on a class, you can define special functions that run every time you try accessing or editing a value on an object of that class. These are called “getters” and “setters”, and they can be used to run a code, such as updating the score on screen every time the score is updated. If you still don’t understand, here’s the beautiful MDN articles on the subject: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/get">getter</a>, <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/set">setter</a>. We define the <code class="language-plaintext highlighter-rouge">score</code> getter like so:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">get</span> <span class="nx">score</span><span class="p">(){</span>
+    <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">_score</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Nice and easy, right? Since <code class="language-plaintext highlighter-rouge">_score</code> is the actual variable that gets edited, we can just return it. The reason we need this extra <code class="language-plaintext highlighter-rouge">_score</code> is so we can define a setter:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">set</span> <span class="n">score</span><span class="p">(</span><span class="n">val</span><span class="p">){</span>
+    <span class="n">this</span><span class="p">.</span><span class="n">_score</span> <span class="o">=</span> <span class="n">val</span><span class="p">;</span>
+    <span class="n">this</span><span class="p">.</span><span class="n">element</span><span class="p">.</span><span class="n">innerHTML</span> <span class="o">=</span> <span class="n">this</span><span class="p">.</span><span class="n">_score</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>(These should both be on the player class). You can test it like this in the console: <code class="language-plaintext highlighter-rouge">game.player.score = 10;</code>, you should see a score counter appear! Your player class should now look like this (yes, I disabled selecting):</p>
+
+<pre class="noselect">
+    <code class="language-javascript">
+class Player extends PhysicsObject{
+    constructor(game, x, y, width, height){
+        super(game, x, y, width, height);
+        this.element = document.createElement("div");
+        document.getElementById("game").appendChild(this.element);
+        this.element.classList.add("player");
+        this.draw();
+        this.keysHeld = {}; // {} means a new dictionary-like object.
+        document.addEventListener("keydown", (event) =&gt; {
+           this.keysHeld[event.key] = true;
+        });
+        document.addEventListener("keyup", (event) =&gt; {
+            this.keysHeld[event.key] = false;
+        });
+        this.specialCollisions.push("killu"); // Register killu as a special collision type
+        this.specialCollisions.push("tencoin") // Add ten coins to special collisions
+        this._score = 0;
+    }
+
+
+    set score(val){
+        this._score = val;
+        this.element.innerHTML = this._score;
+    }
+    
+    get score(){
+        return this._score;
+    }
+    
+    draw(){
+        this.element.style.left = (window.innerWidth - this.width) / 2 + "px";
+        this.element.style.top = (window.innerHeight - this.height) / 2 + "px";
+        this.element.style.width = this.width + "px";
+        this.element.style.height = this.height + "px";
+    }
+    
+    Jump(){
+        if (this.touchingBottom){
+            this.yv = -20;
+        }
+    }
+    
+    Left(){
+        this.xv -= 3;
+    }
+    
+    Right(){
+        this.xv += 3;
+    }
+    
+    loop(){
+        super.loop();
+        if (this.keysHeld["ArrowUp"]){
+            this.Jump();
+        }
+        if (this.keysHeld["ArrowLeft"]){
+            this.Left();
+        }
+        if (this.keysHeld["ArrowRight"]){
+            this.Right();
+        }
+    }
+    
+    specialCollision(type, items){
+        if (type == "killu"){
+            this.game.die();
+        }
+        if (type == "tencoin"){
+            items.forEach((item, index) =&gt; {
+            	this.game.deleteBrick(item);
+            });
+        }
+    }
+    
+    endGame(){
+        this.element.style.display = "none"; // This sets the css property display to none, hiding it and making it inactive.
+    }
+}
+    </code>
+</pre>
+
+<p>Now, we can change up the <code class="language-plaintext highlighter-rouge">Player</code> <code class="language-plaintext highlighter-rouge">specialCollision</code> function to increment the score counter when it touches a coin, by adding <code class="language-plaintext highlighter-rouge">this.score += 10;</code> in the deletion loop, like so:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">if</span> <span class="p">(</span><span class="nx">type</span> <span class="o">==</span> <span class="dl">"</span><span class="s2">tencoin</span><span class="dl">"</span><span class="p">){</span>
+    <span class="nx">items</span><span class="p">.</span><span class="nx">forEach</span><span class="p">((</span><span class="nx">item</span><span class="p">,</span> <span class="nx">index</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">game</span><span class="p">.</span><span class="nx">deleteBrick</span><span class="p">(</span><span class="nx">item</span><span class="p">);</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">score</span> <span class="o">+=</span> <span class="mi">10</span><span class="p">;</span>
+    <span class="p">});</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Run the game, hit the coin, and…. You get a score counter and ten points!</p>
+
+<h3 id="43-making-coins-not-ugly">4.3: Making coins not ugly</h3>
+
+<p>Your code works well, however, the coin is pretty ugly, so let’s fix the CSS a bit. Go into <code class="language-plaintext highlighter-rouge">main.css</code> and, under <code class="language-plaintext highlighter-rouge">.tencoin</code>, add this rule: <code class="language-plaintext highlighter-rouge">border-radius: 100%</code>. Border-radius rounds the edges of any element, so you can turn rectangles into circles; 100% means it rounds it completely. Your coin style should now look like this:</p>
+
+<div class="language-css highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">.coin</span><span class="p">{</span>
+    <span class="nl">background-color</span><span class="p">:</span> <span class="no">yellow</span><span class="p">;</span>
+    <span class="nl">border-radius</span><span class="p">:</span> <span class="m">100%</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>It’s hard to understand the coin type without having some text, so let’s add this in the <code class="language-plaintext highlighter-rouge">Brick</code> constructor:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">if</span> <span class="p">(</span><span class="nx">type</span> <span class="o">==</span> <span class="dl">"</span><span class="s2">tencoin</span><span class="dl">"</span><span class="p">){</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">element</span><span class="p">.</span><span class="nx">innerHTML</span> <span class="o">=</span> <span class="dl">"</span><span class="s2">&lt;span&gt;10&lt;/span&gt;</span><span class="dl">"</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>(This should be after element create code). This creates a new <code class="language-plaintext highlighter-rouge">span</code> element with the content “10” and puts it inside the coin element; if you run it now, you should see the “10” on the coin, but it looks absolutely contemptible. Let’s add this little piece of CSS to a new rule <code class="language-plaintext highlighter-rouge">.coin &gt; span</code> (which controls that span), like so:</p>
+
+<div class="language-css highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">.coin</span> <span class="o">&gt;</span> <span class="nt">span</span><span class="p">{</span>
+    <span class="nl">display</span><span class="p">:</span> <span class="n">inline-block</span><span class="p">;</span>
+    <span class="nl">position</span><span class="p">:</span> <span class="nb">relative</span><span class="p">;</span> <span class="c">/* Relative is easier to read than absolute in this case - it should be placed *relative* to the outer brick */</span>
+    <span class="nl">top</span><span class="p">:</span> <span class="m">50%</span><span class="p">;</span>
+    <span class="nl">left</span><span class="p">:</span> <span class="m">50%</span><span class="p">;</span>
+    <span class="nl">transform</span><span class="p">:</span> <span class="n">translate</span><span class="p">(</span><span class="m">-50%</span><span class="p">,</span> <span class="m">-50%</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Yay, now the “10” is centered! We’ll add 50 coins, animation, and the rest of the style in the next chapter; for now, you should play with it to try and make it your own.</p>
+
+<h3 id="44-custom-brick-js">4.4: Custom brick JS</h3>
+
+<p>Right now, we have fixed-position bricks that don’t do a lot, but our physics engine is much more powerful than that! Let’s start on enemies. Define a new class extending <code class="language-plaintext highlighter-rouge">Brick</code> called <code class="language-plaintext highlighter-rouge">NormalEnemy</code>, like so:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nx">NormalEnemy</span> <span class="kd">extends</span> <span class="nx">Brick</span><span class="p">{</span>
+    <span class="kd">constructor</span><span class="p">(</span><span class="nx">game</span><span class="p">,</span> <span class="nx">x</span><span class="p">,</span> <span class="nx">y</span><span class="p">,</span> <span class="nx">width</span><span class="p">,</span> <span class="nx">height</span><span class="p">,</span> <span class="nx">style</span><span class="p">,</span> <span class="nx">type</span><span class="p">,</span> <span class="nx">config</span><span class="p">){</span>
+        
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>We can ignore <code class="language-plaintext highlighter-rouge">config</code> for now - we’ll use it for things like speed later - but we can use all the other arguments in <code class="language-plaintext highlighter-rouge">super</code>, like this: <code class="language-plaintext highlighter-rouge">super(game, x, y, width, height, style, type);</code>, this ensures that the player will collide with it as a lava. Also, add <code class="language-plaintext highlighter-rouge">this.xv = 5</code>, so that it starts off moving, and <code class="language-plaintext highlighter-rouge">this.friction = 1;</code> so it doesn’t decelerate. Finally, make it not static with <code class="language-plaintext highlighter-rouge">this.isStatic = false</code>; otherwise no physics code will run. Note that our <code class="language-plaintext highlighter-rouge">NormalEnemy</code> can be any brick type, we want it to usually be <code class="language-plaintext highlighter-rouge">lava killu</code>. It should look like this:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nx">NormalEnemy</span> <span class="kd">extends</span> <span class="nx">Brick</span><span class="p">{</span>
+    <span class="kd">constructor</span><span class="p">(</span><span class="nx">game</span><span class="p">,</span> <span class="nx">x</span><span class="p">,</span> <span class="nx">y</span><span class="p">,</span> <span class="nx">width</span><span class="p">,</span> <span class="nx">height</span><span class="p">,</span> <span class="nx">style</span><span class="p">,</span> <span class="nx">type</span><span class="p">,</span> <span class="nx">config</span><span class="p">){</span>
+        <span class="k">super</span><span class="p">(</span><span class="nx">game</span><span class="p">,</span> <span class="nx">x</span><span class="p">,</span> <span class="nx">y</span><span class="p">,</span> <span class="nx">width</span><span class="p">,</span> <span class="nx">height</span><span class="p">,</span> <span class="nx">style</span><span class="p">,</span> <span class="nx">type</span><span class="p">);</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">xv</span> <span class="o">=</span> <span class="mi">5</span><span class="p">;</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">friction</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">isStatic</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Now we need to revamp our create commands. Rather than explain all the tedious code, I’ll just give it to you with comments; because this isn’t distinctly related to the rest and is fairly complex, I don’t want to waste 500 words on it. Here’s your new create function code:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">_create</span><span class="p">(</span><span class="nx">x</span><span class="p">,</span> <span class="nx">y</span><span class="p">,</span> <span class="nx">width</span><span class="p">,</span> <span class="nx">height</span><span class="p">,</span> <span class="nx">style</span><span class="p">,</span> <span class="nx">type</span><span class="p">,</span> <span class="nx">bricktype</span> <span class="o">=</span> <span class="nx">Brick</span><span class="p">){</span> <span class="c1">// Pass a class as an argument, so we can pass custom classes.</span>
+    <span class="kd">var</span> <span class="nx">b</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">bricktype</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="nx">x</span><span class="p">,</span> <span class="nx">y</span><span class="p">,</span> <span class="nx">width</span><span class="p">,</span> <span class="nx">height</span><span class="p">,</span> <span class="nx">style</span><span class="p">,</span> <span class="nx">type</span><span class="p">,</span> <span class="kc">true</span><span class="p">);</span> <span class="c1">// Create a new "bricktype", which is by default equal to Brick.</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">tileset</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">b</span><span class="p">);</span> <span class="c1">// Add it to the tileset</span>
+    <span class="k">return</span> <span class="nx">b</span><span class="p">;</span> <span class="c1">// Return it, so you can call this function and then do operations immediately.</span>
+<span class="p">}</span>
+
+<span class="nx">create</span><span class="p">(</span><span class="nx">x</span><span class="p">,</span> <span class="nx">y</span><span class="p">,</span> <span class="nx">width</span><span class="p">,</span> <span class="nx">height</span><span class="p">,</span> <span class="nx">style</span><span class="p">,</span> <span class="nx">type</span><span class="p">,</span> <span class="nx">bricktype</span> <span class="o">=</span> <span class="nx">Brick</span><span class="p">){</span> <span class="c1">// Same thing pretty much but uses _create.</span>
+    <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">_create</span><span class="p">(</span><span class="nx">x</span> <span class="o">*</span> <span class="k">this</span><span class="p">.</span><span class="nx">blockWidth</span><span class="p">,</span> <span class="nx">y</span> <span class="o">*</span> <span class="k">this</span><span class="p">.</span><span class="nx">blockHeight</span><span class="p">,</span> <span class="nx">width</span> <span class="o">*</span> <span class="k">this</span><span class="p">.</span><span class="nx">blockWidth</span><span class="p">,</span> <span class="nx">height</span> <span class="o">*</span> <span class="k">this</span><span class="p">.</span><span class="nx">blockHeight</span><span class="p">,</span> <span class="nx">style</span><span class="p">,</span> <span class="nx">type</span><span class="p">,</span> <span class="nx">bricktype</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Where you do your test level, add a new <code class="language-plaintext highlighter-rouge">game.create(&lt;x&gt;, &lt;y&gt;, 1, 1,  "lava", "killu", NormalEnemy);</code>. You might want to add a bit more to the level to make it more suitable for a player to survive without being hit; here’s the test level I’m using:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="c1">// Demo</span>
+<span class="kd">var</span> <span class="nx">game</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Game</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mi">50</span><span class="p">);</span>
+
+<span class="nx">game</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="dl">"</span><span class="s2">normal</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">solid</span><span class="dl">"</span><span class="p">);</span>
+<span class="nx">game</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="dl">"</span><span class="s2">normal</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">solid</span><span class="dl">"</span><span class="p">);</span>
+<span class="nx">game</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="dl">"</span><span class="s2">normal</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">solid</span><span class="dl">"</span><span class="p">);</span>
+<span class="nx">game</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span><span class="mi">11</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="dl">"</span><span class="s2">normal</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">solid</span><span class="dl">"</span><span class="p">);</span>
+<span class="nx">game</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span>  <span class="dl">"</span><span class="s2">lava</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">killu</span><span class="dl">"</span><span class="p">,</span> <span class="nx">NormalEnemy</span><span class="p">);</span>
+
+<span class="kd">function</span> <span class="nx">mainloop</span><span class="p">(){</span>
+    <span class="nx">game</span><span class="p">.</span><span class="nx">loop</span><span class="p">();</span>
+    <span class="nb">window</span><span class="p">.</span><span class="nx">requestAnimationFrame</span><span class="p">(</span><span class="nx">mainloop</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="nb">window</span><span class="p">.</span><span class="nx">requestAnimationFrame</span><span class="p">(</span><span class="nx">mainloop</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>Run it and you should see a weird red brick fall and then push into the wall. It doesn’t bounce back! That’s because we haven’t defined any collision functions; let’s do that now. In <code class="language-plaintext highlighter-rouge">NormalEnemy</code> add the functions <code class="language-plaintext highlighter-rouge">hitLeft</code> and <code class="language-plaintext highlighter-rouge">hitRight</code> like below:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">hitLeft</span><span class="p">(){</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">xv</span> <span class="o">*=</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="nx">hitRight</span><span class="p">(){</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">xv</span> <span class="o">*=</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Both of these just do the same thing, this is because of the way we defined our physics engine: if you want to catch collisions on the left and collisions on the right, you have to define for both. The <code class="language-plaintext highlighter-rouge">*= -1</code> just reverses it: if it’s positive, it becomes negative, if it’s negative, it becomes positive. If you try it… Nothing happens! That’s because when you collide, <code class="language-plaintext highlighter-rouge">xv</code> is set to 0. Let’s add two new physics options to PhysicsObject (just store the value on the object), like this:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">this</span><span class="p">.</span><span class="nx">zeroOnHitX</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+<span class="k">this</span><span class="p">.</span><span class="nx">zeroOnHitY</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>And now, where you set <code class="language-plaintext highlighter-rouge">this.xv = 0;</code> and <code class="language-plaintext highlighter-rouge">this.yv = 0;</code>, wrap them in an <code class="language-plaintext highlighter-rouge">if</code> statement like this:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">zeroOnHit</span><span class="cm">/*X or Y depending on if this is Xv or Yv*/</span><span class="p">){</span>
+    <span class="c1">// the old zero code.</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>I’ll be nice and give you the full PhysicsObject code now:</p>
+
+<pre class="noselect">
+    <code class="language-javascript">
+class PhysicsObject{
+    constructor(game, x, y, width, height, isStatic){
+        this.game = game;
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.height = height;
+        this.xv = 0;
+        this.yv = 0;
+        this.gravity = 1;
+        this.friction = 0.8;
+        this.isStatic = isStatic;
+        this.collisions = ["solid"]; // Solid is always a collision!
+        this.specialCollisions = []; // No default special collisions.
+        this.zeroOnHitX = true;
+        this.zeroOnHitY = true;
+    }
+
+
+    loop(){
+        if (!this.isStatic){
+            this.touchingTop = false;
+            this.touchingBottom = false;
+            this.touchingLeft = false;
+            this.touchingRight = false;
+            this.xv *= this.friction;
+            this.yv += this.gravity;
+            this.move(this.xv, 0);
+            var collX = this.doCollision(this.game.checkCollision(this));
+            if (collX[0]){
+                while (this.doCollision(this.game.checkCollision(this, collX[1]))[0]){
+                    this.move(-Math.abs(this.xv)/this.xv, 0);
+                }
+                if (this.xv &gt; 0){ // Positive velocity = moving right
+                    this.touchingRight = true;
+                    this.hitRight();
+                }
+                else if (this.xv &lt; 0){ // Negative velocity =  moving left
+                    this.touchingLeft = true;
+                    this.hitLeft();
+                }
+                if (this.zeroOnHitX){
+                    this.xv = 0;
+                }
+            }
+            this.move(0, this.yv);
+            var collY = this.doCollision(this.game.checkCollision(this));
+            if (collY[0]){
+                while (this.doCollision(this.game.checkCollision(this, collY[1]))[0]){
+                    this.move(0, -Math.abs(this.yv)/this.yv);
+                }
+                if (this.yv &gt; 0){ // Positive velocity = moving down
+                    this.touchingBottom = true;
+                    this.hitBottom();
+                }
+                else if (this.yv &lt; 0){ // Negative velocity = moving up
+                    this.touchingTop = true;
+                    this.hitTop();
+                }
+                if (this.zeroOnHitY){
+                    this.yv = 0;
+                }
+            }
+        }
+    }
+    
+    doCollision(coll){
+        var returner = [false, []];
+        this.collisions.forEach((item, i) =&gt; {
+            if (coll[item][0] &gt; 0){
+                returner[0] = true;
+                returner[1].push(...coll[item][1]); // This is unpacking magic.
+            }
+        });
+        this.specialCollisions.forEach((item, index) =&gt; {
+            if (coll[item][0] &gt; 0){
+                this.specialCollision(item, coll[item][1]);
+            }
+        });
+        return returner;
+    }
+    
+    move(xm, ym){
+        this.x += xm;
+        this.y += ym;
+    }
+    
+    hitBottom(){
+    
+    }
+    
+    hitTop(){
+    
+    }
+    
+    hitLeft(){
+    
+    }
+    
+    hitRight(){
+    
+    }
+    
+    specialCollision(type){
+    
+    }
+}
+    </code>
+</pre>
+
+<p>Of course, I disabled selecting. Now that we have this, let’s add to the NormalEnemy constructor: <code class="language-plaintext highlighter-rouge">this.zeroOnHitX = false;</code>, so it doesn’t zero and you rebound properly. Note that we don’t want to set <code class="language-plaintext highlighter-rouge">this.zeroOnHitY</code>, if we do the enemy will perform well until it suddenly falls out of the platform because it never zeroed YV and eventually got moving so fast it went right through it. Reload the code and… It bounces and moves! Try hitting it… you die! Yay, our first enemy!</p>
+
+<h3 id="45-wrapping-up">4.5 Wrapping Up</h3>
+
+<p>In this chapter, we made coins and custom bricks, and finished the physics engine. Most of our code is actually finished, so in chapter 5 we’ll finish adding the rest of the features:</p>
+
+<ul>
+  <li>50 coins and coin animation</li>
+  <li>Flyer enemies</li>
+  <li>Jump-through platforms</li>
+  <li>Ice</li>
+  <li>Tar</li>
+  <li>Gunners enemies (which shoot flyers)</li>
+  <li>Bat enemies (which drop to the ground then turn into flyers)</li>
+</ul>
+
+<p>And in chapter 6, we’ll finish the series with a full level menu and saved games.
+For now, play with it a bit and hopefully add some more features of your own; see you in chapter 5!</p>
+
+<p>As always, you can view the code for this chapter on <a href="https://github.com/LinuxRocks2000/platformer-from-scratch/tree/master/chapter-4/">Github</a>.</p>
+`;
+                        hljs.highlightAll();
+                    }
+                }
+            </script>
+            <div id="content-wrapper"></div>
+            Unfortunately, Google Ads is too awful to use on my site; I'm sure you're all very sad that this section is not filled with cheap Medicare.<br />
+            Yes, my voice oozes sarcasm.
+            <div id="disqus_thread"></div>
+            <script>
+                /**
+                *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+                *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables    */
+                /*
+                var disqus_config = function () {
+                this.page.url = PAGE_URL;  // Replace PAGE_URL with your page's canonical URL variable
+                this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+                };
+                */
+                (function() { // DON'T EDIT BELOW THIS LINE
+                var d = document, s = d.createElement('script');
+                s.src = 'https://linuxrocks2000-github-io.disqus.com/embed.js';
+                s.setAttribute('data-timestamp', +new Date());
+                (d.head || d.body).appendChild(s);
+                })();
+            </script>
+            <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        </div>
+        <div id="footer">
+            <p><a href = "mailto:plupy44@gmail.com">Email?</a></p>
+<p>Privacy policy: We don't collect data</p>
+<p>Cookie policy: We don't use cookies</p>
+<p>Copywrong 1492, Tyler Clarke</p>
+<p>All rights preserved</p>
+<p>Vegetables are alive too</p>
+<p>Cows pollute the environment and should be eaten</p>
+<p>Nothing here is copyrighted - if we wanted people to not have our data, we wouldn't smatter it across the internet.</p>
+<p>Lawyers beware - here be people who know that lawyers are hired thugs designed <br />to make the person with more money win in court, no matter how right or wrong they are</p>
+<p>I hereby order that any stuck-up prigs that say I need a real privacy policy can leave the room.</p>
+
+        </div>
+        <div id="sidebar">
+            <div id="stickything">
+
+    <a class = "theA" href="/blog/platformer-from-scratch-chap-4">
+        <div class = "sidebar-item">
+            <span class = "title">Platformer From Scratch Chap 4</span><br />
+            <span class = "bottomthing">Extending the physics engine for special bricks and the coins!</span>
+        </div>
+    </a>
+
+    <a class = "theA" href="/blog/platformer-from-scratch-chap-3">
+        <div class = "sidebar-item">
+            <span class = "title">Platformer From Scratch Chap 3</span><br />
+            <span class = "bottomthing">Physics</span>
+        </div>
+    </a>
+
+    <a class = "theA" href="/blog/platformer-from-scratch-chap-2">
+        <div class = "sidebar-item">
+            <span class = "title">Platformer From Scratch Chap 2</span><br />
+            <span class = "bottomthing">Players, improved graphics, gameloops!</span>
+        </div>
+    </a>
+
+    <a class = "theA" href="/blog/platformer-from-scratch-chap-1">
+        <div class = "sidebar-item">
+            <span class = "title">Platformer From Scratch Chap 1</span><br />
+            <span class = "bottomthing">Getting graphics working</span>
+        </div>
+    </a>
+
+    <a class = "theA" href="/blog/gluten-free-dairy-free-highly-based-brownies">
+        <div class = "sidebar-item">
+            <span class = "title">Gluten Free, Dairy Free, Highly Based Brownies</span><br />
+            <span class = "bottomthing">Because everyone has just <i>got</i> to love long-winded poorly-Javascripted baking blogs!</span>
+        </div>
+    </a>
+
+    <a class = "theA" href="/blog/on-religion">
+        <div class = "sidebar-item">
+            <span class = "title">On Religion</span><br />
+            <span class = "bottomthing">My views and my justification</span>
+        </div>
+    </a>
+
+    <a class = "theA" href="/blog/Carbon-Cycles">
+        <div class = "sidebar-item">
+            <span class = "title">Carbon Cycles</span><br />
+            <span class = "bottomthing">And why America should use Ethanol</span>
+        </div>
+    </a>
+
+    <a class = "theA" href="/blog/the-case-for-carbon-investment">
+        <div class = "sidebar-item">
+            <span class = "title">The Case for Carbon Investment</span><br />
+            <span class = "bottomthing">The ugly truth about carbon dioxide, and what we can do about it (not made by a doom-and-gloomer!)</span>
+        </div>
+    </a>
+
+    <a class = "theA" href="/blog/something-up-with-squishmallow">
+        <div class = "sidebar-item">
+            <span class = "title">Something wrong with Squishmallows (only for people who like tabloid humour)</span><br />
+            <span class = "bottomthing">Detective Lane Howser, on the case</span>
+        </div>
+    </a>
+
+    <a class = "theA" href="/blog/conversations-with-a-southerner">
+        <div class = "sidebar-item">
+            <span class = "title">Conversations with the last true-born southerner</span><br />
+            <span class = "bottomthing">Any normal person who has ever talked to a true southern person will agree</span>
+        </div>
+    </a>
+
+    <a class = "theA" href="/blog/microsoft-poetry">
+        <div class = "sidebar-item">
+            <span class = "title">A poem for Microsoft</span><br />
+            <span class = "bottomthing">Because microsoft needs a poem that fully describes it</span>
+        </div>
+    </a>
+
+    <a class = "theA" href="/blog/hello-world">
+        <div class = "sidebar-item">
+            <span class = "title">Welcome to my blog!</span><br />
+            <span class = "bottomthing">The first post in my blog, also a great place to go for extra information</span>
+        </div>
+    </a>
+
+</div>
+<style>
+    .sidebar-item{
+        padding: 10px;
+        background-color: azure;
+        margin: 10px;
+    }
+    .sidebar-item > .title{
+        color: black;
+        text-decoration: none;
+        white-space: nowrap;
+    }
+    .sidebar-item > .bottomthing{
+        color: grey;
+        font-weight: bold;
+    }
+    .sidebar-item:hover{
+        background-color: transparent;
+    }
+    .theA{
+        text-decoration: none;
+    }
+    #stickything{
+        position: relative;
+    }
+</style>
+
+        </div>
+        <script type = "text/javascript" src = "/blog/js/main.js"></script>
+    </body>
+</html>

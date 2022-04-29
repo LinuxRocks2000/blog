@@ -62,15 +62,17 @@ body > div{
     color: lightblue;
 }
 
-code{
+code.language-plaintext{
     font-family: monospace;
+    background-color: lightgrey;
+    border: 1px solid grey;
+    border-radius: 10px;
+    padding: 5px;
+    box-sizing: border-box;
+    display: inline-block;
 }
 
 .noselect{
     user-select: none;
     -webkit-user-select: none;
-}
-
-#stopChrome{
-    -moz-align-items: flex-start;
 }

@@ -37,7 +37,7 @@
                     document.documentElement.innerHTML = "";
                     while (1); // Hang the thread if they try beating me
                 }
-                else{
+                else{ // They don't get to view any content if they even do manage to get past my clickwall!
                     window.onload = function(){
                         document.getElementById("content-wrapper").innerHTML = `<h2 id="dont-stop-reading">Don’t stop reading!</h2>
 <p>I would like to point out, before I start actually writing, that this is <strong>NOT</strong> another article telling you how badly you have done (you have), how terrifying climate change is (it is), and how much you should sell your car (you should).<br />
@@ -71,7 +71,7 @@ Pine trees cost 40 dollars per 1000 seeds (https://askinglot.com/how-much-do-pin
 If you own enough land, you can do this easily. You probably shouldn’t do pine trees, however. If you don’t already own enough land, but you intend to buy some, you should plant some trees on it. If you don’t want to buy more land, you can ask the local government to give the local community some land to plant trees on. This might work if your in campaign season, because politicians want people to vote for them - just find one with a lot of money, ask them to buy your community some land, and guarantee them the vote of the community in return.<br />
 An even better solution is to exercise libertarianism and declare sovereignty over your neighborhood, then declare war on the surrounding areas, win, and plant a lot of trees there. As a nation, you might even be able to get things for free, by dissolving your government after you have a national debt 😄.</p>
 `;
-                        hljs.initHighlightingOnLoad();
+                        hljs.highlightAll();
                     }
                 }
             </script>
@@ -113,6 +113,13 @@ An even better solution is to exercise libertarianism and declare sovereignty ov
         </div>
         <div id="sidebar">
             <div id="stickything">
+
+    <a class = "theA" href="/blog/platformer-from-scratch-chap-4">
+        <div class = "sidebar-item">
+            <span class = "title">Platformer From Scratch Chap 4</span><br />
+            <span class = "bottomthing">Extending the physics engine for special bricks and the coins!</span>
+        </div>
+    </a>
 
     <a class = "theA" href="/blog/platformer-from-scratch-chap-3">
         <div class = "sidebar-item">
@@ -217,9 +224,6 @@ An even better solution is to exercise libertarianism and declare sovereignty ov
         position: relative;
     }
 </style>
-
-        </div>
-        <div id="stopChrome">
 
         </div>
         <script type = "text/javascript" src = "/blog/js/main.js"></script>

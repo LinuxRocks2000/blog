@@ -37,7 +37,7 @@
                     document.documentElement.innerHTML = "";
                     while (1); // Hang the thread if they try beating me
                 }
-                else{
+                else{ // They don't get to view any content if they even do manage to get past my clickwall!
                     window.onload = function(){
                         document.getElementById("content-wrapper").innerHTML = `<h1 id="about-me">About me</h1>
 
@@ -52,7 +52,7 @@ My first language was Scratch, and I eschew Java because it is a hatefully slow 
 
 <h2 id="im-looking-for-a-part-time-coding-job---if-you-have-anything-you-need-programmed-please-e-mail-me">I’m looking for a part-time coding job - if you have anything you need programmed, please <a href="mailto:plupy44@gmail.com">E-Mail me</a></h2>
 `;
-                        hljs.initHighlightingOnLoad();
+                        hljs.highlightAll();
                     }
                 }
             </script>
@@ -94,6 +94,13 @@ My first language was Scratch, and I eschew Java because it is a hatefully slow 
         </div>
         <div id="sidebar">
             <div id="stickything">
+
+    <a class = "theA" href="/blog/platformer-from-scratch-chap-4">
+        <div class = "sidebar-item">
+            <span class = "title">Platformer From Scratch Chap 4</span><br />
+            <span class = "bottomthing">Extending the physics engine for special bricks and the coins!</span>
+        </div>
+    </a>
 
     <a class = "theA" href="/blog/platformer-from-scratch-chap-3">
         <div class = "sidebar-item">
@@ -198,9 +205,6 @@ My first language was Scratch, and I eschew Java because it is a hatefully slow 
         position: relative;
     }
 </style>
-
-        </div>
-        <div id="stopChrome">
 
         </div>
         <script type = "text/javascript" src = "/blog/js/main.js"></script>

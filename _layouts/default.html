@@ -22,10 +22,10 @@
                     document.documentElement.innerHTML = "";
                     while (1); // Hang the thread if they try beating me
                 }
-                else{
+                else{ // They don't get to view any content if they even do manage to get past my clickwall!
                     window.onload = function(){
                         document.getElementById("content-wrapper").innerHTML = `{{ content }}`;
-                        hljs.initHighlightingOnLoad();
+                        hljs.highlightAll();
                     }
                 }
             </script>
@@ -57,9 +57,6 @@
         </div>
         <div id="sidebar">
             {% include sidebar.html %}
-        </div>
-        <div id="stopChrome">
-
         </div>
         <script type = "text/javascript" src = "{{ site.baseurl }}/js/main.js"></script>
     </body>
