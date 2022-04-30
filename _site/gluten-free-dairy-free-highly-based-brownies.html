@@ -27,7 +27,7 @@
 </style>
 
         </div>
-        <div id="body">
+        <div id="body" style="display: none;">
             <script type="text/javascript">
                 var isFirefox = typeof InstallTrigger !== 'undefined';
                 if (!isFirefox){
@@ -39,7 +39,12 @@
                 }
                 else{ // They don't get to view any content if they even do manage to get past my clickwall!
                     window.onload = function(){
-                        document.getElementById("content-wrapper").innerHTML = `<h1 id="gluten-free-dairy-free-highly-based-brownies">Gluten Free, Dairy Free, Highly Based Brownies</h1>
+                        document.getElementById("body").style.display="";
+                        hljs.highlightAll();
+                    }
+                }
+            </script>
+            <h1 id="gluten-free-dairy-free-highly-based-brownies">Gluten Free, Dairy Free, Highly Based Brownies</h1>
 
 <p>I’ve been baking for years, and am something of a cook as well. This means I spend a lot of time baking, and cooking, chopping potatoes, measuring flour, etc. I also spend a smaller amount of time reading other people’s recipes, because I’m not that great of a chef to the point of not needing guidance. I rarely do that on my main computer, because I’m usually blogging here, coding, or doing my dual-enrollment classes; I almost always do it on my phone. Dredging through walls of ads, video and normal, with X buttons to sear my phone’s processor, along gulfs of JS to make a 12-year-old script kiddie squeal in pain, and all the while hoping that some of the text will actually load so I know if I’m above or below the recipe. Why, oh why, must they assume we want to pay attention to how much their 12-year-old script kiddie loved eating their brownies? I have the Order of the Stick to be reading, why do I have to listen to their aggrieved rants to the effect that they can’t eat gluten or dairy, being, supposedly, overtaken with Karenovirus or something? (No, I’m not an anti-masker, that statement is sarcastic.) I have no affiliate links designed in mind of making you whimper at various privacy policies, and my attempts at getting ads on my site have always ended in eternal Google 2-week website checking, so here’s an idea: I’ll tell you how to make the sweets <em>before</em> explaining how much my robotics team loved them via emoji to send the proverbial emo-kid into hysterics.</p>
 
@@ -90,12 +95,7 @@
 <p>These aren’t the best for parties. I really do suggest that you use somebody else’s recipe if you’re serving more than a couple people because 25-50% of people aren’t gonna like them very much. They’re better for close friends at a rare special occasion than your 12-year-old script kiddie’s roarin’ birthday party. Younger people aren’t going to like them too much, while they are sweet they are definitely not as sugar-saturated as the much cheaper equivalent from Kroger, but more mature people will probably appreciate it. These are great for people like myself who try to stay away from gluten and dairy, and are considered ovo-vegetarian. The egg means it isn’t vegan, unfortunately, but nobody said life was fair.</p>
 
 <p>(I’m not sorry for all the political humor here. This blog isn’t for the faint of heart; read my front page and/or first post if you doubt that.)</p>
-`;
-                        hljs.highlightAll();
-                    }
-                }
-            </script>
-            <div id="content-wrapper"></div>
+
             Unfortunately, Google Ads is too awful to use on my site; I'm sure you're all very sad that this section is not filled with cheap Medicare.<br />
             Yes, my voice oozes sarcasm.
             <div id="disqus_thread"></div>
@@ -133,6 +133,13 @@
         </div>
         <div id="sidebar">
             <div id="stickything">
+
+    <a class = "theA" href="/blog/platformer-from-scratch-chap-5">
+        <div class = "sidebar-item">
+            <span class = "title">Platformer From Scratch Chap 5</span><br />
+            <span class = "bottomthing">Cleaning up motion, adding fifty coins, adding various other new block types</span>
+        </div>
+    </a>
 
     <a class = "theA" href="/blog/platformer-from-scratch-chap-4">
         <div class = "sidebar-item">

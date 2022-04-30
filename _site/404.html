@@ -27,7 +27,7 @@
 </style>
 
         </div>
-        <div id="body">
+        <div id="body" style="display: none;">
             <script type="text/javascript">
                 var isFirefox = typeof InstallTrigger !== 'undefined';
                 if (!isFirefox){
@@ -39,16 +39,16 @@
                 }
                 else{ // They don't get to view any content if they even do manage to get past my clickwall!
                     window.onload = function(){
-                        document.getElementById("content-wrapper").innerHTML = `<p>We apologize for the inconvenience, but it seems that there isn’t a page here.<br />
-This might be because it was never there in the first place, because you mistyped a URL, or because we broke something.</p>
-
-<p>We might have deleted it, too.</p>
-`;
+                        document.getElementById("body").style.display="";
                         hljs.highlightAll();
                     }
                 }
             </script>
-            <div id="content-wrapper"></div>
+            <p>We apologize for the inconvenience, but it seems that there isn’t a page here.<br />
+This might be because it was never there in the first place, because you mistyped a URL, or because we broke something.</p>
+
+<p>We might have deleted it, too.</p>
+
             Unfortunately, Google Ads is too awful to use on my site; I'm sure you're all very sad that this section is not filled with cheap Medicare.<br />
             Yes, my voice oozes sarcasm.
             <div id="disqus_thread"></div>
@@ -86,6 +86,13 @@ This might be because it was never there in the first place, because you mistype
         </div>
         <div id="sidebar">
             <div id="stickything">
+
+    <a class = "theA" href="/blog/platformer-from-scratch-chap-5">
+        <div class = "sidebar-item">
+            <span class = "title">Platformer From Scratch Chap 5</span><br />
+            <span class = "bottomthing">Cleaning up motion, adding fifty coins, adding various other new block types</span>
+        </div>
+    </a>
 
     <a class = "theA" href="/blog/platformer-from-scratch-chap-4">
         <div class = "sidebar-item">

@@ -27,7 +27,7 @@
 </style>
 
         </div>
-        <div id="body">
+        <div id="body" style="display: none;">
             <script type="text/javascript">
                 var isFirefox = typeof InstallTrigger !== 'undefined';
                 if (!isFirefox){
@@ -39,7 +39,12 @@
                 }
                 else{ // They don't get to view any content if they even do manage to get past my clickwall!
                     window.onload = function(){
-                        document.getElementById("content-wrapper").innerHTML = `<h2 id="beginning-statements">Beginning statements</h2>
+                        document.getElementById("body").style.display="";
+                        hljs.highlightAll();
+                    }
+                }
+            </script>
+            <h2 id="beginning-statements">Beginning statements</h2>
 
 <p>First off, I want to state that I’m not a Christian. I know this is pretty appalling to a lot of people nowadays, which is only natural as a lot of people are Christian: out of the 329.5 million people (as of 2022) here in America, around 65 percent believe in God and a pantheon of saints. Does this mean I am inherently wrong, as America is founded upon majority? No. America was founded on religious safety, from the despot king and church in Europe, and to discriminate on faith is exactly the kind of thing our society would do today, which is not at all a complement. But I digress. This article is not about whether I should be protected by the law from discrimination which I haven’t, interestingly, received (I know a very large amount of intelligent and amiable Christians who accept my faith graciously), it is about why I’m not Christian.</p>
 
@@ -68,12 +73,7 @@
   <li>Is somewhat interesting; just, please, try to make it interesting. This is more of an edge-case-shave, if I get a lot of submissions that comply with the other rules, I’m going to choose the most valid and thought-provoking ones. If someone gives me a 200 word mathematical equation to calculate God’s phone number, that’s gonna get in instead of a 10,000 page essay on the semantics of those two paragraphs of the Book of Genesis that I mentioned. Also, as a general rule, don’t submit 10,000 page essays because I’m not posting them, if you must, put them on your own site or a publication site and send me a concise version with that site as a source.</li>
   <li>Isn’t profane; keep it civil and clean because this is blog is supposed to be somewhat child-friendly.</li>
 </ul>
-`;
-                        hljs.highlightAll();
-                    }
-                }
-            </script>
-            <div id="content-wrapper"></div>
+
             Unfortunately, Google Ads is too awful to use on my site; I'm sure you're all very sad that this section is not filled with cheap Medicare.<br />
             Yes, my voice oozes sarcasm.
             <div id="disqus_thread"></div>
@@ -111,6 +111,13 @@
         </div>
         <div id="sidebar">
             <div id="stickything">
+
+    <a class = "theA" href="/blog/platformer-from-scratch-chap-5">
+        <div class = "sidebar-item">
+            <span class = "title">Platformer From Scratch Chap 5</span><br />
+            <span class = "bottomthing">Cleaning up motion, adding fifty coins, adding various other new block types</span>
+        </div>
+    </a>
 
     <a class = "theA" href="/blog/platformer-from-scratch-chap-4">
         <div class = "sidebar-item">

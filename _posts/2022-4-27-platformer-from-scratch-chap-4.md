@@ -688,7 +688,7 @@ In this chapter, we made coins and custom bricks, and finished the physics engin
 * Jump-through platforms
 * Ice
 * Tar
-* Gunners enemies (which shoot flyers)
+* Gunner enemies (which shoot flyers)
 * Bat enemies (which drop to the ground then turn into flyers)
 
 And in chapter 6, we'll finish the series with a full level menu and saved games.

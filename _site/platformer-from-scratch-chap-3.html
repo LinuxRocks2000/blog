@@ -27,7 +27,7 @@
 </style>
 
         </div>
-        <div id="body">
+        <div id="body" style="display: none;">
             <script type="text/javascript">
                 var isFirefox = typeof InstallTrigger !== 'undefined';
                 if (!isFirefox){
@@ -39,7 +39,12 @@
                 }
                 else{ // They don't get to view any content if they even do manage to get past my clickwall!
                     window.onload = function(){
-                        document.getElementById("content-wrapper").innerHTML = `<p>Welcome, friendly JS developers, to the third installment of Platformer From Scratch! In this chapter, we’ll finish the physics engine: velocity, collisions, and true player control.</p>
+                        document.getElementById("body").style.display="";
+                        hljs.highlightAll();
+                    }
+                }
+            </script>
+            <p>Welcome, friendly JS developers, to the third installment of Platformer From Scratch! In this chapter, we’ll finish the physics engine: velocity, collisions, and true player control.</p>
 
 <h3 id="31-velocity-and-motion">3.1: Velocity and Motion</h3>
 
@@ -620,12 +625,7 @@ class PhysicsObject{
 
 <p>As always, you can view the code for this chapter <a href="https://github.com/LinuxRocks2000/platformer-from-scratch/tree/master/chapter-3">here</a>.</p>
 
-`;
-                        hljs.highlightAll();
-                    }
-                }
-            </script>
-            <div id="content-wrapper"></div>
+
             Unfortunately, Google Ads is too awful to use on my site; I'm sure you're all very sad that this section is not filled with cheap Medicare.<br />
             Yes, my voice oozes sarcasm.
             <div id="disqus_thread"></div>
@@ -663,6 +663,13 @@ class PhysicsObject{
         </div>
         <div id="sidebar">
             <div id="stickything">
+
+    <a class = "theA" href="/blog/platformer-from-scratch-chap-5">
+        <div class = "sidebar-item">
+            <span class = "title">Platformer From Scratch Chap 5</span><br />
+            <span class = "bottomthing">Cleaning up motion, adding fifty coins, adding various other new block types</span>
+        </div>
+    </a>
 
     <a class = "theA" href="/blog/platformer-from-scratch-chap-4">
         <div class = "sidebar-item">

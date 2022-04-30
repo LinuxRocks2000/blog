@@ -27,7 +27,7 @@
 </style>
 
         </div>
-        <div id="body">
+        <div id="body" style="display: none;">
             <script type="text/javascript">
                 var isFirefox = typeof InstallTrigger !== 'undefined';
                 if (!isFirefox){
@@ -39,7 +39,12 @@
                 }
                 else{ // They don't get to view any content if they even do manage to get past my clickwall!
                     window.onload = function(){
-                        document.getElementById("content-wrapper").innerHTML = `<h3 id="it-was-a-beautiful-august-midday-that-we-stepped-into-the-5-below-not-knowing-that-we-would-soon-be-the-sole-witnesses-to-the-most-important-conspiracy-of-the-21st-century">It was a beautiful August midday that we stepped into the 5-Below, not knowing that we would soon be the sole witnesses to the most important conspiracy of the 21st century.</h3>
+                        document.getElementById("body").style.display="";
+                        hljs.highlightAll();
+                    }
+                }
+            </script>
+            <h3 id="it-was-a-beautiful-august-midday-that-we-stepped-into-the-5-below-not-knowing-that-we-would-soon-be-the-sole-witnesses-to-the-most-important-conspiracy-of-the-21st-century">It was a beautiful August midday that we stepped into the 5-Below, not knowing that we would soon be the sole witnesses to the most important conspiracy of the 21st century.</h3>
 
 <p>Everything was cheap and doubtless about as well made as the price was high. The only exception to this rule was the bin of stuffies that took the internet by storm in later years - squishmallows.</p>
 
@@ -66,12 +71,7 @@ Where did the squishmallows go?</p>
 <h3 id="detective-lane-howser-is-a-private-detective-in-toronto-canada-she-likes-to-hunt-down-the-most-utterly-trivial-cases">Detective Lane Howser is a private detective in Toronto, Canada. She likes to hunt down the most utterly trivial cases.</h3>
 
 <p><em>This entire article is a joke, based in fact, same as all the further Detective Lane Howser articles.</em></p>
-`;
-                        hljs.highlightAll();
-                    }
-                }
-            </script>
-            <div id="content-wrapper"></div>
+
             Unfortunately, Google Ads is too awful to use on my site; I'm sure you're all very sad that this section is not filled with cheap Medicare.<br />
             Yes, my voice oozes sarcasm.
             <div id="disqus_thread"></div>
@@ -109,6 +109,13 @@ Where did the squishmallows go?</p>
         </div>
         <div id="sidebar">
             <div id="stickything">
+
+    <a class = "theA" href="/blog/platformer-from-scratch-chap-5">
+        <div class = "sidebar-item">
+            <span class = "title">Platformer From Scratch Chap 5</span><br />
+            <span class = "bottomthing">Cleaning up motion, adding fifty coins, adding various other new block types</span>
+        </div>
+    </a>
 
     <a class = "theA" href="/blog/platformer-from-scratch-chap-4">
         <div class = "sidebar-item">

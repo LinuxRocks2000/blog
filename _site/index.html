@@ -27,7 +27,7 @@
 </style>
 
         </div>
-        <div id="body">
+        <div id="body" style="display: none;">
             <script type="text/javascript">
                 var isFirefox = typeof InstallTrigger !== 'undefined';
                 if (!isFirefox){
@@ -39,7 +39,12 @@
                 }
                 else{ // They don't get to view any content if they even do manage to get past my clickwall!
                     window.onload = function(){
-                        document.getElementById("content-wrapper").innerHTML = `<h1>Welcome to my blog!</h1>
+                        document.getElementById("body").style.display="";
+                        hljs.highlightAll();
+                    }
+                }
+            </script>
+            <h1>Welcome to my blog!</h1>
 <p>
     I am unaware as to how you landed here - whether it be recommendation from a friend, recommendation from me (if I'm your friend, which I might be - I'm an extrovert), or just stumbling here from Github or another blog. <br /><br />
     If it is the first - thank your friend (please). I hope you will like this blog, and I hope your friend will recommend more people :)<br />
@@ -48,16 +53,11 @@
     <br />
     If you have decided to stay here, you have a couple options. First, you could hover over the weird orange bar - its actually a menu - and find a satisfactory blog post.<br />
     You could also check out my <a href = "/blog/hello-world">first post</a>, or if you like most recent things and/or don't care much about order, my
-    <a href = "/blog/platformer-from-scratch-chap-4">last post</a>
+    <a href = "/blog/platformer-from-scratch-chap-5">last post</a>
     <br />
     (If I haven't written anything else / deleted a lot of my posts, both of those links will point to the <a href = "/blog/hello-world">first post</a>. You can make sure this is correct by checking how many posts there are in the little orange sidebar)
 </p>
-`;
-                        hljs.highlightAll();
-                    }
-                }
-            </script>
-            <div id="content-wrapper"></div>
+
             Unfortunately, Google Ads is too awful to use on my site; I'm sure you're all very sad that this section is not filled with cheap Medicare.<br />
             Yes, my voice oozes sarcasm.
             <div id="disqus_thread"></div>
@@ -95,6 +95,13 @@
         </div>
         <div id="sidebar">
             <div id="stickything">
+
+    <a class = "theA" href="/blog/platformer-from-scratch-chap-5">
+        <div class = "sidebar-item">
+            <span class = "title">Platformer From Scratch Chap 5</span><br />
+            <span class = "bottomthing">Cleaning up motion, adding fifty coins, adding various other new block types</span>
+        </div>
+    </a>
 
     <a class = "theA" href="/blog/platformer-from-scratch-chap-4">
         <div class = "sidebar-item">
