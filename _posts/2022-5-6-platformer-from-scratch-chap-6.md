@@ -1,6 +1,7 @@
 ---
 name: "Platformer From Scratch chapter 6"
 bottomthing: "Conclusively finishing the physics engine for the third time, bats, level management"
+published: false
 ---
 
 Welcome back! I know it's been a long time since my last PFS update - I had (have, if I publish this before May 9th) finals and an SAT. We're going to start today by revisiting the physics engine - I fiddled with it a bit and decided that, having reduced the number of cycles required for collisions, I would add this to chapter 6. So, yes, you can expect this to be a long one.
