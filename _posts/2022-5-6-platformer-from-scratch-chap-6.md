@@ -256,4 +256,15 @@ window.requestAnimationFrame(mainloop);
 
 Now it won't run, and when you reload you'll see nothing on-screen. This just gives us a clear workspace to do some HTML and CSS.
 
-The technology we're going to use for the interface is called CSS grid. You should read about it on [MDN](https://developer.mozilla.org/en-US/docs/Web/CSS/grid)<collapsible-footnote citationname="[1]">You should also view the MDN article on grid areas <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/grid-template-areas">here</a>.</collapsible-footnote> if you don't already understand it, we'll be doing complex stuff with it.
+The technology we're going to use for the interface is called CSS grid. You should read about it on [MDN](https://developer.mozilla.org/en-US/docs/Web/CSS/grid)<collapsible-footnote citationname="[1]">You should also view the MDN article on grid areas <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/grid-template-areas">here</a>.</collapsible-footnote> if you don't already understand it, we'll be doing complex stuff with it. Let's add a grid container in `index.html` under `<div id="game">`:
+
+```html
+	</div><!-- the other html -->
+	<div id="menu">
+        <!-- we'll make this a grid container in CSS -->
+	</div>
+</div>
+</body> <!-- placemarker -->
+```
+
+Now, in `main.css`, 
