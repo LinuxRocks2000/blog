@@ -5,8 +5,9 @@
         <title>About Me</title>
         <link rel="stylesheet" href="/blog/css/main.css" />
         <link rel="stylesheet"
-              href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/styles/default.min.css">
-        <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/highlight.min.js"></script>
+              href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/styles/default.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/highlight.min.js"></script>
+        <script>hljs.highlightAll()</script>
     </head>
     <body>
         <div id="topbar">
@@ -27,23 +28,7 @@
 </style>
 
         </div>
-        <div id="body" style="display: none;">
-            <script type="text/javascript">
-                var isFirefox = typeof InstallTrigger !== 'undefined';
-                if (!isFirefox){
-                    alert("Use firefox.");
-                    window.location.replace("https://www.mozilla.org/en-US/firefox/new/");
-                    alert("Apparently, you broke out of it!");
-                    document.documentElement.innerHTML = "";
-                    while (1); // Hang the thread if they try beating me
-                }
-                else{ // They don't get to view any content if they even do manage to get past my clickwall!
-                    window.onload = function(){
-                        document.getElementById("body").style.display="";
-                        hljs.highlightAll();
-                    }
-                }
-            </script>
+        <div id="body">
             <h1 id="about-me">About me</h1>
 
 <p>[Photograph not shown for privacy reasons]</p>
@@ -57,8 +42,91 @@ My first language was Scratch, and I eschew Java because it is a hatefully slow 
 
 <h2 id="im-looking-for-a-part-time-coding-job---if-you-have-anything-you-need-programmed-please-e-mail-me">I’m looking for a part-time coding job - if you have anything you need programmed, please <a href="mailto:plupy44@gmail.com">E-Mail me</a></h2>
 
-            Unfortunately, Google Ads is too awful to use on my site; I'm sure you're all very sad that this section is not filled with cheap Medicare.<br />
-            Yes, my voice oozes sarcasm.
+            My friend's blogs: <a href="https://wizardwatch.net/">Wizardwatch's overall site</a>, <a href="https://sawyershepherd.org/">Sawyer's blog</a> (the .org part bemuses me). If ryleu decides to actually put something on his site, I'll link it here.
+            <div id="navlinks">
+                
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+            </div>
             <div id="disqus_thread"></div>
             <script>
                 /**
@@ -81,6 +149,7 @@ My first language was Scratch, and I eschew Java because it is a hatefully slow 
         </div>
         <div id="footer">
             <p><a href = "mailto:plupy44@gmail.com">Email?</a></p>
+<p><a href = "https://github.com/LinuxRocks2000">Github?</a></p>
 <p>Privacy policy: We don't collect data</p>
 <p>Cookie policy: We don't use cookies</p>
 <p>Copywrong 1492, Tyler Clarke</p>
@@ -94,13 +163,6 @@ My first language was Scratch, and I eschew Java because it is a hatefully slow 
         </div>
         <div id="sidebar">
             <div id="stickything">
-
-    <a class = "theA" href="/blog/platformer-from-scratch-chap-6">
-        <div class = "sidebar-item">
-            <span class = "title">Platformer From Scratch Chap 6</span><br />
-            <span class = "bottomthing">Conclusively finishing the physics engine for the third time, bats, level management</span>
-        </div>
-    </a>
 
     <a class = "theA" href="/blog/platformer-from-scratch-chap-5">
         <div class = "sidebar-item">

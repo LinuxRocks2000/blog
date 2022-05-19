@@ -5,8 +5,9 @@
         <title>On Religion</title>
         <link rel="stylesheet" href="/blog/css/main.css" />
         <link rel="stylesheet"
-              href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/styles/default.min.css">
-        <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/highlight.min.js"></script>
+              href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/styles/default.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/highlight.min.js"></script>
+        <script>hljs.highlightAll()</script>
     </head>
     <body>
         <div id="topbar">
@@ -27,23 +28,7 @@
 </style>
 
         </div>
-        <div id="body" style="display: none;">
-            <script type="text/javascript">
-                var isFirefox = typeof InstallTrigger !== 'undefined';
-                if (!isFirefox){
-                    alert("Use firefox.");
-                    window.location.replace("https://www.mozilla.org/en-US/firefox/new/");
-                    alert("Apparently, you broke out of it!");
-                    document.documentElement.innerHTML = "";
-                    while (1); // Hang the thread if they try beating me
-                }
-                else{ // They don't get to view any content if they even do manage to get past my clickwall!
-                    window.onload = function(){
-                        document.getElementById("body").style.display="";
-                        hljs.highlightAll();
-                    }
-                }
-            </script>
+        <div id="body">
             <h2 id="beginning-statements">Beginning statements</h2>
 
 <p>First off, I want to state that I’m not a Christian. I know this is pretty appalling to a lot of people nowadays, which is only natural as a lot of people are Christian: out of the 329.5 million people (as of 2022) here in America, around 65 percent believe in God and a pantheon of saints. Does this mean I am inherently wrong, as America is founded upon majority? No. America was founded on religious safety, from the despot king and church in Europe, and to discriminate on faith is exactly the kind of thing our society would do today, which is not at all a complement. But I digress. This article is not about whether I should be protected by the law from discrimination which I haven’t, interestingly, received (I know a very large amount of intelligent and amiable Christians who accept my faith graciously), it is about why I’m not Christian.</p>
@@ -74,8 +59,99 @@
   <li>Isn’t profane; keep it civil and clean because this is blog is supposed to be somewhat child-friendly.</li>
 </ul>
 
-            Unfortunately, Google Ads is too awful to use on my site; I'm sure you're all very sad that this section is not filled with cheap Medicare.<br />
-            Yes, my voice oozes sarcasm.
+            My friend's blogs: <a href="https://wizardwatch.net/">Wizardwatch's overall site</a>, <a href="https://sawyershepherd.org/">Sawyer's blog</a> (the .org part bemuses me). If ryleu decides to actually put something on his site, I'll link it here.
+            <div id="navlinks">
+                
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                        
+                            <a href="/blog/Carbon-Cycles">&lt; Carbon Cycles <p>And why America should use Ethanol</p></a>
+                        
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                        
+                            <a href="/blog/gluten-free-dairy-free-highly-based-brownies" style="flex-direction: row-reverse; float: right;">Gluten Free, Dairy Free, Highly Based Brownies &gt;<p>Because everyone has just <i>got</i> to love long-winded poorly-Javascripted baking blogs!</p></a>
+                        
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+            </div>
             <div id="disqus_thread"></div>
             <script>
                 /**
@@ -98,6 +174,7 @@
         </div>
         <div id="footer">
             <p><a href = "mailto:plupy44@gmail.com">Email?</a></p>
+<p><a href = "https://github.com/LinuxRocks2000">Github?</a></p>
 <p>Privacy policy: We don't collect data</p>
 <p>Cookie policy: We don't use cookies</p>
 <p>Copywrong 1492, Tyler Clarke</p>
@@ -111,13 +188,6 @@
         </div>
         <div id="sidebar">
             <div id="stickything">
-
-    <a class = "theA" href="/blog/platformer-from-scratch-chap-6">
-        <div class = "sidebar-item">
-            <span class = "title">Platformer From Scratch Chap 6</span><br />
-            <span class = "bottomthing">Conclusively finishing the physics engine for the third time, bats, level management</span>
-        </div>
-    </a>
 
     <a class = "theA" href="/blog/platformer-from-scratch-chap-5">
         <div class = "sidebar-item">

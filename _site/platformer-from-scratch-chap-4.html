@@ -5,8 +5,9 @@
         <title>Platformer From Scratch Chap 4</title>
         <link rel="stylesheet" href="/blog/css/main.css" />
         <link rel="stylesheet"
-              href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/styles/default.min.css">
-        <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/highlight.min.js"></script>
+              href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/styles/default.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/highlight.min.js"></script>
+        <script>hljs.highlightAll()</script>
     </head>
     <body>
         <div id="topbar">
@@ -27,23 +28,7 @@
 </style>
 
         </div>
-        <div id="body" style="display: none;">
-            <script type="text/javascript">
-                var isFirefox = typeof InstallTrigger !== 'undefined';
-                if (!isFirefox){
-                    alert("Use firefox.");
-                    window.location.replace("https://www.mozilla.org/en-US/firefox/new/");
-                    alert("Apparently, you broke out of it!");
-                    document.documentElement.innerHTML = "";
-                    while (1); // Hang the thread if they try beating me
-                }
-                else{ // They don't get to view any content if they even do manage to get past my clickwall!
-                    window.onload = function(){
-                        document.getElementById("body").style.display="";
-                        hljs.highlightAll();
-                    }
-                }
-            </script>
+        <div id="body">
             <p>Welcome to the fourth episode of Platformer From Scratch! In this chapter, we’ll put the finishing touches on the physics engine and add lava, coins, and basic enemies, as well as implement player death. Finally, we’ll add a minimum-extent clause to the <code class="language-plaintext highlighter-rouge">_create</code> command which allows us to kill the player if it falls off a platform. Let’s get started!</p>
 
 <h3 id="41-finishing-the-physics-engine--for-real-this-time">4.1: Finishing the physics engine- for real this time</h3>
@@ -704,8 +689,99 @@ For now, play with it a bit and hopefully add some more features of your own; se
 
 <p>As always, you can view the code for this chapter on <a href="https://github.com/LinuxRocks2000/platformer-from-scratch/tree/master/chapter-4/">Github</a>.</p>
 
-            Unfortunately, Google Ads is too awful to use on my site; I'm sure you're all very sad that this section is not filled with cheap Medicare.<br />
-            Yes, my voice oozes sarcasm.
+            My friend's blogs: <a href="https://wizardwatch.net/">Wizardwatch's overall site</a>, <a href="https://sawyershepherd.org/">Sawyer's blog</a> (the .org part bemuses me). If ryleu decides to actually put something on his site, I'll link it here.
+            <div id="navlinks">
+                
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                        
+                            <a href="/blog/platformer-from-scratch-chap-3">&lt; Platformer From Scratch Chap 3 <p>Physics</p></a>
+                        
+                    
+                    
+                
+                    
+                    
+                
+                
+                
+                    
+                    
+                
+                    
+                        
+                            <a href="/blog/platformer-from-scratch-chap-5" style="flex-direction: row-reverse; float: right;">Platformer From Scratch Chap 5 &gt;<p>Cleaning up motion, adding fifty coins, adding various other new block types</p></a>
+                        
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+            </div>
             <div id="disqus_thread"></div>
             <script>
                 /**
@@ -728,6 +804,7 @@ For now, play with it a bit and hopefully add some more features of your own; se
         </div>
         <div id="footer">
             <p><a href = "mailto:plupy44@gmail.com">Email?</a></p>
+<p><a href = "https://github.com/LinuxRocks2000">Github?</a></p>
 <p>Privacy policy: We don't collect data</p>
 <p>Cookie policy: We don't use cookies</p>
 <p>Copywrong 1492, Tyler Clarke</p>
@@ -741,13 +818,6 @@ For now, play with it a bit and hopefully add some more features of your own; se
         </div>
         <div id="sidebar">
             <div id="stickything">
-
-    <a class = "theA" href="/blog/platformer-from-scratch-chap-6">
-        <div class = "sidebar-item">
-            <span class = "title">Platformer From Scratch Chap 6</span><br />
-            <span class = "bottomthing">Conclusively finishing the physics engine for the third time, bats, level management</span>
-        </div>
-    </a>
 
     <a class = "theA" href="/blog/platformer-from-scratch-chap-5">
         <div class = "sidebar-item">

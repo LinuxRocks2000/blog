@@ -76,3 +76,22 @@ code.language-plaintext{
     user-select: none;
     -webkit-user-select: none;
 }
+
+#navlinks > a{
+    background-color: lightblue;
+    color: white;
+    display: inline-flex;
+    margin: 0px;
+    padding: 5px;
+    text-decoration: none;
+    max-width: 40vw;
+    height: 100%;
+}
+
+#navlinks > a > p{
+    display: inline-block;
+    margin: 0px;
+    padding: 0px;
+    margin-top: 2em;
+    font-size: 0.75em;
+}
