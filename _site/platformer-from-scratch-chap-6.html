@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+    <head>
+        <meta charset="utf-8">
+        <title>Platformer From Scratch Chap 6</title>
+        <link rel="stylesheet" href="/blog/css/main.css" />
+        <link rel="stylesheet"
+              href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/styles/default.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/highlight.min.js"></script>
+        <script>hljs.highlightAll()</script>
+    </head>
+    <body>
+        <div id="topbar">
+            <nav>
+    <a href="/blog/">Blog</a>
+    <a href="/blog/about">About Me</a>
+    <a href="/">My comic</a>
+</nav>
+
+<style>
+    nav > a{
+        font-family: Arial;
+        font-size: 2em;
+        color: black;
+        text-decoration: none;
+        margin-left: 20px;
+    }
+</style>
+
+        </div>
+        <div id="body">
+            <div class="navlinks">
+                
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                        
+                            <a href="/blog/platformer-from-scratch-chap-5">&lt; Platformer From Scratch Chap 5 <p>Cleaning up motion, adding fifty coins, adding various other new block types</p></a>
+                        
+                    
+                    
+                
+                
+                
+                    
+                        
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+            </div>
+            <p>Welcome back! I know it’s been a long time since my last PFS update - I had (have, if I publish this before May 9th) finals and an SAT. We’re going to start today by revisiting the physics engine - I fiddled with it a bit and decided that, having reduced the number of cycles required for collisions, I would add this to chapter 6. So, yes, you can expect this to be a long one.</p>
+
+<h2 id="61-physics-absolutism">6.1: Physics absolutism</h2>
+
+<p>For a while, our physics engine has used Move+Rebound motion. This is inefficient and forced us to interject some <code class="language-plaintext highlighter-rouge">Math.round</code> calls, which makes itself obvious at very low virtual framerates (5-10): you’ll find that when you jump and move to the side, you stay at one fixed height for much longer than you should, because your position keeps rounding. We’re going to fix this now with an improvement on the rebound physics engine: it detects what direction it’s moving in, then changes the X and Y positions of the player to be at the top or bottom of the object it hit. For this concept to work, we need to determine the closest block to the side you recognize it hits at, we can use four functions for this:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">function</span> <span class="nx">getRightmost</span><span class="p">(</span><span class="nx">physicsObjects</span><span class="p">){</span>
+    <span class="kd">var</span> <span class="nx">rightmostVal</span> <span class="o">=</span> <span class="kc">Infinity</span><span class="p">;</span>
+    <span class="kd">var</span> <span class="nx">rightmostObj</span> <span class="o">=</span> <span class="kc">undefined</span><span class="p">;</span>
+    <span class="nx">physicsObjects</span><span class="p">.</span><span class="nx">forEach</span><span class="p">((</span><span class="nx">item</span><span class="p">,</span> <span class="nx">i</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">item</span><span class="p">.</span><span class="nx">x</span> <span class="o">&lt;</span> <span class="nx">rightmostVal</span><span class="p">){</span>
+            <span class="nx">rightmostVal</span> <span class="o">=</span> <span class="nx">item</span><span class="p">.</span><span class="nx">x</span><span class="p">;</span>
+            <span class="nx">rightmostObj</span> <span class="o">=</span> <span class="nx">item</span><span class="p">;</span>
+        <span class="p">}</span>
+    <span class="p">});</span>
+    <span class="k">return</span> <span class="nx">rightmostObj</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kd">function</span> <span class="nx">getLeftmost</span><span class="p">(</span><span class="nx">physicsObjects</span><span class="p">){</span>
+    <span class="kd">var</span> <span class="nx">leftmostVal</span> <span class="o">=</span> <span class="o">-</span><span class="kc">Infinity</span><span class="p">;</span>
+    <span class="kd">var</span> <span class="nx">leftmostObj</span> <span class="o">=</span> <span class="kc">undefined</span><span class="p">;</span>
+    <span class="nx">physicsObjects</span><span class="p">.</span><span class="nx">forEach</span><span class="p">((</span><span class="nx">item</span><span class="p">,</span> <span class="nx">i</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">item</span><span class="p">.</span><span class="nx">x</span> <span class="o">+</span> <span class="nx">item</span><span class="p">.</span><span class="nx">width</span> <span class="o">&gt;</span> <span class="nx">leftmostVal</span><span class="p">){</span>
+            <span class="nx">leftmostVal</span> <span class="o">=</span> <span class="nx">item</span><span class="p">.</span><span class="nx">x</span><span class="p">;</span>
+            <span class="nx">leftmostObj</span> <span class="o">=</span> <span class="nx">item</span><span class="p">;</span>
+        <span class="p">}</span>
+    <span class="p">});</span>
+    <span class="k">return</span> <span class="nx">leftmostObj</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kd">function</span> <span class="nx">getTopmost</span><span class="p">(</span><span class="nx">physicsObjects</span><span class="p">){</span>
+    <span class="kd">var</span> <span class="nx">topmostVal</span> <span class="o">=</span> <span class="kc">Infinity</span><span class="p">;</span>
+    <span class="kd">var</span> <span class="nx">topmostObj</span> <span class="o">=</span> <span class="kc">undefined</span><span class="p">;</span>
+    <span class="nx">physicsObjects</span><span class="p">.</span><span class="nx">forEach</span><span class="p">((</span><span class="nx">item</span><span class="p">,</span> <span class="nx">i</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">item</span><span class="p">.</span><span class="nx">y</span> <span class="o">&lt;</span> <span class="nx">topmostVal</span><span class="p">){</span>
+            <span class="nx">topmostVal</span> <span class="o">=</span> <span class="nx">item</span><span class="p">.</span><span class="nx">y</span><span class="p">;</span>
+            <span class="nx">topmostObj</span> <span class="o">=</span> <span class="nx">item</span><span class="p">;</span>
+        <span class="p">}</span>
+    <span class="p">});</span>
+    <span class="k">return</span> <span class="nx">topmostObj</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kd">function</span> <span class="nx">getBottommost</span><span class="p">(</span><span class="nx">physicsObjects</span><span class="p">){</span>
+    <span class="kd">var</span> <span class="nx">bottommostVal</span> <span class="o">=</span> <span class="o">-</span><span class="kc">Infinity</span><span class="p">;</span>
+    <span class="kd">var</span> <span class="nx">bottommostObj</span> <span class="o">=</span> <span class="kc">undefined</span><span class="p">;</span>
+    <span class="nx">physicsObjects</span><span class="p">.</span><span class="nx">forEach</span><span class="p">((</span><span class="nx">item</span><span class="p">,</span> <span class="nx">i</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">item</span><span class="p">.</span><span class="nx">y</span> <span class="o">+</span> <span class="nx">item</span><span class="p">.</span><span class="nx">height</span> <span class="o">&gt;</span> <span class="nx">bottommostVal</span><span class="p">){</span>
+            <span class="nx">bottommostVal</span> <span class="o">=</span> <span class="nx">item</span><span class="p">.</span><span class="nx">x</span><span class="p">;</span>
+            <span class="nx">bottommostObj</span> <span class="o">=</span> <span class="nx">item</span><span class="p">;</span>
+        <span class="p">}</span>
+    <span class="p">});</span>
+    <span class="k">return</span> <span class="nx">bottommostObj</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>These all follow the same general theme, so I’ll only explain <code class="language-plaintext highlighter-rouge">getRightmost</code> and <code class="language-plaintext highlighter-rouge">getLeftmost</code>; understanding those means you understand the other two. Let’s disect <code class="language-plaintext highlighter-rouge">getRightmost</code> first:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">function</span> <span class="nx">getRightmost</span><span class="p">(</span><span class="nx">physicsObjects</span><span class="p">){</span>
+    <span class="kd">var</span> <span class="nx">rightmostVal</span> <span class="o">=</span> <span class="kc">Infinity</span><span class="p">;</span>
+    <span class="kd">var</span> <span class="nx">rightmostObj</span> <span class="o">=</span> <span class="kc">undefined</span><span class="p">;</span>
+    <span class="nx">physicsObjects</span><span class="p">.</span><span class="nx">forEach</span><span class="p">((</span><span class="nx">item</span><span class="p">,</span> <span class="nx">i</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">item</span><span class="p">.</span><span class="nx">x</span> <span class="o">&lt;</span> <span class="nx">rightmostVal</span><span class="p">){</span>
+            <span class="nx">rightmostVal</span> <span class="o">=</span> <span class="nx">item</span><span class="p">.</span><span class="nx">x</span><span class="p">;</span>
+            <span class="nx">rightmostObj</span> <span class="o">=</span> <span class="nx">item</span><span class="p">;</span>
+        <span class="p">}</span>
+    <span class="p">});</span>
+    <span class="k">return</span> <span class="nx">rightmostObj</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<ul>
+  <li>
+<code class="language-plaintext highlighter-rouge">function getRightmost(physicsObjects)</code>: define a function outside of a class (hence “function”) which takes the argument “physicsObjects”</li>
+  <li>
+<code class="language-plaintext highlighter-rouge">var rightmostVal = Infinity;</code>: Infinity is the furthest <em>left</em> anything can get, and when we check how far right each block is, we want any block at all to register as true. This is a simple Javascript trick: <code class="language-plaintext highlighter-rouge">any_number &lt; Infinity</code> is always true.</li>
+  <li>
+<code class="language-plaintext highlighter-rouge">var rightmostObj = undefined;</code>: Set the right-most object, the thing we return, to <code class="language-plaintext highlighter-rouge">undefined</code>; we define it later.</li>
+  <li>
+<code class="language-plaintext highlighter-rouge">physicsObjects.forEach</code>: forEach over physicsObjects, which is here revealed to be necessarily an Array.</li>
+  <li>
+<code class="language-plaintext highlighter-rouge">if (item.x &lt; rightmostVal)</code>: If this object is further right than the last one, it becomes the new object.</li>
+  <li>
+<code class="language-plaintext highlighter-rouge">rightmostVal = item.x;</code>: Log the position as the rightmost object</li>
+  <li>
+<code class="language-plaintext highlighter-rouge">rightmostObj = item;</code>: Log the actual item as the rightmost object</li>
+  <li>
+<code class="language-plaintext highlighter-rouge">return rightmostObj;</code>: Return the furthest right object in that array.</li>
+</ul>
+
+<p>Now, let’s look at <code class="language-plaintext highlighter-rouge">getLeftmost</code>:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">function</span> <span class="nx">getLeftmost</span><span class="p">(</span><span class="nx">physicsObjects</span><span class="p">){</span>
+    <span class="kd">var</span> <span class="nx">leftmostVal</span> <span class="o">=</span> <span class="o">-</span><span class="kc">Infinity</span><span class="p">;</span>
+    <span class="kd">var</span> <span class="nx">leftmostObj</span> <span class="o">=</span> <span class="kc">undefined</span><span class="p">;</span>
+    <span class="nx">physicsObjects</span><span class="p">.</span><span class="nx">forEach</span><span class="p">((</span><span class="nx">item</span><span class="p">,</span> <span class="nx">i</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">item</span><span class="p">.</span><span class="nx">x</span> <span class="o">+</span> <span class="nx">item</span><span class="p">.</span><span class="nx">width</span> <span class="o">&gt;</span> <span class="nx">leftmostVal</span><span class="p">){</span>
+            <span class="nx">leftmostVal</span> <span class="o">=</span> <span class="nx">item</span><span class="p">.</span><span class="nx">x</span><span class="p">;</span>
+            <span class="nx">leftmostObj</span> <span class="o">=</span> <span class="nx">item</span><span class="p">;</span>
+        <span class="p">}</span>
+    <span class="p">});</span>
+    <span class="k">return</span> <span class="nx">leftmostObj</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>As you can see, this is mostly a clone of <code class="language-plaintext highlighter-rouge">getRightmost</code>, but with one difference: the <code class="language-plaintext highlighter-rouge">if</code> statement is different. It checks if <code class="language-plaintext highlighter-rouge">item.x + item.width</code>, which is the furthest left side of the rectangle, as illustrated by the graphic (This is embedded SVG, which happens to be something I use on my webcomic a lot):</p>
+<svg version="1.1" width="100%" height="200" viewbox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+	<rect x="40" y="35" width="20" height="30" fill="red"></rect>
+	<rect x="59" y="37.5" width="2" height="25" fill="black"></rect>
+	<rect x="39" y="37.5" width="2" height="25" fill="yellow"></rect>
+	<text x="65" y="70" font-size="8">x + width</text>
+	<text x="30" y="70" font-size="8">x</text>
+</svg>
+
+<p>(Also, Typora, my WYSIWYG editor of choice, renders that SVG for me so I’m very happy writing this <img class="emoji" title=":smile:" alt=":smile:" src="https://github.githubassets.com/images/icons/emoji/unicode/1f604.png" height="20" width="20">)</p>
+
+<p>These functions allow us to, given a collisions list, determine which one should be used to set the X/Y positions of the object. Go into the <code class="language-plaintext highlighter-rouge">PhysicsObject</code> <code class="language-plaintext highlighter-rouge">loop</code> function and delete the <code class="language-plaintext highlighter-rouge">while</code> loops with <code class="language-plaintext highlighter-rouge">this.doCollision</code>. These are deprecated. Then, in <code class="language-plaintext highlighter-rouge">if (this.xv &gt; 0)</code>, add <code class="language-plaintext highlighter-rouge">this.x = getRightmost(collX[1]).x - this.width;</code>. This is, as I’ve said many times, quite hairy, so let’s disect it:</p>
+
+<ul>
+  <li>
+<code class="language-plaintext highlighter-rouge">this.x = </code>: Set the X position of the player</li>
+  <li>
+<code class="language-plaintext highlighter-rouge">getRightmost(collX[1])</code>: <code class="language-plaintext highlighter-rouge">collX[1]</code> is a list of things the object hit. This finds the rightmost thing the object hit.</li>
+  <li>
+<code class="language-plaintext highlighter-rouge">.x - this.width;</code>: Subtract the current object’s width from the x position of the rightmost brick. If we don’t subtract <code class="language-plaintext highlighter-rouge">this.width</code> from it, the current object will be inside the brick; we want it to be outside and not touching.</li>
+</ul>
+
+<p>Now, in <code class="language-plaintext highlighter-rouge">else if (this.xv &lt; 0)</code> right after <code class="language-plaintext highlighter-rouge">if (this.xv &gt; 0)</code>, add</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">var</span> <span class="nx">leftmost</span> <span class="o">=</span> <span class="nx">getLeftmost</span><span class="p">(</span><span class="nx">collX</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span>
+<span class="k">this</span><span class="p">.</span><span class="nx">x</span> <span class="o">=</span> <span class="nx">leftmost</span><span class="p">.</span><span class="nx">x</span> <span class="o">+</span> <span class="nx">leftmost</span><span class="p">.</span><span class="nx">width</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>Slightly more complex; but it does basically the same thing; in this case, however, it ignores the current physics object’s <code class="language-plaintext highlighter-rouge">width</code> and instead uses the <code class="language-plaintext highlighter-rouge">leftmost</code> object’s width. This means that it will go to the other side, but is otherwise the same. I encourage you to attempt to do the same thing on the Y side yourself, but if you can’t here’s the code for the Y side:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">if</span> <span class="p">(</span><span class="nx">collY</span><span class="p">[</span><span class="mi">0</span><span class="p">]){</span>
+    <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">yv</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">){</span> <span class="c1">// Positive velocity = moving down</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">touchingBottom</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">y</span> <span class="o">=</span> <span class="nx">getTopmost</span><span class="p">(</span><span class="nx">collY</span><span class="p">[</span><span class="mi">1</span><span class="p">]).</span><span class="nx">y</span> <span class="o">-</span> <span class="k">this</span><span class="p">.</span><span class="nx">height</span><span class="p">;</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">hitBottom</span><span class="p">();</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">yv</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">){</span> <span class="c1">// Negative velocity = moving up</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">touchingTop</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+        <span class="kd">var</span> <span class="nx">bottommost</span> <span class="o">=</span> <span class="nx">getBottommost</span><span class="p">(</span><span class="nx">collY</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">y</span> <span class="o">=</span> <span class="nx">bottommost</span><span class="p">.</span><span class="nx">y</span> <span class="o">+</span> <span class="nx">bottommost</span><span class="p">.</span><span class="nx">height</span><span class="p">;</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">hitTop</span><span class="p">();</span>
+    <span class="p">}</span>
+    <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">zeroOnHitY</span><span class="p">){</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">yv</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>And (unselectable) the full <code class="language-plaintext highlighter-rouge">PhysicsObject</code> <code class="language-plaintext highlighter-rouge">loop</code> function:</p>
+
+<pre class="noselect"><code class="language-javascript">loop(framesElapsed){
+    if (!this.isStatic){
+        this.touchingTop = false;
+        this.touchingBottom = false;
+        this.touchingLeft = false;
+        this.touchingRight = false;
+        this.xv *= Math.pow(this.friction * this.frictionChangeX, framesElapsed);
+        this.yv *= Math.pow(this.frictionY, framesElapsed);
+        this.frictionChangeX = 1;
+        this.yv += (this.gravity * framesElapsed);
+        this.move(this.xv * framesElapsed, 0);
+        //this.x = Math.round(this.x);
+        var collX = this.doCollision(this.game.checkCollision(this));
+        if (collX[0]){
+            if (this.xv &gt; 0){ // Positive velocity = moving right
+                this.touchingRight = true;
+                this.x = getRightmost(collX[1]).x - this.width;
+                this.hitRight();
+            }
+            else if (this.xv &lt; 0){ // Negative velocity =  moving left
+                this.touchingLeft = true;
+                var leftmost = getLeftmost(collX[1]);
+                this.x = leftmost.x + leftmost.width;
+                this.hitLeft();
+            }
+            if (this.zeroOnHitX){
+                this.xv = 0;
+            }
+        }
+        this.move(0, this.yv * framesElapsed);
+        var collY = this.doCollision(this.game.checkCollision(this));
+        //this.y = Math.round(this.y);
+        if (collY[0]){
+            /*while (this.doCollision(this.game.checkCollision(this, collY[1]))[0]){
+                this.move(0, -Math.abs(this.yv)/this.yv);
+            }*/
+            if (this.yv &gt; 0){ // Positive velocity = moving down
+                this.touchingBottom = true;
+                this.y = getTopmost(collY[1]).y - this.height;
+                this.hitBottom();
+            }
+            else if (this.yv &lt; 0){ // Negative velocity = moving up
+                this.touchingTop = true;
+                var bottommost = getBottommost(collY[1]);
+                this.y = bottommost.y + bottommost.height;
+                this.hitTop();
+            }
+            if (this.zeroOnHitY){
+                this.yv = 0;
+            }
+        }
+    }
+}</code></pre>
+
+<p>Now, when you reload, it should be– exactly the same? That’s because all we did was optimize. Now, it <em>can</em> perform better, but on most systems you won’t notice the difference, especially with our time rate code.</p>
+
+<h2 id="62-notice-a-bug">6.2: Notice a bug?</h2>
+
+<p>Now that our physics engine is absolute and you can go down to ridiculously low time-rates (the timerate is set in the <code class="language-plaintext highlighter-rouge">const FPS</code>) without rounding errors - I’ve tried it as low as 0.5 - you’ve probably noticed that at lower time-rates the bullets from the gunner last much less time. This is because they count the number of real frames, not the number of animation frames: when the cpu is powerful enough, the code from Chapter 5 kicks in: if 200 milliseconds is more than enough time to process a frame, another frame will be processed. If you have a very slow computer, only 1 frame will be processed, if you have a very fast one, it will process many; an FPS counter is a project for chapter 7 that ought to be most rewarding. This means that when the bullet counts how long it has left, it’s counting those extra partial frames, so it disappears much faster. Let’s change this line in <code class="language-plaintext highlighter-rouge">FlyerEnemy</code>’s <code class="language-plaintext highlighter-rouge">loop</code> function:</p>
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">this</span><span class="p">.</span><span class="nx">TTL</span> <span class="o">-=</span> <span class="mi">1</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>Into:</p>
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">this</span><span class="p">.</span><span class="nx">TTL</span> <span class="o">-=</span> <span class="nx">framesElapsed</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>This means that when a partial frame - decimal value of <code class="language-plaintext highlighter-rouge">framesElapsed</code> happens, it’s counted as a partial frame instead of a full frame. <code class="language-plaintext highlighter-rouge">if (this.TTL == 0)</code> is also a bug: because of decimal framesElapsed values<collapsible-footnote citationname="[1]">Every frame takes a different amount of time - oftentimes not noticeable. If there are 0.5 frames left and 1.2 frames pass (due to a system slowdown), it will become -0.7 instead of 0.</collapsible-footnote>, this will often not actually hit 0, and will be negative. Change it to <code class="language-plaintext highlighter-rouge">if (this.TTL &lt;= 0)</code>, which will catch if it’s less than as well as if it’s equal to 0. Try running it at 5 fps timerate: they should last about the right amount of time, but they’ll be created far too often, this is because of the same issue: it ticks down 1 for every extra frame it processes, instead of 0.1. Change this in the <code class="language-plaintext highlighter-rouge">GunnerEnemy</code> <code class="language-plaintext highlighter-rouge">loop</code> function: where there was <code class="language-plaintext highlighter-rouge">this.phase += 1;</code>, there should now be <code class="language-plaintext highlighter-rouge">this.phase += framesElapsed;</code>. If it’s not already <code class="language-plaintext highlighter-rouge">if (this.phase &gt;= 75)</code>, make it that way; <code class="language-plaintext highlighter-rouge">this.phase == 75</code> will trip the same issue. They should perform properly now.</p>
+
+<h2 id="63-starting-a-game-interface">6.3: Starting a game interface</h2>
+
+<p>I’m going to recite the incantation: Anyone who’s played Platformer before knows that there is a minimal (and still ugly, I haven’t gotten around to improvements yet) game start, save, load, etc interface. However, these are advanced concepts, and I’m going to leave them for later (perhaps in this chapter, perhaps not). We need to start, after all, somewhere; and where to start but with actually building the interface? Begin with commenting out all of our game start code:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/*
+// Demo
+var game = new Game(50, 50);
+
+game.create(-5, 8, 20, 1, "normal", "solid");
+game.create(-2, 4, 14, 1, "normal", "solid");
+game.create(11, 3, 1, 1, "normal", "solid");
+game.create(2, 3, 1, 1, "coin", "tencoin");
+game.create(3, 3, 1, 1, "coin", "fiftycoin");
+game.create(7, 7, 1, 1, "coin", "tencoin");
+game.create(8, 7, 1, 1, "coin", "tencoin");
+game.create(9, 7, 1, 1, "coin", "tencoin");
+
+game.create(5, 0, 1, 1, "normal", "solid");
+game.create(6, 0, 3, 1, "jumpthrough", "jumpthrough");
+game.create(9, 0, 1, 1, "normal", "solid");
+game.create(2, 0, 3, 1, "tar", "tar");
+
+game.create(8, 6, 1, 1,  "lava", "killu", GunnerEnemy);
+
+
+const FPS = 5;
+const millisPerFrame = 1000 / FPS;
+var lastFrameTime = 0;
+
+window.onfocus = function(){
+    lastFrameTime = window.performance.now();
+}
+
+function mainloop(){
+    if (document.hasFocus()){
+        var distTime = window.performance.now() - lastFrameTime;
+        lastFrameTime = window.performance.now();
+        var framesElapsed = distTime/millisPerFrame;
+        game.loop(framesElapsed);
+    }
+    window.requestAnimationFrame(mainloop);
+}
+window.requestAnimationFrame(mainloop);
+*/</span>
+</code></pre></div></div>
+
+<p>Now it won’t run, and when you reload you’ll see nothing on-screen. This just gives us a clear workspace to do some HTML and CSS.</p>
+
+<p>The technology we’re going to use for the interface is called CSS grid. You should read about it on <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/grid">MDN</a><collapsible-footnote citationname="[1]">You should also view the MDN article on grid areas <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/grid-template-areas">here</a>.</collapsible-footnote> if you don’t already understand it, we’ll be doing complex stuff with it. Let’s add a grid container in <code class="language-plaintext highlighter-rouge">index.html</code> under <code class="language-plaintext highlighter-rouge">&lt;div id="game"&gt;</code>:</p>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code>	<span class="nt">&lt;/div&gt;</span><span class="c">&lt;!-- the other html --&gt;</span>
+	<span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">"menu"</span><span class="nt">&gt;</span>
+        <span class="c">&lt;!-- we'll make this a grid container in CSS --&gt;</span>
+	<span class="nt">&lt;/div&gt;</span>
+<span class="nt">&lt;/div&gt;</span>
+<span class="nt">&lt;/body&gt;</span> <span class="c">&lt;!-- placemarker --&gt;</span>
+</code></pre></div></div>
+
+<p>Now, in <code class="language-plaintext highlighter-rouge">main.css</code>, add a rule for the new <code class="language-plaintext highlighter-rouge">menu</code> div which sets <code class="language-plaintext highlighter-rouge">display</code> to <code class="language-plaintext highlighter-rouge">grid</code> like so:</p>
+
+<div class="language-css highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">#menu</span> <span class="p">{</span>
+    <span class="nl">display</span><span class="p">:</span> <span class="n">grid</span><span class="p">;</span> 
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>We want the menu to cover the whole page, so add some reset and cover properties like so:</p>
+
+<div class="language-css highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">#menu</span> <span class="p">{</span>
+    <span class="nl">display</span><span class="p">:</span> <span class="n">grid</span><span class="p">;</span> 
+    <span class="nl">width</span><span class="p">:</span> <span class="m">100vw</span><span class="p">;</span> <span class="c">/* VW = % viewport width */</span>
+    <span class="nl">height</span><span class="p">:</span> <span class="m">100vh</span><span class="p">;</span> <span class="c">/* VH = % viewport height */</span>
+    <span class="nl">position</span><span class="p">:</span> <span class="nb">absolute</span><span class="p">;</span> <span class="c">/* Remove it from the document flow so it isn't messed up by the margins on other elements */</span>
+    <span class="nl">top</span><span class="p">:</span> <span class="m">0px</span><span class="p">;</span> <span class="c">/* position: absolute; doesn't take effect until we do this */</span>
+    <span class="nl">left</span><span class="p">:</span> <span class="m">0px</span><span class="p">;</span> <span class="c">/* Ditto */</span>
+    <span class="nl">overflow</span><span class="p">:</span> <span class="nb">hidden</span><span class="p">;</span> <span class="c">/* On some browsers, an element that perfectly fits the viewport will trip scrollbars; this prevents that. */</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>If you’ve never heard of them, read the MDN articles on <a href="https://developer.mozilla.org/en-US/docs/Learn/CSS/CSS_layout/Grids">grids</a> and <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/grid-area">grid areas</a>, I’m not going to post code snippets on key parts so you have no choice. Having thoroughly read and understood those MDN articles, set the <code class="language-plaintext highlighter-rouge">grid-area</code> under <code class="language-plaintext highlighter-rouge">#menu</code> to have <code class="language-plaintext highlighter-rouge">playbutton</code> and <code class="language-plaintext highlighter-rouge">levelselect</code> portions - I’ll let you set it up however you want. It is imperative for other actually provided code snippets that you set those up perfectly!</p>
+
+<p>Now, add two new <code class="language-plaintext highlighter-rouge">div</code>s to the <code class="language-plaintext highlighter-rouge">menu</code> element, one with the id <code class="language-plaintext highlighter-rouge">playbutton</code> and one with the id <code class="language-plaintext highlighter-rouge">levelselect</code>, like so:</p>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">"menu"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">"levelselect"</span><span class="nt">&gt;&lt;/div&gt;</span>
+    <span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">"playbutton"</span><span class="nt">&gt;&lt;/div&gt;</span>
+<span class="nt">&lt;/div&gt;</span>
+</code></pre></div></div>
+
+<p>And add CSS rules for them, like this:</p>
+
+<div class="language-css highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">#levelselect</span><span class="p">{</span>
+    <span class="py">fix-this</span><span class="p">:</span> <span class="n">levelselect</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="nf">#playbutton</span><span class="p">{</span>
+    <span class="py">fix-this</span><span class="p">:</span> <span class="n">playbutton</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>If you paid attention to the MDN articles, you’ll see what’s wrong with this. If you didn’t, you should probably do that: I’ve been warning you that these chapters will get harder and you need to pay attention!</p>
+
+<p>Now, we need to populate the <code class="language-plaintext highlighter-rouge">div</code>s with interface elements. Insert into the <code class="language-plaintext highlighter-rouge">&lt;div id="playbutton"&gt;</code> a new <code class="language-plaintext highlighter-rouge">button</code>, like so:</p>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">"playbutton"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;button&gt;</span>Play<span class="nt">&lt;/button&gt;</span>
+<span class="nt">&lt;/div&gt;</span>
+</code></pre></div></div>
+
+<p>Assuming you did everything correctly, you should see a button labeled “play”… near the center of the screen<collapsible-footnote citationname="[2]">Assuming you set it up the way I did, with the play button in the bottom-right corner.</collapsible-footnote>? This is because the play <code class="language-plaintext highlighter-rouge">button</code> only takes up a small part of the <code class="language-plaintext highlighter-rouge">playbutton</code> div, you can fix this with <code class="language-plaintext highlighter-rouge">margin: auto;</code> in the <code class="language-plaintext highlighter-rouge">playbutton</code> CSS selector, which effectively tells it to assign margins as much and as equally as it can, shrinking the <code class="language-plaintext highlighter-rouge">playbutton</code> div around the button in the process. This should center it; the CSS for the entire menu should look about like this:</p>
+
+<pre class="noselect"><code class="language-css">#menu {
+    display: grid;
+    grid-template-areas: 'levelselect .'
+                         '.           playbutton';
+    width: 100vw; /* VW = % viewport width */
+    height: 100vh; /* VH = % viewport height */
+    position: absolute; /* Remove it from the document flow so it isn't messed up by the margins on other elements */
+    top: 0px; /* position: absolute; doesn't take effect until we do this */
+    left: 0px; /* Ditto */
+    overflow: hidden; /* On some browsers, an element that perfectly fits the viewport will trip scrollbars; this prevents that. */
+}
+
+
+#levelselect{
+    grid-area: levelselect;
+    margin: auto; /* This wasn't added in the tutorial, but you should add it anyways. It will prevent later issues. */
+}
+
+#playbutton{
+    grid-area: playbutton;
+    margin: auto;
+}
+</code></pre>
+
+<p>Now, there isn’t much we can do until we have level creation and launching set up. Play around with the CSS until you’re happy - there are many great articles on button styling - and then continue on to the next section.</p>
+
+<h2 id="64-level-management">6.4: Level management</h2>
+
+<p>So far, our level has been static: it’s only changeable after a reset. We’re going to change that. First, uncomment the level create code, then create a new variable <code class="language-plaintext highlighter-rouge">const FirstLevel</code> on the global namespace (before the level creation code) like so:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">const</span> <span class="nx">FirstLevel</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="nx">create</span><span class="p">(</span><span class="nx">game</span><span class="p">){</span>
+        <span class="nx">game</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="dl">"</span><span class="s2">normal</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">solid</span><span class="dl">"</span><span class="p">);</span>
+        <span class="nx">game</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="dl">"</span><span class="s2">normal</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">solid</span><span class="dl">"</span><span class="p">);</span>
+        <span class="nx">game</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span><span class="mi">11</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="dl">"</span><span class="s2">normal</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">solid</span><span class="dl">"</span><span class="p">);</span>
+        <span class="nx">game</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="dl">"</span><span class="s2">coin</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">tencoin</span><span class="dl">"</span><span class="p">);</span>
+        <span class="nx">game</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="dl">"</span><span class="s2">coin</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">fiftycoin</span><span class="dl">"</span><span class="p">);</span>
+        <span class="nx">game</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="dl">"</span><span class="s2">coin</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">tencoin</span><span class="dl">"</span><span class="p">);</span>
+        <span class="nx">game</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="dl">"</span><span class="s2">coin</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">tencoin</span><span class="dl">"</span><span class="p">);</span>
+        <span class="nx">game</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="dl">"</span><span class="s2">coin</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">tencoin</span><span class="dl">"</span><span class="p">);</span>
+
+        <span class="nx">game</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="dl">"</span><span class="s2">normal</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">solid</span><span class="dl">"</span><span class="p">);</span>
+        <span class="nx">game</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="dl">"</span><span class="s2">jumpthrough</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">jumpthrough</span><span class="dl">"</span><span class="p">);</span>
+        <span class="nx">game</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="dl">"</span><span class="s2">normal</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">solid</span><span class="dl">"</span><span class="p">);</span>
+        <span class="nx">game</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="dl">"</span><span class="s2">tar</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">tar</span><span class="dl">"</span><span class="p">);</span>
+
+        <span class="nx">game</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span>  <span class="dl">"</span><span class="s2">lava</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">killu</span><span class="dl">"</span><span class="p">,</span> <span class="nx">GunnerEnemy</span><span class="p">);</span>
+    <span class="p">},</span>
+    <span class="nx">run</span><span class="p">(){</span> <span class="c1">// We aren't using this yet</span>
+
+    <span class="p">},</span>
+    <span class="nx">destroy</span><span class="p">(){</span> <span class="c1">// Or this</span>
+
+    <span class="p">}</span>
+<span class="p">};</span>
+</code></pre></div></div>
+
+<p>Now, run <code class="language-plaintext highlighter-rouge">FirstLevel.create(game);</code> after you create the game, your code should now look like:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// const FirstLevel not shown.</span>
+<span class="kd">var</span> <span class="nx">game</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Game</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mi">50</span><span class="p">);</span>
+
+<span class="nx">FirstLevel</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span><span class="nx">game</span><span class="p">);</span>
+
+<span class="kd">const</span> <span class="nx">FPS</span> <span class="o">=</span> <span class="mi">50</span><span class="p">;</span> <span class="c1">// If you haven't, you probably should set this to 50.</span>
+<span class="kd">const</span> <span class="nx">millisPerFrame</span> <span class="o">=</span> <span class="mi">1000</span> <span class="o">/</span> <span class="nx">FPS</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">lastFrameTime</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+
+<span class="nb">window</span><span class="p">.</span><span class="nx">onfocus</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(){</span>
+    <span class="nx">lastFrameTime</span> <span class="o">=</span> <span class="nb">window</span><span class="p">.</span><span class="nx">performance</span><span class="p">.</span><span class="nx">now</span><span class="p">();</span>
+<span class="p">}</span>
+
+<span class="kd">function</span> <span class="nx">mainloop</span><span class="p">(){</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nb">document</span><span class="p">.</span><span class="nx">hasFocus</span><span class="p">()){</span>
+        <span class="kd">var</span> <span class="nx">distTime</span> <span class="o">=</span> <span class="nb">window</span><span class="p">.</span><span class="nx">performance</span><span class="p">.</span><span class="nx">now</span><span class="p">()</span> <span class="o">-</span> <span class="nx">lastFrameTime</span><span class="p">;</span>
+        <span class="nx">lastFrameTime</span> <span class="o">=</span> <span class="nb">window</span><span class="p">.</span><span class="nx">performance</span><span class="p">.</span><span class="nx">now</span><span class="p">();</span>
+        <span class="kd">var</span> <span class="nx">framesElapsed</span> <span class="o">=</span> <span class="nx">distTime</span><span class="o">/</span><span class="nx">millisPerFrame</span><span class="p">;</span>
+        <span class="nx">game</span><span class="p">.</span><span class="nx">loop</span><span class="p">(</span><span class="nx">framesElapsed</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="nb">window</span><span class="p">.</span><span class="nx">requestAnimationFrame</span><span class="p">(</span><span class="nx">mainloop</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="nb">window</span><span class="p">.</span><span class="nx">requestAnimationFrame</span><span class="p">(</span><span class="nx">mainloop</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>Run it and… exactly the same thing! You will also notice the play button hovering there - you probably should hide the <code class="language-plaintext highlighter-rouge">&lt;div id="menu"&gt;</code> element by adding the property <code class="language-plaintext highlighter-rouge">style="display: none;"</code> inside the tag, like this:</p>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">"menu"</span> <span class="na">style=</span><span class="s">"display: none;"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">"levelselect"</span><span class="nt">&gt;&lt;/div&gt;</span>
+    <span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">"playbutton"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;button&gt;</span>Play<span class="nt">&lt;/button&gt;</span>
+    <span class="nt">&lt;/div&gt;</span>
+<span class="nt">&lt;/div&gt;</span>
+</code></pre></div></div>
+
+
+            My friend's blogs: <a href="https://wizardwatch.net/">Wizardwatch's overall site</a>, <a href="https://sawyershepherd.org/">Sawyer's blog</a> (the .org part bemuses me). If ryleu decides to actually put something on his site, I'll link it here.
+            <div class="navlinks">
+                
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                        
+                            <a href="/blog/platformer-from-scratch-chap-5">&lt; Platformer From Scratch Chap 5 <p>Cleaning up motion, adding fifty coins, adding various other new block types</p></a>
+                        
+                    
+                    
+                
+                
+                
+                    
+                        
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+            </div>
+            <div id="disqus_thread"></div>
+            <script>
+                /**
+                *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+                *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables    */
+                /*
+                var disqus_config = function () {
+                this.page.url = PAGE_URL;  // Replace PAGE_URL with your page's canonical URL variable
+                this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+                };
+                */
+                (function() { // DON'T EDIT BELOW THIS LINE
+                var d = document, s = d.createElement('script');
+                s.src = 'https://linuxrocks2000-github-io.disqus.com/embed.js';
+                s.setAttribute('data-timestamp', +new Date());
+                (d.head || d.body).appendChild(s);
+                })();
+            </script>
+            <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+</noscript>
+        </div>
+        <div id="footer">
+            <p><a href="mailto:plupy44@gmail.com">Email?</a></p>
+<p><a href="https://github.com/LinuxRocks2000">Github?</a></p>
+<p>Privacy policy: We don't collect data</p>
+<p>Cookie policy: We don't use cookies</p>
+<p>Copywrong 1492, Tyler Clarke</p>
+<p>All rights preserved</p>
+<p>Vegetables are alive too</p>
+<p>Cows pollute the environment and should be eaten</p>
+<p>Nothing here is copyrighted - if we wanted people to not have our data, we wouldn't smatter it across the internet.</p>
+<p>Lawyers beware - here be people who know that lawyers are hired thugs designed <br>to make the person with more money win in court, no matter how right or wrong they are</p>
+<p>I hereby order that any stuck-up prigs that say I need a real privacy policy can leave the room.</p>
+
+        </div>
+        <div id="sidebar">
+            <div id="stickything">
+
+    <a class="theA" href="/blog/platformer-from-scratch-chap-6">
+        <div class="sidebar-item">
+            <span class="title">Platformer From Scratch Chap 6</span><br>
+            <span class="bottomthing">Conclusively finishing the physics engine for the third time, bats, level management</span>
+        </div>
+    </a>
+
+    <a class="theA" href="/blog/platformer-from-scratch-chap-5">
+        <div class="sidebar-item">
+            <span class="title">Platformer From Scratch Chap 5</span><br>
+            <span class="bottomthing">Cleaning up motion, adding fifty coins, adding various other new block types</span>
+        </div>
+    </a>
+
+    <a class="theA" href="/blog/platformer-from-scratch-chap-4">
+        <div class="sidebar-item">
+            <span class="title">Platformer From Scratch Chap 4</span><br>
+            <span class="bottomthing">Extending the physics engine for special bricks and the coins!</span>
+        </div>
+    </a>
+
+    <a class="theA" href="/blog/platformer-from-scratch-chap-3">
+        <div class="sidebar-item">
+            <span class="title">Platformer From Scratch Chap 3</span><br>
+            <span class="bottomthing">Physics</span>
+        </div>
+    </a>
+
+    <a class="theA" href="/blog/platformer-from-scratch-chap-2">
+        <div class="sidebar-item">
+            <span class="title">Platformer From Scratch Chap 2</span><br>
+            <span class="bottomthing">Players, improved graphics, gameloops!</span>
+        </div>
+    </a>
+
+    <a class="theA" href="/blog/platformer-from-scratch-chap-1">
+        <div class="sidebar-item">
+            <span class="title">Platformer From Scratch Chap 1</span><br>
+            <span class="bottomthing">Getting graphics working</span>
+        </div>
+    </a>
+
+    <a class="theA" href="/blog/gluten-free-dairy-free-highly-based-brownies">
+        <div class="sidebar-item">
+            <span class="title">Gluten Free, Dairy Free, Highly Based Brownies</span><br>
+            <span class="bottomthing">Because everyone has just <i>got</i> to love long-winded poorly-Javascripted baking blogs!</span>
+        </div>
+    </a>
+
+    <a class="theA" href="/blog/on-religion">
+        <div class="sidebar-item">
+            <span class="title">On Religion</span><br>
+            <span class="bottomthing">My views and my justification</span>
+        </div>
+    </a>
+
+    <a class="theA" href="/blog/Carbon-Cycles">
+        <div class="sidebar-item">
+            <span class="title">Carbon Cycles</span><br>
+            <span class="bottomthing">And why America should use Ethanol</span>
+        </div>
+    </a>
+
+    <a class="theA" href="/blog/the-case-for-carbon-investment">
+        <div class="sidebar-item">
+            <span class="title">The Case for Carbon Investment</span><br>
+            <span class="bottomthing">The ugly truth about carbon dioxide, and what we can do about it (not made by a doom-and-gloomer!)</span>
+        </div>
+    </a>
+
+    <a class="theA" href="/blog/something-up-with-squishmallow">
+        <div class="sidebar-item">
+            <span class="title">Something wrong with Squishmallows (only for people who like tabloid humour)</span><br>
+            <span class="bottomthing">Detective Lane Howser, on the case</span>
+        </div>
+    </a>
+
+    <a class="theA" href="/blog/conversations-with-a-southerner">
+        <div class="sidebar-item">
+            <span class="title">Conversations with the last true-born southerner</span><br>
+            <span class="bottomthing">Any normal person who has ever talked to a true southern person will agree</span>
+        </div>
+    </a>
+
+    <a class="theA" href="/blog/microsoft-poetry">
+        <div class="sidebar-item">
+            <span class="title">A poem for Microsoft</span><br>
+            <span class="bottomthing">Because microsoft needs a poem that fully describes it</span>
+        </div>
+    </a>
+
+    <a class="theA" href="/blog/hello-world">
+        <div class="sidebar-item">
+            <span class="title">Welcome to my blog!</span><br>
+            <span class="bottomthing">The first post in my blog, also a great place to go for extra information</span>
+        </div>
+    </a>
+
+</div>
+<style>
+    .sidebar-item{
+        padding: 10px;
+        background-color: azure;
+        margin: 10px;
+    }
+    .sidebar-item > .title{
+        color: black;
+        text-decoration: none;
+        white-space: nowrap;
+    }
+    .sidebar-item > .bottomthing{
+        color: grey;
+        font-weight: bold;
+    }
+    .sidebar-item:hover{
+        background-color: transparent;
+    }
+    .theA{
+        text-decoration: none;
+    }
+    #stickything{
+        position: relative;
+    }
+</style>
+
+        </div>
+        <script type="text/javascript" src="/blog/js/main.js"></script>
+    </body>
+</html>

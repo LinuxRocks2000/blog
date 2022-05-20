@@ -77,7 +77,7 @@ code.language-plaintext{
     -webkit-user-select: none;
 }
 
-#navlinks > a{
+.navlinks > a{
     background-color: lightblue;
     color: white;
     display: inline-flex;
@@ -88,7 +88,7 @@ code.language-plaintext{
     height: 100%;
 }
 
-#navlinks > a > p{
+.navlinks > a > p{
     display: inline-block;
     margin: 0px;
     padding: 0px;

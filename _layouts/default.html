@@ -14,9 +14,29 @@
             {% include nav.html %}
         </div>
         <div id="body">
+            <div class="navlinks">
+                {% assign last=page %}
+                {% for post in site.posts reversed %}
+                    {% if post.url == page.url %}
+                        {% if last.url != page.url %}
+                            <a href="/blog{{ last.url }}">&lt; {{ last.title }} <p>{{ last.bottomthing }}</p></a>
+                        {% endif %}
+                    {% endif %}
+                    {% assign last = post %}
+                {% endfor %}
+                {% assign last=page %}
+                {% for post in site.posts %}
+                    {% if post.url == page.url %}
+                        {% if last.url != page.url %}
+                            <a href="/blog{{ last.url }}" style="flex-direction: row-reverse; float: right;">{{ last.title }} &gt;<p>{{ last.bottomthing }}</p></a>
+                        {% endif %}
+                    {% endif %}
+                    {% assign last = post %}
+                {% endfor %}
+            </div>
             {{ content }}
             My friend's blogs: <a href="https://wizardwatch.net/">Wizardwatch's overall site</a>, <a href="https://sawyershepherd.org/">Sawyer's blog</a> (the .org part bemuses me). If ryleu decides to actually put something on his site, I'll link it here.
-            <div id="navlinks">
+            <div class="navlinks">
                 {% assign last=page %}
                 {% for post in site.posts reversed %}
                     {% if post.url == page.url %}

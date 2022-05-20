@@ -207,7 +207,21 @@ And (unselectable) the full `PhysicsObject` `loop` function:
 
 Now, when you reload, it should be-- exactly the same? That's because all we did was optimize. Now, it *can* perform better, but on most systems you won't notice the difference, especially with our time rate code.
 
-## 6.2: Building a game interface
+## 6.2: Notice a bug?
+
+Now that our physics engine is absolute and you can go down to ridiculously low time-rates (the timerate is set in the `const FPS`) without rounding errors - I've tried it as low as 0.5 - you've probably noticed that at lower time-rates the bullets from the gunner last much less time. This is because they count the number of real frames, not the number of animation frames: when the cpu is powerful enough, the code from Chapter 5 kicks in: if 200 milliseconds is more than enough time to process a frame, another frame will be processed. If you have a very slow computer, only 1 frame will be processed, if you have a very fast one, it will process many; an FPS counter is a project for chapter 7 that ought to be most rewarding. This means that when the bullet counts how long it has left, it's counting those extra partial frames, so it disappears much faster. Let's change this line in `FlyerEnemy`'s `loop` function:
+```javascript
+this.TTL -= 1;
+```
+
+Into:
+```javascript
+this.TTL -= framesElapsed;
+```
+
+This means that when a partial frame - decimal value of `framesElapsed` happens, it's counted as a partial frame instead of a full frame. `if (this.TTL == 0)` is also a bug: because of decimal framesElapsed values<collapsible-footnote citationname = "[1]">Every frame takes a different amount of time - oftentimes not noticeable. If there are 0.5 frames left and 1.2 frames pass (due to a system slowdown), it will become -0.7 instead of 0.</collapsible-footnote>, this will often not actually hit 0, and will be negative. Change it to `if (this.TTL <= 0)`, which will catch if it's less than as well as if it's equal to 0. Try running it at 5 fps timerate: they should last about the right amount of time, but they'll be created far too often, this is because of the same issue: it ticks down 1 for every extra frame it processes, instead of 0.1. Change this in the `GunnerEnemy` `loop` function: where there was `this.phase += 1;`, there should now be `this.phase += framesElapsed;`. If it's not already `if (this.phase >= 75)`, make it that way; `this.phase == 75` will trip the same issue. They should perform properly now.
+
+## 6.3: Starting a game interface
 
 I'm going to recite the incantation: Anyone who's played Platformer before knows that there is a minimal (and still ugly, I haven't gotten around to improvements yet) game start, save, load, etc interface. However, these are advanced concepts, and I'm going to leave them for later (perhaps in this chapter, perhaps not). We need to start, after all, somewhere; and where to start but with actually building the interface? Begin with commenting out all of our game start code:
 
@@ -267,4 +281,156 @@ The technology we're going to use for the interface is called CSS grid. You shou
 </body> <!-- placemarker -->
 ```
 
-Now, in `main.css`, 
+Now, in `main.css`, add a rule for the new `menu` div which sets `display` to `grid` like so:
+
+```css
+#menu {
+    display: grid;
+}
+```
+
+We want the menu to cover the whole page, so add some reset and cover properties like so:
+
+```css
+#menu {
+    display: grid;
+    width: 100vw; /* VW = % viewport width */
+    height: 100vh; /* VH = % viewport height */
+    position: absolute; /* Remove it from the document flow so it isn't messed up by the margins on other elements */
+    top: 0px; /* position: absolute; doesn't take effect until we do this */
+    left: 0px; /* Ditto */
+    overflow: hidden; /* On some browsers, an element that perfectly fits the viewport will trip scrollbars; this prevents that. */
+}
+```
+
+If you've never heard of them, read the MDN articles on [grids](https://developer.mozilla.org/en-US/docs/Learn/CSS/CSS_layout/Grids) and [grid areas](https://developer.mozilla.org/en-US/docs/Web/CSS/grid-area), I'm not going to post code snippets on key parts so you have no choice. Having thoroughly read and understood those MDN articles, set the `grid-area` under `#menu` to have `playbutton` and `levelselect` portions - I'll let you set it up however you want. It is imperative for other actually provided code snippets that you set those up perfectly!
+
+Now, add two new `div`s to the `menu` element, one with the id `playbutton` and one with the id `levelselect`, like so:
+
+```html
+<div id="menu">
+    <div id="levelselect"></div>
+    <div id="playbutton"></div>
+</div>
+```
+
+And add CSS rules for them, like this:
+
+```css
+#levelselect{
+    fix-this: levelselect;
+}
+
+#playbutton{
+    fix-this: playbutton;
+}
+```
+
+If you paid attention to the MDN articles, you'll see what's wrong with this. If you didn't, you should probably do that: I've been warning you that these chapters will get harder and you need to pay attention!
+
+Now, we need to populate the `div`s with interface elements. Insert into the `<div id="playbutton">` a new `button`, like so:
+
+```html
+<div id="playbutton">
+    <button>Play</button>
+</div>
+```
+
+Assuming you did everything correctly, you should see a button labeled "play"... near the center of the screen<collapsible-footnote citationname="[2]">Assuming you set it up the way I did, with the play button in the bottom-right corner.</collapsible-footnote>? This is because the play `button` only takes up a small part of the `playbutton` div, you can fix this with `margin: auto;` in the `playbutton` CSS selector, which effectively tells it to assign margins as much and as equally as it can, shrinking the `playbutton` div around the button in the process. This should center it; the CSS for the entire menu should look about like this:
+
+<pre class="noselect"><code class="language-css">#menu {
+    display: grid;
+    grid-template-areas: 'levelselect .'
+                         '.           playbutton';
+    width: 100vw; /* VW = % viewport width */
+    height: 100vh; /* VH = % viewport height */
+    position: absolute; /* Remove it from the document flow so it isn't messed up by the margins on other elements */
+    top: 0px; /* position: absolute; doesn't take effect until we do this */
+    left: 0px; /* Ditto */
+    overflow: hidden; /* On some browsers, an element that perfectly fits the viewport will trip scrollbars; this prevents that. */
+}
+
+
+#levelselect{
+    grid-area: levelselect;
+    margin: auto; /* This wasn't added in the tutorial, but you should add it anyways. It will prevent later issues. */
+}
+
+#playbutton{
+    grid-area: playbutton;
+    margin: auto;
+}
+</code></pre>
+
+Now, there isn't much we can do until we have level creation and launching set up. Play around with the CSS until you're happy - there are many great articles on button styling - and then continue on to the next section.
+
+## 6.4: Level management
+
+So far, our level has been static: it's only changeable after a reset. We're going to change that. First, uncomment the level create code, then create a new variable `const FirstLevel` on the global namespace (before the level creation code) like so:
+
+```javascript
+const FirstLevel = {
+    create(game){
+        game.create(-5, 8, 20, 1, "normal", "solid");
+        game.create(-2, 4, 14, 1, "normal", "solid");
+        game.create(11, 3, 1, 1, "normal", "solid");
+        game.create(2, 3, 1, 1, "coin", "tencoin");
+        game.create(3, 3, 1, 1, "coin", "fiftycoin");
+        game.create(7, 7, 1, 1, "coin", "tencoin");
+        game.create(8, 7, 1, 1, "coin", "tencoin");
+        game.create(9, 7, 1, 1, "coin", "tencoin");
+
+        game.create(5, 0, 1, 1, "normal", "solid");
+        game.create(6, 0, 3, 1, "jumpthrough", "jumpthrough");
+        game.create(9, 0, 1, 1, "normal", "solid");
+        game.create(2, 0, 3, 1, "tar", "tar");
+
+        game.create(8, 6, 1, 1,  "lava", "killu", GunnerEnemy);
+    },
+    run(){ // We aren't using this yet
+
+    },
+    destroy(){ // Or this
+
+    }
+};
+```
+
+Now, run `FirstLevel.create(game);` after you create the game, your code should now look like:
+
+```javascript
+// const FirstLevel not shown.
+var game = new Game(50, 50);
+
+FirstLevel.create(game);
+
+const FPS = 50; // If you haven't, you probably should set this to 50.
+const millisPerFrame = 1000 / FPS;
+var lastFrameTime = 0;
+
+window.onfocus = function(){
+    lastFrameTime = window.performance.now();
+}
+
+function mainloop(){
+    if (document.hasFocus()){
+        var distTime = window.performance.now() - lastFrameTime;
+        lastFrameTime = window.performance.now();
+        var framesElapsed = distTime/millisPerFrame;
+        game.loop(framesElapsed);
+    }
+    window.requestAnimationFrame(mainloop);
+}
+window.requestAnimationFrame(mainloop);
+```
+
+Run it and... exactly the same thing! You will also notice the play button hovering there - you probably should hide the `<div id="menu">` element by adding the property `style="display: none;"` inside the tag, like this:
+
+```html
+<div id="menu" style="display: none;">
+    <div id="levelselect"></div>
+    <div id="playbutton">
+        <button>Play</button>
+    </div>
+</div>
+```
