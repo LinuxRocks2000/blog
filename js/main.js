@@ -59,7 +59,7 @@ Array.from(document.getElementsByClassName("timerwall")).forEach((item, i) => {
     });
 });
 
-/*window.addEventListener("scroll", function() {
+window.addEventListener("scroll", function() {
     timewalls.forEach((item, i) => {
         if (!item.done){
             if (item.el.getBoundingClientRect().top < 0){
@@ -86,4 +86,3 @@ Array.from(document.getElementsByClassName("timerwall")).forEach((item, i) => {
         }
     });
 });
-*/
