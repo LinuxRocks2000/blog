@@ -95,3 +95,11 @@ code.language-plaintext{
     margin-top: 2em;
     font-size: 0.75em;
 }
+
+.timerwall{
+    height: 200vh; /* Impossible to see over it */
+    transition: height 1s;
+    overflow: hidden;
+    font-size: 2em;
+    text-align: center;
+}

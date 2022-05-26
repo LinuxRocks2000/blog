@@ -7,7 +7,12 @@
         <link rel="stylesheet"
               href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/styles/default.min.css">
         <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/highlight.min.js"></script>
-        <script>hljs.highlightAll()</script>
+        <script>
+            hljs.configure({
+                ignoreUnescapedHTML: true
+            });
+            hljs.highlightAll();
+        </script>
     </head>
     <body>
         <div id="topbar">
@@ -395,7 +400,7 @@ window.requestAnimationFrame(mainloop);
 
 <p>Now it won’t run, and when you reload you’ll see nothing on-screen. This just gives us a clear workspace to do some HTML and CSS.</p>
 
-<p>The technology we’re going to use for the interface is called CSS grid. You should read about it on <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/grid">MDN</a><collapsible-footnote citationname="[1]">You should also view the MDN article on grid areas <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/grid-template-areas">here</a>.</collapsible-footnote> if you don’t already understand it, we’ll be doing complex stuff with it. Let’s add a grid container in <code class="language-plaintext highlighter-rouge">index.html</code> under <code class="language-plaintext highlighter-rouge">&lt;div id="game"&gt;</code>:</p>
+<p>The technology we’re going to use for the interface is called CSS grid. You should read about it on <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/grid">MDN</a><collapsible-footnote citationname="[2]">You should also view the MDN article on grid areas <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/grid-template-areas">here</a>.</collapsible-footnote> if you don’t already understand it, we’ll be doing complex stuff with it. Let’s add a grid container in <code class="language-plaintext highlighter-rouge">index.html</code> under <code class="language-plaintext highlighter-rouge">&lt;div id="game"&gt;</code>:</p>
 
 <div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code>	<span class="nt">&lt;/div&gt;</span><span class="c">&lt;!-- the other html --&gt;</span>
 	<span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">"menu"</span><span class="nt">&gt;</span>
@@ -408,14 +413,14 @@ window.requestAnimationFrame(mainloop);
 <p>Now, in <code class="language-plaintext highlighter-rouge">main.css</code>, add a rule for the new <code class="language-plaintext highlighter-rouge">menu</code> div which sets <code class="language-plaintext highlighter-rouge">display</code> to <code class="language-plaintext highlighter-rouge">grid</code> like so:</p>
 
 <div class="language-css highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">#menu</span> <span class="p">{</span>
-    <span class="nl">display</span><span class="p">:</span> <span class="n">grid</span><span class="p">;</span> 
+    <span class="nl">display</span><span class="p">:</span> <span class="n">grid</span><span class="p">;</span>
 <span class="p">}</span>
 </code></pre></div></div>
 
 <p>We want the menu to cover the whole page, so add some reset and cover properties like so:</p>
 
 <div class="language-css highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">#menu</span> <span class="p">{</span>
-    <span class="nl">display</span><span class="p">:</span> <span class="n">grid</span><span class="p">;</span> 
+    <span class="nl">display</span><span class="p">:</span> <span class="n">grid</span><span class="p">;</span>
     <span class="nl">width</span><span class="p">:</span> <span class="m">100vw</span><span class="p">;</span> <span class="c">/* VW = % viewport width */</span>
     <span class="nl">height</span><span class="p">:</span> <span class="m">100vh</span><span class="p">;</span> <span class="c">/* VH = % viewport height */</span>
     <span class="nl">position</span><span class="p">:</span> <span class="nb">absolute</span><span class="p">;</span> <span class="c">/* Remove it from the document flow so it isn't messed up by the margins on other elements */</span>
@@ -425,20 +430,20 @@ window.requestAnimationFrame(mainloop);
 <span class="p">}</span>
 </code></pre></div></div>
 
-<p>If you’ve never heard of them, read the MDN articles on <a href="https://developer.mozilla.org/en-US/docs/Learn/CSS/CSS_layout/Grids">grids</a> and <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/grid-area">grid areas</a>, I’m not going to post code snippets on key parts so you have no choice. Having thoroughly read and understood those MDN articles, set the <code class="language-plaintext highlighter-rouge">grid-area</code> under <code class="language-plaintext highlighter-rouge">#menu</code> to have <code class="language-plaintext highlighter-rouge">playbutton</code> and <code class="language-plaintext highlighter-rouge">levelselect</code> portions - I’ll let you set it up however you want. It is imperative for other actually provided code snippets that you set those up perfectly!</p>
+<p>If you’ve never heard of them, read the MDN articles on <a href="https://developer.mozilla.org/en-US/docs/Learn/CSS/CSS_layout/Grids">grids</a> and <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/grid-area">grid areas</a>, I’m not going to post code snippets on key parts so you have no choice. Having thoroughly read and understood those MDN articles, set the <code class="language-plaintext highlighter-rouge">grid-area</code> under <code class="language-plaintext highlighter-rouge">#menu</code> to have <code class="language-plaintext highlighter-rouge">playbutton</code> and <code class="language-plaintext highlighter-rouge">levelname</code> portions - I’ll let you set it up however you want. It is imperative for other actually provided code snippets that you set those up perfectly!</p>
 
-<p>Now, add two new <code class="language-plaintext highlighter-rouge">div</code>s to the <code class="language-plaintext highlighter-rouge">menu</code> element, one with the id <code class="language-plaintext highlighter-rouge">playbutton</code> and one with the id <code class="language-plaintext highlighter-rouge">levelselect</code>, like so:</p>
+<p>Now, add two new <code class="language-plaintext highlighter-rouge">div</code>s to the <code class="language-plaintext highlighter-rouge">menu</code> element, one with the id <code class="language-plaintext highlighter-rouge">playbutton</code> and one with the id <code class="language-plaintext highlighter-rouge">levelname</code>, like so:</p>
 
 <div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">"menu"</span><span class="nt">&gt;</span>
-    <span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">"levelselect"</span><span class="nt">&gt;&lt;/div&gt;</span>
+    <span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">"levelname"</span><span class="nt">&gt;&lt;/div&gt;</span>
     <span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">"playbutton"</span><span class="nt">&gt;&lt;/div&gt;</span>
 <span class="nt">&lt;/div&gt;</span>
 </code></pre></div></div>
 
 <p>And add CSS rules for them, like this:</p>
 
-<div class="language-css highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">#levelselect</span><span class="p">{</span>
-    <span class="py">fix-this</span><span class="p">:</span> <span class="n">levelselect</span><span class="p">;</span>
+<div class="language-css highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">#levelname</span><span class="p">{</span>
+    <span class="py">fix-this</span><span class="p">:</span> <span class="n">levelname</span><span class="p">;</span>
 <span class="p">}</span>
 
 <span class="nf">#playbutton</span><span class="p">{</span>
@@ -455,11 +460,11 @@ window.requestAnimationFrame(mainloop);
 <span class="nt">&lt;/div&gt;</span>
 </code></pre></div></div>
 
-<p>Assuming you did everything correctly, you should see a button labeled “play”… near the center of the screen<collapsible-footnote citationname="[2]">Assuming you set it up the way I did, with the play button in the bottom-right corner.</collapsible-footnote>? This is because the play <code class="language-plaintext highlighter-rouge">button</code> only takes up a small part of the <code class="language-plaintext highlighter-rouge">playbutton</code> div, you can fix this with <code class="language-plaintext highlighter-rouge">margin: auto;</code> in the <code class="language-plaintext highlighter-rouge">playbutton</code> CSS selector, which effectively tells it to assign margins as much and as equally as it can, shrinking the <code class="language-plaintext highlighter-rouge">playbutton</code> div around the button in the process. This should center it; the CSS for the entire menu should look about like this:</p>
+<p>Assuming you did everything correctly, you should see a button labeled “play”… near the center of the screen<collapsible-footnote citationname="[3]">Assuming you set it up the way I did, with the play button in the bottom-right corner.</collapsible-footnote>? This is because the play <code class="language-plaintext highlighter-rouge">button</code> only takes up a small part of the <code class="language-plaintext highlighter-rouge">playbutton</code> div, you can fix this with <code class="language-plaintext highlighter-rouge">margin: auto;</code> in the <code class="language-plaintext highlighter-rouge">playbutton</code> CSS selector, which effectively tells it to assign margins as much and as equally as it can, shrinking the <code class="language-plaintext highlighter-rouge">playbutton</code> div around the button in the process. This should center it; the CSS for the entire menu should look about like this:</p>
 
 <pre class="noselect"><code class="language-css">#menu {
     display: grid;
-    grid-template-areas: 'levelselect .'
+    grid-template-areas: 'levelname   .'
                          '.           playbutton';
     width: 100vw; /* VW = % viewport width */
     height: 100vh; /* VH = % viewport height */
@@ -470,8 +475,9 @@ window.requestAnimationFrame(mainloop);
 }
 
 
-#levelselect{
-    grid-area: levelselect;
+
+#levelname{
+    grid-area: levelname;
     margin: auto; /* This wasn't added in the tutorial, but you should add it anyways. It will prevent later issues. */
 }
 
@@ -481,7 +487,7 @@ window.requestAnimationFrame(mainloop);
 }
 </code></pre>
 
-<p>Now, there isn’t much we can do until we have level creation and launching set up. Play around with the CSS until you’re happy - there are many great articles on button styling - and then continue on to the next section.</p>
+<p>Now, there isn’t much we can do for <code class="language-plaintext highlighter-rouge">levelname</code> until we have level creation and launching set up. Play around with the CSS until you’re happy - there are many great articles on button styling - and then continue on to the next section.</p>
 
 <h2 id="64-level-management">6.4: Level management</h2>
 
@@ -544,13 +550,466 @@ window.requestAnimationFrame(mainloop);
 <p>Run it and… exactly the same thing! You will also notice the play button hovering there - you probably should hide the <code class="language-plaintext highlighter-rouge">&lt;div id="menu"&gt;</code> element by adding the property <code class="language-plaintext highlighter-rouge">style="display: none;"</code> inside the tag, like this:</p>
 
 <div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">"menu"</span> <span class="na">style=</span><span class="s">"display: none;"</span><span class="nt">&gt;</span>
-    <span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">"levelselect"</span><span class="nt">&gt;&lt;/div&gt;</span>
+    <span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">"levelname"</span><span class="nt">&gt;&lt;/div&gt;</span>
     <span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">"playbutton"</span><span class="nt">&gt;</span>
         <span class="nt">&lt;button&gt;</span>Play<span class="nt">&lt;/button&gt;</span>
     <span class="nt">&lt;/div&gt;</span>
 <span class="nt">&lt;/div&gt;</span>
 </code></pre></div></div>
 
+<p>Now, when you run it, you see nothing different. Try restarting the level by running <code class="language-plaintext highlighter-rouge">FirstLevel.create(game)</code> in the developer console, however, and nothing happens! This is because the player is still being affected by gravity and, when we destroy the blocks, it keeps moving, <em>even though we can’t see it</em>. Let’s fix this with a new function on <code class="language-plaintext highlighter-rouge">Player</code> called <code class="language-plaintext highlighter-rouge">reset</code>, like so:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">reset</span><span class="p">(){</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">x</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">game</span><span class="p">.</span><span class="nx">startX</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">y</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">game</span><span class="p">.</span><span class="nx">startY</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>If you observe, you’ll see that <code class="language-plaintext highlighter-rouge">this.game.startX</code> and <code class="language-plaintext highlighter-rouge">this.game.startY</code> don’t exist. This is because, before, we’ve hard-coded the position of the player: on my local copy, the player starts at x 50, y 0. We need to change this. In the constructor of Game, add:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">this</span><span class="p">.</span><span class="nx">startX</span> <span class="o">=</span> <span class="mi">50</span><span class="p">;</span>
+<span class="k">this</span><span class="p">.</span><span class="nx">startY</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>And then, also in the <code class="language-plaintext highlighter-rouge">Game</code> constructor, change <code class="language-plaintext highlighter-rouge">this.player = new Player(this, 50, 0, this.blockWidth, this.blockHeight * 2);</code> to use <code class="language-plaintext highlighter-rouge">this.startX</code> and <code class="language-plaintext highlighter-rouge">this.startY</code>, like so:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">this</span><span class="p">.</span><span class="nx">player</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Player</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">startX</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">startY</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">blockWidth</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">blockHeight</span> <span class="o">*</span> <span class="mi">2</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>Now, try running <code class="language-plaintext highlighter-rouge">game.player.reset()</code> in the developer console. Because of our focus code, you won’t see the player jerk into position immediately; you will only see that when you click inside the game area, focusing it. In any case, the player <em>will</em> jerk into position! Now, create a function under <code class="language-plaintext highlighter-rouge">Game</code> called <code class="language-plaintext highlighter-rouge">reset</code>, which calls <code class="language-plaintext highlighter-rouge">this.player.reset()</code>, like this:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">reset</span><span class="p">(){</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">player</span><span class="p">.</span><span class="nx">reset</span><span class="p">();</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Now, call <code class="language-plaintext highlighter-rouge">game.reset()</code> in the <code class="language-plaintext highlighter-rouge">FirstLevel</code> <code class="language-plaintext highlighter-rouge">create</code> function, before all the create code. Figure it out if you don’t know how! Once you get that working, try running then dying and calling <code class="language-plaintext highlighter-rouge">FirstLevel.create(game);</code> again in the developer console. It should work well enough, but you won’t see the player! You need to add a graphics reset to the <code class="language-plaintext highlighter-rouge">Player</code> reset function, like this:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">reset</span><span class="p">(){</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">x</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">game</span><span class="p">.</span><span class="nx">startX</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">y</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">game</span><span class="p">.</span><span class="nx">startY</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">element</span><span class="p">.</span><span class="nx">style</span><span class="p">.</span><span class="nx">display</span> <span class="o">=</span> <span class="dl">""</span><span class="p">;</span> <span class="c1">// Leaving it blank means it will go to the default, or what we set in main.css.</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Now, it should work! Once you lose the game, the tileset is destroyed; level management allows you to arbitrarily create and re-create them. This all was, of course, only the precursor to building the actual level manager. You can start by creating a new class, <code class="language-plaintext highlighter-rouge">LevelManager</code>, and accepting one argument - <code class="language-plaintext highlighter-rouge">game</code> - in the constructor, then storing it as <code class="language-plaintext highlighter-rouge">this.game</code>, then storing a 0 to <code class="language-plaintext highlighter-rouge">this.levelNum</code> and <code class="language-plaintext highlighter-rouge">undefined</code> (nothin’ yet) to <code class="language-plaintext highlighter-rouge">this.curLevel</code>. I hope you can figure it out, if you can’t, scroll past the blankwall.</p>
+
+<div style="height: 100vh;"></div>
+
+<p>It should look like this:</p>
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nx">LevelManager</span><span class="p">{</span>
+    <span class="kd">constructor</span><span class="p">(</span><span class="nx">game</span><span class="p">){</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">game</span> <span class="o">=</span> <span class="nx">game</span><span class="p">;</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">levelNum</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">curLevel</span> <span class="o">=</span> <span class="kc">undefined</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Make sure to be choosy about where in your code you put it! Rather like placing a sentence illogically on the SAT, your code quality (analogous to your test score) will take a hit. Of course, that doesn’t matter as much as the next property we add to LevelManager in the constructor - <code class="language-plaintext highlighter-rouge">levels</code>, an array, like this: <code class="language-plaintext highlighter-rouge">this.levels = []</code>;. We also need a way to add levels to it, so let’s create a function which takes an argument <code class="language-plaintext highlighter-rouge">level</code> and <code class="language-plaintext highlighter-rouge">push</code>es it into the <code class="language-plaintext highlighter-rouge">this.levels</code> array, like so:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">addLevel</span><span class="p">(</span><span class="nx">level</span><span class="p">){</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">levels</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">level</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Finally, we need a function that sets <code class="language-plaintext highlighter-rouge">this.curLevel</code> to the current level, advances levelNum (so next time it’s called the cur level will be one ahead), and runs <code class="language-plaintext highlighter-rouge">this.curLevel.create()</code>. The <code class="language-plaintext highlighter-rouge">run</code> and <code class="language-plaintext highlighter-rouge">destroy</code> functions under <code class="language-plaintext highlighter-rouge">FirstLevel</code> will have to wait for another time; they will someday be used to add extra features. This function should be named <code class="language-plaintext highlighter-rouge">nextLevel</code> and should be under <code class="language-plaintext highlighter-rouge">class LevelManager</code>, and I highly recommend you try and figure it out yourself; if you can’t, here’s the code:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">nextLevel</span><span class="p">(){</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">curLevel</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">levels</span><span class="p">[</span><span class="k">this</span><span class="p">.</span><span class="nx">levelNum</span><span class="p">];</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">curLevel</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">game</span><span class="p">);</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">levelNum</span> <span class="o">++</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Now, implement this with <code class="language-plaintext highlighter-rouge">const levels = new LevelManager(game);</code> AFTER you define <code class="language-plaintext highlighter-rouge">game</code>. Delete the call to <code class="language-plaintext highlighter-rouge">FirstLevel.create()</code>, this can cause bugs later. Register FirstLevel with <code class="language-plaintext highlighter-rouge">levels.addLevel(FirstLevel)</code>, then run <code class="language-plaintext highlighter-rouge">levels.nextLevel();</code>. Your full demo code should now look like:</p>
+
+<pre class="noselect"><code class="language-javascript">var game = new Game(50, 50);
+const levels = new LevelManager(game);
+levels.addLevel(FirstLevel);
+levels.nextLevel(); // Start it
+
+const FPS = 5;
+const millisPerFrame = 1000 / FPS;
+var lastFrameTime = 0;
+
+window.onfocus = function(){
+    lastFrameTime = window.performance.now();
+}
+
+function mainloop(){
+    if (document.hasFocus()){
+        var distTime = window.performance.now() - lastFrameTime;
+        lastFrameTime = window.performance.now();
+        var framesElapsed = distTime/millisPerFrame;
+        game.loop(framesElapsed);
+    }
+    window.requestAnimationFrame(mainloop);
+}
+window.requestAnimationFrame(mainloop);
+</code></pre>
+
+<p>Run it and…. Nothing! This is because all we’ve done is wrap and complete things we already had, we’re just making it cleaner and more extensible. Play around - maybe make another level? You can always go to the next level after dying with <code class="language-plaintext highlighter-rouge">levels.nextLevel();</code> in the console.</p>
+
+<h2 id="65-back-to-the-ui">6.5: Back to the UI</h2>
+
+<p>Now that we have the level manager working, comment out the call to <code class="language-plaintext highlighter-rouge">levels.nextLevel</code> and delete the <code class="language-plaintext highlighter-rouge">display: none;</code> on <code class="language-plaintext highlighter-rouge">&lt;div id="menu"&gt;</code> in index.html. Run it and… you’ll see a player? This is because the game starts even before the <code class="language-plaintext highlighter-rouge">LevelManager</code> runs. We’ll fix this more later on, but for now just comment all the demo code out. I expect that by now you’ve styled the button some more - I have a basic style set up if you want it:</p>
+
+<div class="language-css highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">#playbutton</span> <span class="o">&gt;</span> <span class="nt">button</span><span class="p">{</span>
+    <span class="nl">min-width</span><span class="p">:</span> <span class="m">100px</span><span class="p">;</span>
+    <span class="nl">min-height</span><span class="p">:</span> <span class="m">50px</span><span class="p">;</span>
+    <span class="nl">border-radius</span><span class="p">:</span> <span class="m">0px</span><span class="p">;</span>
+    <span class="nl">text-decoration</span><span class="p">:</span> <span class="nb">none</span><span class="p">;</span>
+    <span class="nl">border</span><span class="p">:</span> <span class="nb">none</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>This is not the best way to do this. You need to mess a lot with the CSS for it to actually be beautiful; for now, you can just leave it the way it is. In chapter 7 I may go over making it more beautiful. Click the button, now, and… nothing? This is because we haven’t yet made it trip a game start. Replace <code class="language-plaintext highlighter-rouge">&lt;button&gt;Play&lt;/button&gt;</code> with <code class="language-plaintext highlighter-rouge">&lt;button onclick = "levels.play()"&gt;Play&lt;/button&gt;</code>. Re-load and click it - nothing! This is because we haven’t defined <code class="language-plaintext highlighter-rouge">LevelManager</code>’s <code class="language-plaintext highlighter-rouge">play</code> function. Do that now - I’ll let you figure it out - and add these lines of code in it:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="dl">"</span><span class="s2">menu</span><span class="dl">"</span><span class="p">).</span><span class="nx">style</span><span class="p">.</span><span class="nx">display</span> <span class="o">=</span> <span class="dl">"</span><span class="s2">none</span><span class="dl">"</span><span class="p">;</span>
+<span class="k">this</span><span class="p">.</span><span class="nx">nextLevel</span><span class="p">();</span>
+</code></pre></div></div>
+
+<p>The second line is fairly straightforward, so let’s look at the first one, which is hairy:</p>
+
+<ul>
+  <li>
+<code class="language-plaintext highlighter-rouge">document.getElementById("menu")</code>: Access an element with the <code class="language-plaintext highlighter-rouge">id</code> <code class="language-plaintext highlighter-rouge">menu</code>.</li>
+  <li>
+<code class="language-plaintext highlighter-rouge">.style.display</code>: This corresponds to the CSS display attribute. It is a very powerful attribute, but the primary values that we see are “block” and “none”. “none” just means “don’t show it”.</li>
+  <li>` = “none”`: Set it to “none”.</li>
+</ul>
+
+<p>It still won’t work, however, because of another issue. We need to make <code class="language-plaintext highlighter-rouge">Game</code> wait till the level tells it to start, otherwise it’ll just go ahead and play! Start by adding a new property <code class="language-plaintext highlighter-rouge">playing</code> to <code class="language-plaintext highlighter-rouge">Game</code>, in the constructor, like this: <code class="language-plaintext highlighter-rouge">this.playing = false;</code>, and in <code class="language-plaintext highlighter-rouge">Game</code>’s <code class="language-plaintext highlighter-rouge">loop</code> function, wrap everything in <code class="language-plaintext highlighter-rouge">if (this.playing){}</code>, like this (yes, it’s noselected):</p>
+
+<pre class="noselect"><code class="language-javascript">loop(framesElapsed){
+    if (this.playing){
+        this.tileset.forEach((item, i) =&gt; {
+            item.loop(framesElapsed);
+            item.draw();
+        });
+        this.player.loop(framesElapsed);
+        this.player.draw();
+    }
+}
+</code></pre>
+<p>Now, in <code class="language-plaintext highlighter-rouge">Game.reset()</code><collapsible-footnote citationname="[4]">Better get used to this notation. It just means the reset function in Game.</collapsible-footnote>, set <code class="language-plaintext highlighter-rouge">this.playing = true;</code>, and in <code class="language-plaintext highlighter-rouge">Game.die()</code>, set <code class="language-plaintext highlighter-rouge">this.playing = false;</code>. Now you can uncomment all that code, and it should- show a player? This is just graphics stuff, and we can fix it easily by removing the call to <code class="language-plaintext highlighter-rouge">this.draw()</code> in <code class="language-plaintext highlighter-rouge">Player</code>’s constructor.</p>
+
+<p>Now, when you reload, you can play and die and everything! The only thing missing is the play button. Add this in <code class="language-plaintext highlighter-rouge">Game</code> <code class="language-plaintext highlighter-rouge">die</code>: <code class="language-plaintext highlighter-rouge">document.getElementById("menu").style.display = "";</code>. This just re-shows the game menu. Play it and die - it shows up! Unfortunately, there’s a bug, when you click <code class="language-plaintext highlighter-rouge">Play</code> again it doesn’t work. This is because it tries to play the next level, which doesn’t exist; we can negate this by adding <code class="language-plaintext highlighter-rouge">levels.levelNum --;</code> (which just decreases the current level number by 1) in the <code class="language-plaintext highlighter-rouge">Game</code> <code class="language-plaintext highlighter-rouge">die</code> function. Note that this is NOT the best way to do this, it is simply the easiest to teach new coders; oftentimes, that is what I’ll do in my beginner tutorial posts. Reload and play! You can play infinitely, and the player’s score will save. Note that if you fall you have to re-load, this is because we don’t have level-minima-is-death yet. Play around and make it your own, and see you in the next section, where we’ll build ending blocks!</p>
+
+<h2 id="66-ending-blocks">6.6: Ending Blocks</h2>
+
+<p>So far we have a level manager that can support multiple levels (you haven’t tested it yet, most likely, but it will work), but we have no way to advance to the next level. Let’s do that now by creating Ending blocks, which will have the same general effect as Death, but which will allow you to move on. First, of course, we need another map: I used</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">const</span> <span class="nx">SecondLevel</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="nx">create</span><span class="p">(</span><span class="nx">game</span><span class="p">){</span>
+        <span class="nx">game</span><span class="p">.</span><span class="nx">reset</span><span class="p">();</span>
+        <span class="nx">game</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="dl">"</span><span class="s2">normal</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">solid</span><span class="dl">"</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">};</span>
+</code></pre></div></div>
+
+<p>And <code class="language-plaintext highlighter-rouge">levels.addLevel(SecondLevel);</code> (you can figure out where to put these two snippets). Now that that’s out of the way, we can move on to creating a new block. In <code class="language-plaintext highlighter-rouge">FirstLevel</code> <code class="language-plaintext highlighter-rouge">create</code>, add <code class="language-plaintext highlighter-rouge">game.create(4, -1, 1, 1, "end", "end");</code>, and in <code class="language-plaintext highlighter-rouge">main.css</code>, add a new rule that sets the <code class="language-plaintext highlighter-rouge">background-color</code> of all elements with class <code class="language-plaintext highlighter-rouge">end</code> to <code class="language-plaintext highlighter-rouge">green</code> (if you can’t figure it out, take inspiration from the CSS for <code class="language-plaintext highlighter-rouge">.tar</code> and <code class="language-plaintext highlighter-rouge">.ice</code>).</p>
+
+<p>Now, when you reload, you should see a miraculous green block! Hit it and- you go through it. We haven’t defined a new block in a long time, so here’s the basic method:</p>
+
+<ol>
+  <li>Add the block create command (for testing)</li>
+  <li>Add the CSS for the block</li>
+  <li>Add the block to the <code class="language-plaintext highlighter-rouge">collisionsDict</code> in <code class="language-plaintext highlighter-rouge">Game</code> <code class="language-plaintext highlighter-rouge">checkCollision</code>
+</li>
+</ol>
+
+<p>We’ve already done the first two, and you should know how to do the third by now, so I’ll let you do that. Now, add <code class="language-plaintext highlighter-rouge">end</code> bricks to <code class="language-plaintext highlighter-rouge">specialCollisions</code> in <code class="language-plaintext highlighter-rouge">Player</code>’s constructor like so:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">this</span><span class="p">.</span><span class="nx">specialCollisions</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="dl">"</span><span class="s2">end</span><span class="dl">"</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>And, finally, in <code class="language-plaintext highlighter-rouge">Player</code>’s <code class="language-plaintext highlighter-rouge">specialCollision</code> function, add a rule for <code class="language-plaintext highlighter-rouge">end</code> like so:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">if</span> <span class="p">(</span><span class="nx">type</span> <span class="o">==</span> <span class="dl">"</span><span class="s2">end</span><span class="dl">"</span><span class="p">){</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">game</span><span class="p">.</span><span class="nx">win</span><span class="p">();</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>There’s something wrong with this code. An observant coder will have noticed it by now; if you haven’t, spend some time (2 minutes) debugging to figure it out. You know very well I’m about to give you the answer, but only after a wall. (Yes, D1, these are new, and yes, D1, they are for you).</p>
+
+<div class="timerwall" data-time="120"></div>
+
+<p>You need to define a <code class="language-plaintext highlighter-rouge">win</code> function under <code class="language-plaintext highlighter-rouge">Game</code> (if you didn’t figure it out), and make it do essentially the same thing as <code class="language-plaintext highlighter-rouge">die</code>. Too keep things clean, let’s move part of <code class="language-plaintext highlighter-rouge">die</code>’s code into a new function <code class="language-plaintext highlighter-rouge">clear</code> under game, and then call the same from <code class="language-plaintext highlighter-rouge">win</code>, like this:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">clear</span><span class="p">(){</span> <span class="c1">// Clear the stuff from the level.</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">tileset</span><span class="p">.</span><span class="nx">forEach</span><span class="p">((</span><span class="nx">item</span><span class="p">,</span> <span class="nx">index</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+        <span class="nx">item</span><span class="p">.</span><span class="nx">remove</span><span class="p">();</span>
+    <span class="p">});</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">tileset</span><span class="p">.</span><span class="nx">splice</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">tileset</span><span class="p">.</span><span class="nx">length</span><span class="p">);</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">player</span><span class="p">.</span><span class="nx">endGame</span><span class="p">();</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">playing</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+    <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="dl">"</span><span class="s2">menu</span><span class="dl">"</span><span class="p">).</span><span class="nx">style</span><span class="p">.</span><span class="nx">display</span> <span class="o">=</span> <span class="dl">""</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="nx">die</span><span class="p">(){</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">clear</span><span class="p">();</span>
+    <span class="nx">levels</span><span class="p">.</span><span class="nx">levelNum</span> <span class="o">--</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="nx">win</span><span class="p">(){</span>
+    <span class="nx">alert</span><span class="p">(</span><span class="dl">"</span><span class="s2">This was directly copied from PFS</span><span class="dl">"</span><span class="p">);</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">clear</span><span class="p">();</span> <span class="c1">// Note that this does nothing but clear the playspace - we'll add more later.</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Now, try reloading the game and hitting the end block. The game will clear as if you died, but click <code class="language-plaintext highlighter-rouge">Play</code>, and you’ll advance to the next level! Notice that the player still has some velocity. It’s optional to fix this, but you can by adding this to the <code class="language-plaintext highlighter-rouge">Player</code>’s <code class="language-plaintext highlighter-rouge">reset</code> function:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">this</span><span class="p">.</span><span class="nx">xv</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="k">this</span><span class="p">.</span><span class="nx">yv</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>This is completely optional. You can keep it the way it was if you like it- I did this just to make the thing more thorough. Yay, there’s your ending block!</p>
+
+<h2 id="67-improving-the-ui-again">6.7: Improving the UI again</h2>
+
+<p>Winning and losing work, but unfortunately, there is no way to tell if you won or lost but going to the next level. Let’s add a message saying <code class="language-plaintext highlighter-rouge">you lose</code> or <code class="language-plaintext highlighter-rouge">you win</code>! Start in <code class="language-plaintext highlighter-rouge">index.html</code>, adding two new <code class="language-plaintext highlighter-rouge">div</code>s below <code class="language-plaintext highlighter-rouge">&lt;div id="menu"&gt;...stuff...&lt;/div&gt;</code>. One of these <code class="language-plaintext highlighter-rouge">div</code>s should have the <code class="language-plaintext highlighter-rouge">id</code> “youlose” and the other “youwin”, both should have the <code class="language-plaintext highlighter-rouge">class</code> <code class="language-plaintext highlighter-rouge">coverwall</code>. Fill their content with whatever you want; I’ll give you what they look like after a 50-second timer-wall (I’m enjoying these far too much).</p>
+
+<div class="timerwall" data-time="50"></div>
+
+<p>(If those start getting too irritating to be educational, I’ll make it so they only operate once then stay dead forever, even after reloads. Of course, I won’t know about it, so that’ll probably never happen.)</p>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">"menu"</span><span class="nt">&gt;</span>
+    ...stuff...
+<span class="nt">&lt;/div&gt;</span>
+<span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">"youwin"</span> <span class="na">class=</span><span class="s">"coverwall"</span><span class="nt">&gt;</span>
+    You win! <span class="nt">&lt;span</span> <span class="na">style=</span><span class="s">"font-size: 0.5em"</span><span class="nt">&gt;</span>This was copied directly from PFS.<span class="nt">&lt;/span&gt;</span>
+<span class="nt">&lt;/div&gt;</span>
+<span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">"youlose"</span> <span class="na">class=</span><span class="s">"coverwall"</span><span class="nt">&gt;</span>
+    You lose. <span class="nt">&lt;span</span> <span class="na">style=</span><span class="s">"font-size: 0.5em"</span><span class="nt">&gt;</span>This was copied directly from PFS.<span class="nt">&lt;/span&gt;</span>
+<span class="nt">&lt;/div&gt;</span>
+</code></pre></div></div>
+
+<p>Now, we need to do some CSS. In <code class="language-plaintext highlighter-rouge">main.css</code>, add a rule for <code class="language-plaintext highlighter-rouge">coverwall</code>s:</p>
+
+<div class="language-css highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">.coverwall</span><span class="p">{</span>
+    <span class="nl">width</span><span class="p">:</span> <span class="m">100vw</span><span class="p">;</span> <span class="c">/* Cover the entire width and height */</span>
+    <span class="nl">height</span><span class="p">:</span> <span class="m">100vh</span><span class="p">;</span>
+    <span class="nl">position</span><span class="p">:</span> <span class="nb">absolute</span><span class="p">;</span> <span class="c">/* Remove it from normal document flow and set it to the top-left corner */</span>
+    <span class="nl">top</span><span class="p">:</span> <span class="m">0px</span><span class="p">;</span>
+    <span class="nl">left</span><span class="p">:</span> <span class="m">0px</span><span class="p">;</span>
+    <span class="nl">background-color</span><span class="p">:</span> <span class="no">white</span><span class="p">;</span> <span class="c">/* Set the background color to opaque white, the default is transparent */</span>
+    <span class="nl">overflow</span><span class="p">:</span> <span class="nb">hidden</span><span class="p">;</span> <span class="c">/* Elements with width 100vw or height 100vh may trip unnecessary scrollbars, this prevents that. */</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>When you reload, you should just see the words “you lose” on screen. This is because it’s displaying the banners, even when we don’t want them to! Fix this by adding <code class="language-plaintext highlighter-rouge">style="display: none;"</code> to both of the coverwall divs (this is fairly easy to do: it’s the same syntax as adding an id, so I’m not going to show it here). Now, when you reload, it should look normal; we need to start using these little guys. Create a function under <code class="language-plaintext highlighter-rouge">Game</code> called <code class="language-plaintext highlighter-rouge">doShowThing</code>. It should take one argument: <code class="language-plaintext highlighter-rouge">element</code>. Since it’s complicated, I won’t force you to figure it out yourself; it should look like this:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">doShowThing</span><span class="p">(</span><span class="nx">element</span><span class="p">){</span>
+    <span class="nx">element</span><span class="p">.</span><span class="nx">style</span><span class="p">.</span><span class="nx">display</span> <span class="o">=</span> <span class="dl">""</span><span class="p">;</span> <span class="c1">// Show the element by resetting display (we've seen this before!)</span>
+    <span class="nx">setTimeout</span><span class="p">(()</span> <span class="o">=&gt;</span> <span class="p">{</span>
+        <span class="nx">element</span><span class="p">.</span><span class="nx">style</span><span class="p">.</span><span class="nx">display</span> <span class="o">=</span> <span class="dl">"</span><span class="s2">none</span><span class="dl">"</span><span class="p">;</span> <span class="c1">// Hide the element by setting display to none (we've seen this before as well!)</span>
+    <span class="p">},</span> <span class="mi">2000</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Whoa- what? That’s hairy. You can kinda see an arrow function in there, like a forEach one, but what’s <code class="language-plaintext highlighter-rouge">setTimeout</code>? <code class="language-plaintext highlighter-rouge">setTimeout</code> is a function defined by the browser that waits a certain number of <em>milliseconds</em><collapsible-footnote citationname="[5]">Milliseconds are 1/1000s of a second, so it takes a thousand milliseconds to make a single second.</collapsible-footnote> to run a function. We pass an arrow function in, one which hides an element, and then we have <code class="language-plaintext highlighter-rouge">, 2000</code>. The <code class="language-plaintext highlighter-rouge">,</code> means it’s the next argument, and <code class="language-plaintext highlighter-rouge">2000</code> is a number in milliseconds: 2 seconds.</p>
+
+<p>Now, in <code class="language-plaintext highlighter-rouge">Game</code>’s <code class="language-plaintext highlighter-rouge">die</code> function, simply add <code class="language-plaintext highlighter-rouge">this.doShowThing(document.getElementById("youlose"));</code>  This is hairy, so let’s walk through it:</p>
+
+<ul>
+  <li>
+<code class="language-plaintext highlighter-rouge">this.doShowThing(</code>: This is the function we just defined. It is called with arguments, hence the parens.</li>
+  <li>
+<code class="language-plaintext highlighter-rouge">document.getElementById</code>: We’ve seen this before. Get an element from the page by it’s <code class="language-plaintext highlighter-rouge">id</code>.</li>
+  <li>
+<code class="language-plaintext highlighter-rouge">"youlose"</code>: This is the ID of the div with the “you lose” stuff.</li>
+  <li>
+<code class="language-plaintext highlighter-rouge">);</code>: End calling the function.</li>
+</ul>
+
+<p>Try dying, and you’ll find that it works! You see a simple <code class="language-plaintext highlighter-rouge">you lose</code> text. Now, let’s effectively duplicate this; call the function the same way in <code class="language-plaintext highlighter-rouge">Game.win</code>, but with <code class="language-plaintext highlighter-rouge">youwin</code> instead of <code class="language-plaintext highlighter-rouge">youlose</code>. This should now work for winning as well as losing!</p>
+
+<p>One thing you’ll notice is that these are <em>ugly</em>. Tiny font, not centered, none of the things we get in Platformer. I won’t have a huge tutorial on making them beautiful here - this chapter is already running extremely long - but you can definitely add <code class="language-plaintext highlighter-rouge">font-size: 2em;</code> in the CSS for them. If you can’t find that CSS, you haven’t been paying very good attention. I’m not going to bother about beautifying them as I intend to redo the interface later on (my plan is to replace the current Platformer with this).</p>
+
+<h2 id="68-where-am-i-adding-a-level-name-and-number-count">6.8: Where am I? Adding a level name and number count.</h2>
+
+<p>Right now, a large portion of our CSS grid is unused, but now that we’ve implemented levels almost fully, let’s start with it. In <code class="language-plaintext highlighter-rouge">LevelManager</code>, create a new function <code class="language-plaintext highlighter-rouge">updateLevelname</code>. In it, grab the element with id <code class="language-plaintext highlighter-rouge">levelname</code> and set it’s <code class="language-plaintext highlighter-rouge">innerText</code> to <code class="language-plaintext highlighter-rouge">this.levelNum</code>. I said these chapters are getting harder, so figure it out; the code is available under another cruel wall - this one for 3 minutes.</p>
+
+<div class="timerwall" data-time="180"></div>
+
+<p>I hope you figured it out- if you did, check it against this; I’ve noselected this one so you can’t just use it.</p>
+
+<pre class="noselect"><code class="language-javascript">updateLevelName(){
+    document.getElementById("levelname").innerText = this.levelNum;
+}
+</code>
+</pre>
+
+<p>Now, in <code class="language-plaintext highlighter-rouge">LevelManager</code>’s constructor, add a call to <code class="language-plaintext highlighter-rouge">this.updateLevelName()</code>. This means it’ll start off that way, and then in <code class="language-plaintext highlighter-rouge">LevelManager</code>’s <code class="language-plaintext highlighter-rouge">nextLevel</code> function, add another call the same way. Every time it advances a level, the text will update! If you implemented this properly, it should work. I’m not adding level name functionality because that would take a lot of time, but I recommend you try it! Yay, it works.</p>
+
+<h2 id="69-bats-finally-bats">6.9: Bats! Finally, bats!</h2>
+
+<p>There’s a reason Bats have been delayed so far: they’re extremely difficult. The little buggers have to wait until they see a player, which means line-of-sight checking, which means a lot of complex code. Let’s get started!</p>
+
+<p>The first thing we need is the line-of-sight check. This draws an imaginary line between bat and player and detects if it hits any blocks: if the line of sight hits blocks, the bat can’t see it, otherwise the bat can see it. This isn’t particularly efficient - there are false negatives - but it’s much easier than true sight checking.</p>
+
+<p>(This algorithm provided helpfully by SO user “user37968”, in their answer <a href="https://stackoverflow.com/a/293052">here</a>.)</p>
+
+<p>Create a global function like <code class="language-plaintext highlighter-rouge">getTopmost</code> called <code class="language-plaintext highlighter-rouge">pointRelationToLine</code>, like this (I’ll give it to you easy because I don’t fully understand it either):</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">function</span> <span class="nx">pointRelationToLine</span><span class="p">(</span><span class="nx">x</span><span class="p">,</span> <span class="nx">y</span><span class="p">,</span> <span class="nx">line</span><span class="p">){</span>
+    <span class="kd">var</span> <span class="nx">val</span> <span class="o">=</span> <span class="p">((</span><span class="nx">line</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">-</span> <span class="nx">line</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">*</span> <span class="nx">x</span><span class="p">)</span> <span class="o">+</span> <span class="p">((</span><span class="nx">line</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="nx">line</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span> <span class="o">*</span> <span class="nx">y</span><span class="p">)</span> <span class="o">+</span> <span class="p">((</span><span class="nx">line</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">*</span> <span class="nx">line</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">-</span> <span class="p">(</span><span class="nx">line</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="nx">line</span><span class="p">[</span><span class="mi">3</span><span class="p">]));</span>
+    <span class="k">return</span> <span class="nx">val</span> <span class="o">==</span> <span class="mi">0</span> <span class="p">?</span> <span class="mi">0</span> <span class="p">:</span> <span class="nx">val</span><span class="o">/</span><span class="nx">abs</span><span class="p">(</span><span class="nx">val</span><span class="p">);</span> <span class="c1">// Find the sign and avoid divide by 0 issues.</span>
+<span class="p">}</span> <span class="c1">// This returns -1 if the point (x, y) is above the line, 1 if it's below, and equal to 0 if it's on the line.</span>
+</code></pre></div></div>
+
+<p>Now create a function <code class="language-plaintext highlighter-rouge">isRectOffLine</code> (which just tests if a rectangle is definitely <em>not</em> on a line), like so:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">function</span> <span class="nx">isRectOffLine</span><span class="p">(</span><span class="nx">rect</span><span class="p">,</span> <span class="nx">line</span><span class="p">){</span>
+    <span class="kd">var</span> <span class="nx">p1Val</span> <span class="o">=</span> <span class="nx">pointRelationToLine</span><span class="p">(</span><span class="nx">rect</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nx">rect</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="nx">line</span><span class="p">);</span>
+    <span class="kd">var</span> <span class="nx">p2Val</span> <span class="o">=</span> <span class="nx">pointRelationToLine</span><span class="p">(</span><span class="nx">rect</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="nx">rect</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="nx">line</span><span class="p">);</span>
+    <span class="kd">var</span> <span class="nx">p3Val</span> <span class="o">=</span> <span class="nx">pointRelationToLine</span><span class="p">(</span><span class="nx">rect</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nx">rect</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="nx">line</span><span class="p">);</span>
+    <span class="kd">var</span> <span class="nx">p4Val</span> <span class="o">=</span> <span class="nx">pointRelationToLine</span><span class="p">(</span><span class="nx">rect</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="nx">rect</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="nx">line</span><span class="p">);</span>
+    <span class="k">return</span> <span class="nx">p1Val</span> <span class="o">==</span> <span class="nx">p2Val</span> <span class="o">&amp;&amp;</span> <span class="nx">p2Val</span> <span class="o">==</span> <span class="nx">p3Val</span> <span class="o">&amp;&amp;</span> <span class="nx">p3Val</span> <span class="o">==</span> <span class="nx">p4Val</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Again, you get this free because it’s complicated to the point that I barely understand it.</p>
+
+<p>I’m not totally evil, so I’ll also let you have the much simpler one that I understand, the one that detects if the line is to the sides of the rectangle:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">function</span> <span class="nx">isLineOffRect</span><span class="p">(</span><span class="nx">rect</span><span class="p">,</span> <span class="nx">line</span><span class="p">){</span>
+    <span class="k">return</span> <span class="p">(</span><span class="nx">line</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="nx">rect</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&amp;&amp;</span> <span class="nx">line</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">&lt;</span> <span class="nx">rect</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">||</span>
+           <span class="p">(</span><span class="nx">line</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="nx">rect</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">&amp;&amp;</span> <span class="nx">line</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">&gt;</span> <span class="nx">rect</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span> <span class="o">||</span>
+           <span class="p">(</span><span class="nx">line</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;</span> <span class="nx">rect</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&amp;&amp;</span> <span class="nx">line</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">&lt;</span> <span class="nx">rect</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">||</span>
+           <span class="p">(</span><span class="nx">line</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="nx">rect</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">&amp;&amp;</span> <span class="nx">line</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">&gt;</span> <span class="nx">rect</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>And then, if you want to check if any rectangle <code class="language-plaintext highlighter-rouge">rect</code> is definitely NOT on a line, you use <code class="language-plaintext highlighter-rouge">!isRectOffLine(rect, line) &amp;&amp; !isLineOffRect(rect, line)</code>. The logic of this is breathtakingly broken, and I’m sure the solution will come to me when I’m less sleepy (it is late as I write this), but for now that’s just the sad truth. Now, we need to actually use these functions: create a new <code class="language-plaintext highlighter-rouge">BatEnemy</code> class, the same way other enemy classes are created, and in the loop function add a <code class="language-plaintext highlighter-rouge">forEach</code> over <code class="language-plaintext highlighter-rouge">this.game.tileset</code>. For every block in the tileset, check if the block is not viewing it; if the block is not, you should set a boolean <code class="language-plaintext highlighter-rouge">canSee</code> to false (define canSee as default true at the top of the function). You can get the compatible rectangle of any block with <code class="language-plaintext highlighter-rouge">var rect = [item.x, item.y, item.x + item.width, item.y + item.height];</code>, and the line between the rectangle and player with <code class="language-plaintext highlighter-rouge">var lineToPlayer = [this.game.player.x, this.game.player.y, this.x, this.y];</code>. Finally, using <code class="language-plaintext highlighter-rouge">canSee</code>, at the bottom of the code (after the forEach), add:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">if</span> <span class="p">(</span><span class="nx">canSee</span><span class="p">){</span>
+	<span class="k">this</span><span class="p">.</span><span class="nx">element</span><span class="p">.</span><span class="nx">style</span><span class="p">.</span><span class="nx">backgroundColor</span> <span class="o">=</span> <span class="dl">"</span><span class="s2">red</span><span class="dl">"</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="k">else</span><span class="p">{</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">element</span><span class="p">.</span><span class="nx">style</span><span class="p">.</span><span class="nx">backgroundColor</span> <span class="o">=</span> <span class="dl">"</span><span class="s2">blue</span><span class="dl">"</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Create a new Bat by replacing the <code class="language-plaintext highlighter-rouge">GunnerEnemy</code>’s create function, like <code class="language-plaintext highlighter-rouge">game.create(8, 6, 1, 1,  "lava", "killu", BatEnemy);</code> (where the old command <code class="language-plaintext highlighter-rouge">game.create(8, 6, 1, 1,  "lava", "killu", GunnerEnemy);</code> was, in FirstLevel), and run it: the bat should turn red when it can see you, and stay blue otherwise. If this doesn’t work, you can view the fully functional code under a 3-minute wall.</p>
+
+<div class="timerwall" data-time="180"></div>
+
+<pre class="noselect"><code class="language-javascript">class BatEnemy extends Brick{
+    constructor(game, x, y, width, height, style, type){
+        super(game, x, y, width, height, style, type);
+        this.state = 0;
+        this.isStatic = true;
+    }
+
+    loop(framesElapsed){
+        super.loop(framesElapsed);
+        var lineToPlayer = [this.game.player.x, this.game.player.y, this.x, this.y];
+        var canSee = true;
+        this.game.tileset.forEach((item, i) =&gt; {
+            var rect = [item.x, item.y, item.x + item.width, item.y + item.height];
+            if (!isRectOffLine(rect, lineToPlayer) &amp;&amp; !isLineOffRect(rect, lineToPlayer) &amp;&amp; item != this){
+                canSee = false;
+            }
+        });
+        if (this.state == 0){
+            if (canSee){
+                this.state = 1;
+                this.isStatic = false;
+            }
+        }
+    }
+}</code></pre>
+
+<p>(I’m going to assume you did the create command correctly).</p>
+
+<p>Now, we need to start tracking the state of the bat. Store a variable <code class="language-plaintext highlighter-rouge">state</code> to the object in the constructor, like <code class="language-plaintext highlighter-rouge">this.state = 0;</code>. We want them to do nothing but hover there until they see a player, so let’s set <code class="language-plaintext highlighter-rouge">this.isStatic</code> to <code class="language-plaintext highlighter-rouge">true</code> in the constructor. Now, in the <code class="language-plaintext highlighter-rouge">loop</code> function, delete all the color-changing stuff and instead do</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">state</span> <span class="o">==</span> <span class="mi">0</span><span class="p">){</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">canSee</span><span class="p">){</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">state</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">isStatic</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>This bumps up <code class="language-plaintext highlighter-rouge">this.state</code> to 1 in the case that it can both see the player AND the state is 0, and frees the object to fall. Try it out, it should behave as expected, waiting until it can see the player then falling. Now, we can use the <code class="language-plaintext highlighter-rouge">hitBottom</code> function we set up in an earlier chapter (I forget which, wasn’t it 3?): if state is 1 and it hits bottom, state goes to 2, and sets all the physics presets to match Flyer. I’ll let you figure it out, or just scroll past a normal blankwall.</p>
+
+<div style="height: 100vh;"></div>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// this goes in BatEnemy</span>
+<span class="nx">hitBottom</span><span class="p">(){</span>
+    <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">state</span> <span class="o">==</span> <span class="mi">1</span><span class="p">){</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">state</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">gravity</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">friction</span> <span class="o">=</span> <span class="mf">0.9</span><span class="p">;</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">frictionY</span> <span class="o">=</span> <span class="mf">0.9</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>(Note: if you don’t die when you hit the bat, it’s because of a discrepancy in your BatEnemy class. Do view my noselected things!)</p>
+
+<p>Now, in <code class="language-plaintext highlighter-rouge">Bat</code>’s <code class="language-plaintext highlighter-rouge">loop</code> function, add an if statement for if <code class="language-plaintext highlighter-rouge">this.state == 2</code>, and copy the FlyerEnemy chase code (ignore the TTL stuff) to it. The Bat class should now look like this:</p>
+
+<pre class="noselect"><code class="language-javascript">class BatEnemy extends Brick{
+    constructor(game, x, y, width, height, style, type){
+        super(game, x, y, width, height, style, type);
+        this.state = 0;
+        this.isStatic = true;
+    }
+
+    loop(framesElapsed){
+        super.loop(framesElapsed);
+        var lineToPlayer = [this.game.player.x, this.game.player.y, this.x, this.y];
+        var canSee = true;
+        this.game.tileset.forEach((item, i) =&gt; {
+            var rect = [item.x, item.y, item.x + item.width, item.y + item.height];
+            if (!isRectOffLine(rect, lineToPlayer) &amp;&amp; !isLineOffRect(rect, lineToPlayer) &amp;&amp; item != this){
+                canSee = false;
+            }
+        });
+        if (this.state == 0){
+            if (canSee){
+                this.state = 1;
+                this.isStatic = false;
+            }
+        }
+        if (this.state == 2){
+            if (this.game.player.x &gt; this.x){ // If the player is behind the enemy, move backwards
+                this.xv += framesElapsed;
+            }
+            else if (this.game.player.x &lt; this.x){ // Else if only runs if the last if statement didn't run (like else), but also checks for conditions, hence the name.
+                this.xv -= framesElapsed;
+            }
+            if (this.game.player.y &gt; this.y){ // If the player is further down than the enemy, move down.
+                this.yv += framesElapsed;
+            }
+            else if (this.game.player.y &lt; this.y){ // The reverse.
+                this.yv -= framesElapsed;
+            }
+        }
+    }
+    
+    hitBottom(){
+        if (this.state == 1){
+            this.state = 2;
+            this.gravity = 0;
+            this.friction = 0.9;
+            this.frictionY = 0.9;
+        }
+    }
+}</code></pre>
+
+<p>Play with it some more - it should chase you around and everything, as it was designed to do. See you in the next chapter!</p>
+
+<h2 id="610-wrapping-up">6.10: Wrapping Up</h2>
+
+<p>Well, this was a long chapter. Really long. 6500 words. It took me a couple weeks to write - I was lacking in motivation for most of them - but it was very rewarding; we got bats and levels and stuff. I don’t have any plans for chapter 7, except for making the interface nicer, if you have any ideas do E-mail me (I probably won’t respond or even receive the e-mail, but it’s worth a shot). None of my other posts will be truly PFS, they will all be spin-offs. This tutorial was meant to take you from no knowledge whatsoever to building a basic video game, and you’ve done it! You can make maps, you can build enemies, and you can put up with my insatiable urge to develop new CSS and JS to annoy your tutorial experience. I’m very glad that this tutorial worked out as well as it did, and I hope you all know a little bit more about code than you did when you started.</p>
+
+<p>See you again soon, Tyler.</p>
 
             My friend's blogs: <a href="https://wizardwatch.net/">Wizardwatch's overall site</a>, <a href="https://sawyershepherd.org/">Sawyer's blog</a> (the .org part bemuses me). If ryleu decides to actually put something on his site, I'll link it here.
             <div class="navlinks">
@@ -813,6 +1272,15 @@ window.requestAnimationFrame(mainloop);
 </style>
 
         </div>
+        <script type="text/javascript">
+            Array.from(document.getElementsByClassName("noselect")).forEach((item, i) => {
+                item.addEventListener('copy', function(e){
+                    var text = window.getSelection().toString().replace(/[\n\r]+/g, '');
+                    e.clipboardData.setData('text/plain', "Let me make something clear. When I mark something noSelect, I mean it. This blog contains tutorials, in which you learn, NOT just copy code! I do not want people putting in zero-effort.");
+                    e.preventDefault();
+                });
+            });
+        </script>
         <script type="text/javascript" src="/blog/js/main.js"></script>
     </body>
 </html>

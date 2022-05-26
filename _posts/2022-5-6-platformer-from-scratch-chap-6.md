@@ -1,7 +1,6 @@
 ---
 name: "Platformer From Scratch chapter 6"
 bottomthing: "Conclusively finishing the physics engine for the third time, bats, level management"
-published: false
 ---
 
 Welcome back! I know it's been a long time since my last PFS update - I had (have, if I publish this before May 9th) finals and an SAT. We're going to start today by revisiting the physics engine - I fiddled with it a bit and decided that, having reduced the number of cycles required for collisions, I would add this to chapter 6. So, yes, you can expect this to be a long one.
@@ -270,7 +269,7 @@ window.requestAnimationFrame(mainloop);
 
 Now it won't run, and when you reload you'll see nothing on-screen. This just gives us a clear workspace to do some HTML and CSS.
 
-The technology we're going to use for the interface is called CSS grid. You should read about it on [MDN](https://developer.mozilla.org/en-US/docs/Web/CSS/grid)<collapsible-footnote citationname="[1]">You should also view the MDN article on grid areas <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/grid-template-areas">here</a>.</collapsible-footnote> if you don't already understand it, we'll be doing complex stuff with it. Let's add a grid container in `index.html` under `<div id="game">`:
+The technology we're going to use for the interface is called CSS grid. You should read about it on [MDN](https://developer.mozilla.org/en-US/docs/Web/CSS/grid)<collapsible-footnote citationname="[2]">You should also view the MDN article on grid areas <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/grid-template-areas">here</a>.</collapsible-footnote> if you don't already understand it, we'll be doing complex stuff with it. Let's add a grid container in `index.html` under `<div id="game">`:
 
 ```html
 	</div><!-- the other html -->
@@ -303,13 +302,13 @@ We want the menu to cover the whole page, so add some reset and cover properties
 }
 ```
 
-If you've never heard of them, read the MDN articles on [grids](https://developer.mozilla.org/en-US/docs/Learn/CSS/CSS_layout/Grids) and [grid areas](https://developer.mozilla.org/en-US/docs/Web/CSS/grid-area), I'm not going to post code snippets on key parts so you have no choice. Having thoroughly read and understood those MDN articles, set the `grid-area` under `#menu` to have `playbutton` and `levelselect` portions - I'll let you set it up however you want. It is imperative for other actually provided code snippets that you set those up perfectly!
+If you've never heard of them, read the MDN articles on [grids](https://developer.mozilla.org/en-US/docs/Learn/CSS/CSS_layout/Grids) and [grid areas](https://developer.mozilla.org/en-US/docs/Web/CSS/grid-area), I'm not going to post code snippets on key parts so you have no choice. Having thoroughly read and understood those MDN articles, set the `grid-area` under `#menu` to have `playbutton` and `levelname` portions - I'll let you set it up however you want. It is imperative for other actually provided code snippets that you set those up perfectly!
 
-Now, add two new `div`s to the `menu` element, one with the id `playbutton` and one with the id `levelselect`, like so:
+Now, add two new `div`s to the `menu` element, one with the id `playbutton` and one with the id `levelname`, like so:
 
 ```html
 <div id="menu">
-    <div id="levelselect"></div>
+    <div id="levelname"></div>
     <div id="playbutton"></div>
 </div>
 ```
@@ -317,8 +316,8 @@ Now, add two new `div`s to the `menu` element, one with the id `playbutton` and 
 And add CSS rules for them, like this:
 
 ```css
-#levelselect{
-    fix-this: levelselect;
+#levelname{
+    fix-this: levelname;
 }
 
 #playbutton{
@@ -336,11 +335,11 @@ Now, we need to populate the `div`s with interface elements. Insert into the `<d
 </div>
 ```
 
-Assuming you did everything correctly, you should see a button labeled "play"... near the center of the screen<collapsible-footnote citationname="[2]">Assuming you set it up the way I did, with the play button in the bottom-right corner.</collapsible-footnote>? This is because the play `button` only takes up a small part of the `playbutton` div, you can fix this with `margin: auto;` in the `playbutton` CSS selector, which effectively tells it to assign margins as much and as equally as it can, shrinking the `playbutton` div around the button in the process. This should center it; the CSS for the entire menu should look about like this:
+Assuming you did everything correctly, you should see a button labeled "play"... near the center of the screen<collapsible-footnote citationname="[3]">Assuming you set it up the way I did, with the play button in the bottom-right corner.</collapsible-footnote>? This is because the play `button` only takes up a small part of the `playbutton` div, you can fix this with `margin: auto;` in the `playbutton` CSS selector, which effectively tells it to assign margins as much and as equally as it can, shrinking the `playbutton` div around the button in the process. This should center it; the CSS for the entire menu should look about like this:
 
 <pre class="noselect"><code class="language-css">#menu {
     display: grid;
-    grid-template-areas: 'levelselect .'
+    grid-template-areas: 'levelname   .'
                          '.           playbutton';
     width: 100vw; /* VW = % viewport width */
     height: 100vh; /* VH = % viewport height */
@@ -351,8 +350,9 @@ Assuming you did everything correctly, you should see a button labeled "play"...
 }
 
 
-#levelselect{
-    grid-area: levelselect;
+
+#levelname{
+    grid-area: levelname;
     margin: auto; /* This wasn't added in the tutorial, but you should add it anyways. It will prevent later issues. */
 }
 
@@ -362,7 +362,7 @@ Assuming you did everything correctly, you should see a button labeled "play"...
 }
 </code></pre>
 
-Now, there isn't much we can do until we have level creation and launching set up. Play around with the CSS until you're happy - there are many great articles on button styling - and then continue on to the next section.
+Now, there isn't much we can do for `levelname` until we have level creation and launching set up. Play around with the CSS until you're happy - there are many great articles on button styling - and then continue on to the next section.
 
 ## 6.4: Level management
 
@@ -428,9 +428,474 @@ Run it and... exactly the same thing! You will also notice the play button hover
 
 ```html
 <div id="menu" style="display: none;">
-    <div id="levelselect"></div>
+    <div id="levelname"></div>
     <div id="playbutton">
         <button>Play</button>
     </div>
 </div>
 ```
+
+Now, when you run it, you see nothing different. Try restarting the level by running `FirstLevel.create(game)` in the developer console, however, and nothing happens! This is because the player is still being affected by gravity and, when we destroy the blocks, it keeps moving, *even though we can't see it*. Let's fix this with a new function on `Player` called `reset`, like so:
+
+```javascript
+reset(){
+    this.x = this.game.startX;
+    this.y = this.game.startY;
+}
+```
+
+If you observe, you'll see that `this.game.startX` and `this.game.startY` don't exist. This is because, before, we've hard-coded the position of the player: on my local copy, the player starts at x 50, y 0. We need to change this. In the constructor of Game, add:
+
+```javascript
+this.startX = 50;
+this.startY = 0;
+```
+
+And then, also in the `Game` constructor, change `this.player = new Player(this, 50, 0, this.blockWidth, this.blockHeight * 2);` to use `this.startX` and `this.startY`, like so:
+
+```javascript
+this.player = new Player(this, this.startX, this.startY, this.blockWidth, this.blockHeight * 2);
+```
+
+Now, try running `game.player.reset()` in the developer console. Because of our focus code, you won't see the player jerk into position immediately; you will only see that when you click inside the game area, focusing it. In any case, the player *will* jerk into position! Now, create a function under `Game` called `reset`, which calls `this.player.reset()`, like this:
+
+```javascript
+reset(){
+    this.player.reset();
+}
+```
+
+Now, call `game.reset()` in the `FirstLevel` `create` function, before all the create code. Figure it out if you don't know how! Once you get that working, try running then dying and calling `FirstLevel.create(game);` again in the developer console. It should work well enough, but you won't see the player! You need to add a graphics reset to the `Player` reset function, like this:
+
+```javascript
+reset(){
+    this.x = this.game.startX;
+    this.y = this.game.startY;
+    this.element.style.display = ""; // Leaving it blank means it will go to the default, or what we set in main.css.
+}
+```
+
+Now, it should work! Once you lose the game, the tileset is destroyed; level management allows you to arbitrarily create and re-create them. This all was, of course, only the precursor to building the actual level manager. You can start by creating a new class, `LevelManager`, and accepting one argument - `game` - in the constructor, then storing it as `this.game`, then storing a 0 to `this.levelNum` and `undefined` (nothin' yet) to `this.curLevel`. I hope you can figure it out, if you can't, scroll past the blankwall.
+
+<div style="height: 100vh;"></div>
+
+It should look like this:
+```javascript
+class LevelManager{
+    constructor(game){
+        this.game = game;
+        this.levelNum = 0;
+        this.curLevel = undefined;
+    }
+}
+```
+
+Make sure to be choosy about where in your code you put it! Rather like placing a sentence illogically on the SAT, your code quality (analogous to your test score) will take a hit. Of course, that doesn't matter as much as the next property we add to LevelManager in the constructor - `levels`, an array, like this: `this.levels = []`;. We also need a way to add levels to it, so let's create a function which takes an argument `level` and `push`es it into the `this.levels` array, like so:
+
+```javascript
+addLevel(level){
+    this.levels.push(level);
+}
+```
+
+Finally, we need a function that sets `this.curLevel` to the current level, advances levelNum (so next time it's called the cur level will be one ahead), and runs `this.curLevel.create()`. The `run` and `destroy` functions under `FirstLevel` will have to wait for another time; they will someday be used to add extra features. This function should be named `nextLevel` and should be under `class LevelManager`, and I highly recommend you try and figure it out yourself; if you can't, here's the code:
+
+```javascript
+nextLevel(){
+    this.curLevel = this.levels[this.levelNum];
+    this.curLevel.create(this.game);
+    this.levelNum ++;
+}
+```
+
+Now, implement this with `const levels = new LevelManager(game);` AFTER you define `game`. Delete the call to `FirstLevel.create()`, this can cause bugs later. Register FirstLevel with `levels.addLevel(FirstLevel)`, then run `levels.nextLevel();`. Your full demo code should now look like:
+
+<pre class="noselect"><code class="language-javascript">var game = new Game(50, 50);
+const levels = new LevelManager(game);
+levels.addLevel(FirstLevel);
+levels.nextLevel(); // Start it
+
+const FPS = 5;
+const millisPerFrame = 1000 / FPS;
+var lastFrameTime = 0;
+
+window.onfocus = function(){
+    lastFrameTime = window.performance.now();
+}
+
+function mainloop(){
+    if (document.hasFocus()){
+        var distTime = window.performance.now() - lastFrameTime;
+        lastFrameTime = window.performance.now();
+        var framesElapsed = distTime/millisPerFrame;
+        game.loop(framesElapsed);
+    }
+    window.requestAnimationFrame(mainloop);
+}
+window.requestAnimationFrame(mainloop);
+</code></pre>
+
+Run it and.... Nothing! This is because all we've done is wrap and complete things we already had, we're just making it cleaner and more extensible. Play around - maybe make another level? You can always go to the next level after dying with `levels.nextLevel();` in the console.
+
+## 6.5: Back to the UI
+
+Now that we have the level manager working, comment out the call to `levels.nextLevel` and delete the `display: none;` on `<div id="menu">` in index.html. Run it and... you'll see a player? This is because the game starts even before the `LevelManager` runs. We'll fix this more later on, but for now just comment all the demo code out. I expect that by now you've styled the button some more - I have a basic style set up if you want it:
+
+```css
+#playbutton > button{
+    min-width: 100px;
+    min-height: 50px;
+    border-radius: 0px;
+    text-decoration: none;
+    border: none;
+}
+```
+
+This is not the best way to do this. You need to mess a lot with the CSS for it to actually be beautiful; for now, you can just leave it the way it is. In chapter 7 I may go over making it more beautiful. Click the button, now, and... nothing? This is because we haven't yet made it trip a game start. Replace `<button>Play</button>` with `<button onclick = "levels.play()">Play</button>`. Re-load and click it - nothing! This is because we haven't defined `LevelManager`'s `play` function. Do that now - I'll let you figure it out - and add these lines of code in it:
+
+```javascript
+document.getElementById("menu").style.display = "none";
+this.nextLevel();
+```
+
+The second line is fairly straightforward, so let's look at the first one, which is hairy:
+
+* `document.getElementById("menu")`: Access an element with the `id` `menu`.
+* `.style.display`: This corresponds to the CSS display attribute. It is a very powerful attribute, but the primary values that we see are "block" and "none". "none" just means "don't show it".
+* ` = "none"`: Set it to "none".
+
+It still won't work, however, because of another issue. We need to make `Game` wait till the level tells it to start, otherwise it'll just go ahead and play! Start by adding a new property `playing` to `Game`, in the constructor, like this: `this.playing = false;`, and in `Game`'s `loop` function, wrap everything in `if (this.playing){}`, like this (yes, it's noselected):
+
+<pre class="noselect"><code class="language-javascript">loop(framesElapsed){
+    if (this.playing){
+        this.tileset.forEach((item, i) => {
+            item.loop(framesElapsed);
+            item.draw();
+        });
+        this.player.loop(framesElapsed);
+        this.player.draw();
+    }
+}
+</code></pre>
+Now, in `Game.reset()`<collapsible-footnote citationname="[4]">Better get used to this notation. It just means the reset function in Game.</collapsible-footnote>, set `this.playing = true;`, and in `Game.die()`, set `this.playing = false;`. Now you can uncomment all that code, and it should- show a player? This is just graphics stuff, and we can fix it easily by removing the call to `this.draw()` in `Player`'s constructor.
+
+Now, when you reload, you can play and die and everything! The only thing missing is the play button. Add this in `Game` `die`: `document.getElementById("menu").style.display = "";`. This just re-shows the game menu. Play it and die - it shows up! Unfortunately, there's a bug, when you click `Play` again it doesn't work. This is because it tries to play the next level, which doesn't exist; we can negate this by adding `levels.levelNum --;` (which just decreases the current level number by 1) in the `Game` `die` function. Note that this is NOT the best way to do this, it is simply the easiest to teach new coders; oftentimes, that is what I'll do in my beginner tutorial posts. Reload and play! You can play infinitely, and the player's score will save. Note that if you fall you have to re-load, this is because we don't have level-minima-is-death yet. Play around and make it your own, and see you in the next section, where we'll build ending blocks!
+
+## 6.6: Ending Blocks
+
+So far we have a level manager that can support multiple levels (you haven't tested it yet, most likely, but it will work), but we have no way to advance to the next level. Let's do that now by creating Ending blocks, which will have the same general effect as Death, but which will allow you to move on. First, of course, we need another map: I used
+
+```javascript
+const SecondLevel = {
+    create(game){
+        game.reset();
+        game.create(-3, 3, 10, 1, "normal", "solid");
+    }
+};
+```
+
+And `levels.addLevel(SecondLevel);` (you can figure out where to put these two snippets). Now that that's out of the way, we can move on to creating a new block. In `FirstLevel` `create`, add `game.create(4, -1, 1, 1, "end", "end");`, and in `main.css`, add a new rule that sets the `background-color` of all elements with class `end` to `green` (if you can't figure it out, take inspiration from the CSS for `.tar` and `.ice`).
+
+Now, when you reload, you should see a miraculous green block! Hit it and- you go through it. We haven't defined a new block in a long time, so here's the basic method:
+
+1. Add the block create command (for testing)
+2. Add the CSS for the block
+3. Add the block to the `collisionsDict` in `Game` `checkCollision`
+
+We've already done the first two, and you should know how to do the third by now, so I'll let you do that. Now, add `end` bricks to `specialCollisions` in `Player`'s constructor like so:
+
+```javascript
+this.specialCollisions.push("end");
+```
+
+And, finally, in `Player`'s `specialCollision` function, add a rule for `end` like so:
+
+```javascript
+if (type == "end"){
+    this.game.win();
+}
+```
+
+There's something wrong with this code. An observant coder will have noticed it by now; if you haven't, spend some time (2 minutes) debugging to figure it out. You know very well I'm about to give you the answer, but only after a wall. (Yes, D1, these are new, and yes, D1, they are for you).
+
+<div class="timerwall" data-time="120"></div>
+
+You need to define a `win` function under `Game` (if you didn't figure it out), and make it do essentially the same thing as `die`. Too keep things clean, let's move part of `die`'s code into a new function `clear` under game, and then call the same from `win`, like this:
+
+```javascript
+clear(){ // Clear the stuff from the level.
+    this.tileset.forEach((item, index) => {
+        item.remove();
+    });
+    this.tileset.splice(0, this.tileset.length);
+    this.player.endGame();
+    this.playing = false;
+    document.getElementById("menu").style.display = "";
+}
+
+die(){
+    this.clear();
+    levels.levelNum --;
+}
+
+win(){
+    alert("This was directly copied from PFS");
+    this.clear(); // Note that this does nothing but clear the playspace - we'll add more later.
+}
+```
+
+ Now, try reloading the game and hitting the end block. The game will clear as if you died, but click `Play`, and you'll advance to the next level! Notice that the player still has some velocity. It's optional to fix this, but you can by adding this to the `Player`'s `reset` function:
+
+```javascript
+this.xv = 0;
+this.yv = 0;
+```
+
+This is completely optional. You can keep it the way it was if you like it- I did this just to make the thing more thorough. Yay, there's your ending block!
+
+## 6.7: Improving the UI again
+
+Winning and losing work, but unfortunately, there is no way to tell if you won or lost but going to the next level. Let's add a message saying `you lose` or `you win`! Start in `index.html`, adding two new `div`s below `<div id="menu">...stuff...</div>`. One of these `div`s should have the `id` "youlose" and the other "youwin", both should have the `class` `coverwall`. Fill their content with whatever you want; I'll give you what they look like after a 50-second timer-wall (I'm enjoying these far too much).
+
+<div class="timerwall" data-time="50"></div>
+
+(If those start getting too irritating to be educational, I'll make it so they only operate once then stay dead forever, even after reloads. Of course, I won't know about it, so that'll probably never happen.)
+
+```html
+<div id="menu">
+    ...stuff...
+</div>
+<div id="youwin" class="coverwall">
+    You win! <span style="font-size: 0.5em">This was copied directly from PFS.</span>
+</div>
+<div id="youlose" class="coverwall">
+    You lose. <span style="font-size: 0.5em">This was copied directly from PFS.</span>
+</div>
+```
+
+Now, we need to do some CSS. In `main.css`, add a rule for `coverwall`s: 
+
+```css
+.coverwall{
+    width: 100vw; /* Cover the entire width and height */
+    height: 100vh;
+    position: absolute; /* Remove it from normal document flow and set it to the top-left corner */
+    top: 0px;
+    left: 0px;
+    background-color: white; /* Set the background color to opaque white, the default is transparent */
+    overflow: hidden; /* Elements with width 100vw or height 100vh may trip unnecessary scrollbars, this prevents that. */
+}
+```
+
+When you reload, you should just see the words "you lose" on screen. This is because it's displaying the banners, even when we don't want them to! Fix this by adding `style="display: none;"` to both of the coverwall divs (this is fairly easy to do: it's the same syntax as adding an id, so I'm not going to show it here). Now, when you reload, it should look normal; we need to start using these little guys. Create a function under `Game` called `doShowThing`. It should take one argument: `element`. Since it's complicated, I won't force you to figure it out yourself; it should look like this:
+
+```javascript
+doShowThing(element){
+    element.style.display = ""; // Show the element by resetting display (we've seen this before!)
+    setTimeout(() => {
+        element.style.display = "none"; // Hide the element by setting display to none (we've seen this before as well!)
+    }, 2000);
+}
+```
+
+Whoa- what? That's hairy. You can kinda see an arrow function in there, like a forEach one, but what's `setTimeout`? `setTimeout` is a function defined by the browser that waits a certain number of *milliseconds*<collapsible-footnote citationname = "[5]">Milliseconds are 1/1000s of a second, so it takes a thousand milliseconds to make a single second.</collapsible-footnote> to run a function. We pass an arrow function in, one which hides an element, and then we have `, 2000`. The `,` means it's the next argument, and `2000` is a number in milliseconds: 2 seconds. 
+
+Now, in `Game`'s `die` function, simply add `this.doShowThing(document.getElementById("youlose"));`  This is hairy, so let's walk through it:
+
+* `this.doShowThing(`: This is the function we just defined. It is called with arguments, hence the parens.
+* `document.getElementById`: We've seen this before. Get an element from the page by it's `id`.
+* `"youlose"`: This is the ID of the div with the "you lose" stuff.
+* `);`: End calling the function.
+
+Try dying, and you'll find that it works! You see a simple `you lose` text. Now, let's effectively duplicate this; call the function the same way in `Game.win`, but with `youwin` instead of `youlose`. This should now work for winning as well as losing!
+
+One thing you'll notice is that these are *ugly*. Tiny font, not centered, none of the things we get in Platformer. I won't have a huge tutorial on making them beautiful here - this chapter is already running extremely long - but you can definitely add `font-size: 2em;` in the CSS for them. If you can't find that CSS, you haven't been paying very good attention. I'm not going to bother about beautifying them as I intend to redo the interface later on (my plan is to replace the current Platformer with this).
+
+## 6.8: Where am I? Adding a level name and number count.
+
+Right now, a large portion of our CSS grid is unused, but now that we've implemented levels almost fully, let's start with it. In `LevelManager`, create a new function `updateLevelname`. In it, grab the element with id `levelname` and set it's `innerText` to `this.levelNum`. I said these chapters are getting harder, so figure it out; the code is available under another cruel wall - this one for 3 minutes.
+
+<div class="timerwall" data-time="180"></div>
+
+I hope you figured it out- if you did, check it against this; I've noselected this one so you can't just use it.
+
+<pre class="noselect"><code class="language-javascript">updateLevelName(){
+    document.getElementById("levelname").innerText = this.levelNum;
+}
+</code>
+</pre>
+
+Now, in `LevelManager`'s constructor, add a call to `this.updateLevelName()`. This means it'll start off that way, and then in `LevelManager`'s `nextLevel` function, add another call the same way. Every time it advances a level, the text will update! If you implemented this properly, it should work. I'm not adding level name functionality because that would take a lot of time, but I recommend you try it! Yay, it works.
+
+## 6.9: Bats! Finally, bats!
+
+There's a reason Bats have been delayed so far: they're extremely difficult. The little buggers have to wait until they see a player, which means line-of-sight checking, which means a lot of complex code. Let's get started!
+
+The first thing we need is the line-of-sight check. This draws an imaginary line between bat and player and detects if it hits any blocks: if the line of sight hits blocks, the bat can't see it, otherwise the bat can see it. This isn't particularly efficient - there are false negatives - but it's much easier than true sight checking.
+
+(This algorithm provided helpfully by SO user "user37968", in their answer [here](https://stackoverflow.com/a/293052).)
+
+Create a global function like `getTopmost` called `pointRelationToLine`, like this (I'll give it to you easy because I don't fully understand it either):
+
+```javascript
+function pointRelationToLine(x, y, line){
+    var val = ((line[3] - line[1]) * x) + ((line[0] - line[2]) * y) + ((line[2] * line[1]) - (line[0] * line[3]));
+    return val == 0 ? 0 : val/abs(val); // Find the sign and avoid divide by 0 issues.
+} // This returns -1 if the point (x, y) is above the line, 1 if it's below, and equal to 0 if it's on the line.
+```
+
+Now create a function `isRectOffLine` (which just tests if a rectangle is definitely *not* on a line), like so:
+
+```javascript
+function isRectOffLine(rect, line){
+    var p1Val = pointRelationToLine(rect[0], rect[1], line);
+    var p2Val = pointRelationToLine(rect[2], rect[3], line);
+    var p3Val = pointRelationToLine(rect[0], rect[3], line);
+    var p4Val = pointRelationToLine(rect[2], rect[1], line);
+    return p1Val == p2Val && p2Val == p3Val && p3Val == p4Val;
+}
+```
+
+Again, you get this free because it's complicated to the point that I barely understand it.
+
+I'm not totally evil, so I'll also let you have the much simpler one that I understand, the one that detects if the line is to the sides of the rectangle:
+
+```javascript
+function isLineOffRect(rect, line){
+    return (line[0] < rect[0] && line[2] < rect[0]) ||
+           (line[0] > rect[2] && line[2] > rect[2]) ||
+           (line[1] < rect[1] && line[3] < rect[1]) ||
+           (line[1] > rect[3] && line[3] > rect[3])
+}
+```
+
+And then, if you want to check if any rectangle `rect` is definitely NOT on a line, you use `!isRectOffLine(rect, line) && !isLineOffRect(rect, line)`. The logic of this is breathtakingly broken, and I'm sure the solution will come to me when I'm less sleepy (it is late as I write this), but for now that's just the sad truth. Now, we need to actually use these functions: create a new `BatEnemy` class, the same way other enemy classes are created, and in the loop function add a `forEach` over `this.game.tileset`. For every block in the tileset, check if the block is not viewing it; if the block is not, you should set a boolean `canSee` to false (define canSee as default true at the top of the function). You can get the compatible rectangle of any block with `var rect = [item.x, item.y, item.x + item.width, item.y + item.height];`, and the line between the rectangle and player with `var lineToPlayer = [this.game.player.x, this.game.player.y, this.x, this.y];`. Finally, using `canSee`, at the bottom of the code (after the forEach), add:
+
+```javascript
+if (canSee){
+	this.element.style.backgroundColor = "red";
+}
+else{
+    this.element.style.backgroundColor = "blue";
+}
+```
+
+Create a new Bat by replacing the `GunnerEnemy`'s create function, like `game.create(8, 6, 1, 1,  "lava", "killu", BatEnemy);` (where the old command `game.create(8, 6, 1, 1,  "lava", "killu", GunnerEnemy);` was, in FirstLevel), and run it: the bat should turn red when it can see you, and stay blue otherwise. If this doesn't work, you can view the fully functional code under a 3-minute wall.
+
+<div class="timerwall" data-time="180"></div>
+
+<pre class="noselect"><code class="language-javascript">class BatEnemy extends Brick{
+    constructor(game, x, y, width, height, style, type){
+        super(game, x, y, width, height, style, type);
+        this.state = 0;
+        this.isStatic = true;
+    }
+
+    loop(framesElapsed){
+        super.loop(framesElapsed);
+        var lineToPlayer = [this.game.player.x, this.game.player.y, this.x, this.y];
+        var canSee = true;
+        this.game.tileset.forEach((item, i) => {
+            var rect = [item.x, item.y, item.x + item.width, item.y + item.height];
+            if (!isRectOffLine(rect, lineToPlayer) && !isLineOffRect(rect, lineToPlayer) && item != this){
+                canSee = false;
+            }
+        });
+        if (this.state == 0){
+            if (canSee){
+                this.state = 1;
+                this.isStatic = false;
+            }
+        }
+    }
+}</code></pre>
+
+(I'm going to assume you did the create command correctly).
+
+Now, we need to start tracking the state of the bat. Store a variable `state` to the object in the constructor, like `this.state = 0;`. We want them to do nothing but hover there until they see a player, so let's set `this.isStatic` to `true` in the constructor. Now, in the `loop` function, delete all the color-changing stuff and instead do
+
+```javascript
+if (this.state == 0){
+    if (canSee){
+        this.state = 1;
+        this.isStatic = false;
+    }
+}
+```
+
+This bumps up `this.state` to 1 in the case that it can both see the player AND the state is 0, and frees the object to fall. Try it out, it should behave as expected, waiting until it can see the player then falling. Now, we can use the `hitBottom` function we set up in an earlier chapter (I forget which, wasn't it 3?): if state is 1 and it hits bottom, state goes to 2, and sets all the physics presets to match Flyer. I'll let you figure it out, or just scroll past a normal blankwall.
+
+<div style="height: 100vh;"></div>
+
+```javascript
+// this goes in BatEnemy
+hitBottom(){
+    if (this.state == 1){
+        this.state = 2;
+        this.gravity = 0;
+        this.friction = 0.9;
+        this.frictionY = 0.9;
+    }
+}
+```
+
+(Note: if you don't die when you hit the bat, it's because of a discrepancy in your BatEnemy class. Do view my noselected things!)
+
+Now, in `Bat`'s `loop` function, add an if statement for if `this.state == 2`, and copy the FlyerEnemy chase code (ignore the TTL stuff) to it. The Bat class should now look like this:
+
+<pre class="noselect"><code class="language-javascript">class BatEnemy extends Brick{
+    constructor(game, x, y, width, height, style, type){
+        super(game, x, y, width, height, style, type);
+        this.state = 0;
+        this.isStatic = true;
+    }
+
+    loop(framesElapsed){
+        super.loop(framesElapsed);
+        var lineToPlayer = [this.game.player.x, this.game.player.y, this.x, this.y];
+        var canSee = true;
+        this.game.tileset.forEach((item, i) => {
+            var rect = [item.x, item.y, item.x + item.width, item.y + item.height];
+            if (!isRectOffLine(rect, lineToPlayer) && !isLineOffRect(rect, lineToPlayer) && item != this){
+                canSee = false;
+            }
+        });
+        if (this.state == 0){
+            if (canSee){
+                this.state = 1;
+                this.isStatic = false;
+            }
+        }
+        if (this.state == 2){
+            if (this.game.player.x > this.x){ // If the player is behind the enemy, move backwards
+                this.xv += framesElapsed;
+            }
+            else if (this.game.player.x < this.x){ // Else if only runs if the last if statement didn't run (like else), but also checks for conditions, hence the name.
+                this.xv -= framesElapsed;
+            }
+            if (this.game.player.y > this.y){ // If the player is further down than the enemy, move down.
+                this.yv += framesElapsed;
+            }
+            else if (this.game.player.y < this.y){ // The reverse.
+                this.yv -= framesElapsed;
+            }
+        }
+    }
+    
+    hitBottom(){
+        if (this.state == 1){
+            this.state = 2;
+            this.gravity = 0;
+            this.friction = 0.9;
+            this.frictionY = 0.9;
+        }
+    }
+}</code></pre>
+
+Play with it some more - it should chase you around and everything, as it was designed to do. See you in the next chapter!
+
+## 6.10: Wrapping Up
+
+Well, this was a long chapter. Really long. 6500 words. It took me a couple weeks to write - I was lacking in motivation for most of them - but it was very rewarding; we got bats and levels and stuff. I don't have any plans for chapter 7, except for making the interface nicer, if you have any ideas do E-mail me (I probably won't respond or even receive the e-mail, but it's worth a shot). None of my other posts will be truly PFS, they will all be spin-offs. This tutorial was meant to take you from no knowledge whatsoever to building a basic video game, and you've done it! You can make maps, you can build enemies, and you can put up with my insatiable urge to develop new CSS and JS to annoy your tutorial experience. I'm very glad that this tutorial worked out as well as it did, and I hope you all know a little bit more about code than you did when you started.
+
+See you again soon, Tyler.

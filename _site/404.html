@@ -7,7 +7,12 @@
         <link rel="stylesheet"
               href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/styles/default.min.css">
         <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/highlight.min.js"></script>
-        <script>hljs.highlightAll()</script>
+        <script>
+            hljs.configure({
+                ignoreUnescapedHTML: true
+            });
+            hljs.highlightAll();
+        </script>
     </head>
     <body>
         <div id="topbar">
@@ -378,6 +383,15 @@ This might be because it was never there in the first place, because you mistype
 </style>
 
         </div>
+        <script type="text/javascript">
+            Array.from(document.getElementsByClassName("noselect")).forEach((item, i) => {
+                item.addEventListener('copy', function(e){
+                    var text = window.getSelection().toString().replace(/[\n\r]+/g, '');
+                    e.clipboardData.setData('text/plain', "Let me make something clear. When I mark something noSelect, I mean it. This blog contains tutorials, in which you learn, NOT just copy code! I do not want people putting in zero-effort.");
+                    e.preventDefault();
+                });
+            });
+        </script>
         <script type = "text/javascript" src = "/blog/js/main.js"></script>
     </body>
 </html>

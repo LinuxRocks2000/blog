@@ -49,3 +49,41 @@ class FootNote extends HTMLElement{
 }
 
 customElements.define('collapsible-footnote', FootNote);
+
+var timewalls = [];
+Array.from(document.getElementsByClassName("timerwall")).forEach((item, i) => {
+    timewalls.push({
+        el: item,
+        timeleft: item.getAttribute("data-time") || 30,
+        started: false
+    });
+});
+
+/*window.addEventListener("scroll", function() {
+    timewalls.forEach((item, i) => {
+        if (!item.done){
+            if (item.el.getBoundingClientRect().top < 0){
+                if (!item.started){
+                    item.started = true;
+                    var doTickDown = () => {
+                        if (item.timeleft == 0){
+                            item.done = true;
+                            item.el.style.height = "0px";
+                            return;
+                        }
+                        item.timeleft --;
+                        item.el.innerText = "You have " + item.timeleft + " seconds before you can view what lies below.";
+                        setTimeout(doTickDown, 1000);
+                    };
+                    doTickDown();
+                }
+                window.scrollBy({
+                    left: 0,
+                    top: item.el.getBoundingClientRect().top - (window.innerHeight * 2/3),
+                    behavior: "smooth"
+                });
+            }
+        }
+    });
+});
+*/
