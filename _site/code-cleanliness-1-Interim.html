@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+    <head>
+        <meta charset="utf-8">
+        <title>Interim: Code Cleanliness for Web Developers</title>
+        <link rel="stylesheet" href="/blog/css/main.css" />
+        <link rel="stylesheet"
+              href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/styles/default.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/highlight.min.js"></script>
+        <script>
+            hljs.configure({
+                ignoreUnescapedHTML: true
+            });
+            hljs.highlightAll();
+        </script>
+    </head>
+    <body>
+        <div id="topbar">
+            <nav>
+    <a href="/blog/">Blog</a>
+    <a href="/blog/about">About Me</a>
+    <a href="/">My comic</a>
+</nav>
+
+<style>
+    nav > a{
+        font-family: Arial;
+        font-size: 2em;
+        color: black;
+        text-decoration: none;
+        margin-left: 20px;
+    }
+</style>
+
+        </div>
+        <div id="body">
+            <div class="navlinks">
+                
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                        
+                            <a href="/blog/code-cleanliness-1">&lt; Code Cleanliness part 1 <p>A primer and serial internet book on code cleanliness, mostly written for the students of CS classes at Kennesaw State University</p></a>
+                        
+                    
+                    
+                
+                
+                
+                    
+                        
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+            </div>
+            <h1 id="interim-code-cleanliness-for-web-developers">Interim: Code Cleanliness for Web Developers</h1>
+
+<p>I realized last night (after publishing, sadly) that my Code Cleanliness part 1 document did <em>not</em> cover much in HTML! The concepts, fortunately, are mostly the same, so I’m not going to bother writing a full-fledged chapter on the subject; this little Interim connecting the concepts we learned in the first article to web development will hopefully be enough.</p>
+
+<h2 id="1-interim1-the-importance-of-clean-markup">1-Interim.1: The importance of clean markup</h2>
+
+<p><strong>Diction note</strong>- A term I use for an HTML file is your markup. This is because HTML is really an acronym from the 90s when complex, somewhat meaningless acronyms were really pretty useful everywhere: <strong>H</strong>yper<strong>T</strong>ext <em><strong>M</strong>arkup</em> <strong>L</strong>anguage. I dare you to say <em>that</em> three times fast. Technically “markup” can mean both more and less than HTML (depending on the situation) but I use it interchangeably with HTML over these documents.</p>
+
+<p>HTML, I think, may be the most susceptible language in these courses to bad code. The others can be intuited fairly easily, and if you mess it up a bit it doesn’t really hurt you too much. In HTML, however, the only even slightly intuitive bit is tabs, and newlines/spaces are almost entirely up to you. This would be fine, of course, but HTML is also somewhat dependent on readability, as it gets impressively unreadable and undebuggable if you don’t adhere to some kind of convention. My goal for this demi-chapter is to give you some basic conventions that almost everyone follows to help you make your code readable by yourself and others.</p>
+
+<p>Since my favorite way to write blog posts is big code blocks, without further ado I present to you… the badly formatted markup!</p>
+
+<p>(This is stolen and edited from one of my sites.)</p>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;!DOCTYPE html&gt;</span>
+<span class="nt">&lt;html</span> <span class="na">lang=</span><span class="s">"en"</span> <span class="na">dir=</span><span class="s">"ltr"</span><span class="nt">&gt;&lt;head&gt;&lt;meta</span> <span class="na">charset=</span><span class="s">"utf-8"</span><span class="nt">&gt;</span> <span class="nt">&lt;title&gt;</span>And I'll make a title out of you (indeed, my Mulan references are "cringe")<span class="nt">&lt;/title&gt;</span>
+<span class="nt">&lt;link</span> <span class="na">rel=</span><span class="s">"stylesheet"</span> <span class="na">href=</span><span class="s">"main.css"</span> <span class="nt">/&gt;</span>
+  <span class="nt">&lt;/head&gt;</span>
+<span class="nt">&lt;body&gt;&lt;div</span> <span class="na">id=</span><span class="s">"main"</span><span class="nt">&gt;</span>
+<span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">"topstuff"</span><span class="nt">&gt;</span>
+ <span class="nt">&lt;h1&gt;</span>Sample Page that totally wasn't once Not Art Gallery<span class="nt">&lt;/h1&gt;&lt;h2&gt;</span>
+                    A secondary heading.
+                <span class="nt">&lt;/h2&gt;&lt;p&gt;</span>
+                    This used to be some text in a P, but I decided to replace it with a baseball ipsum (there's a lot of these out there). Baseball ipsum dolor sit amet passed ball outs, sweep stretch bleeder triple play. Left fielder count fair swing cork balk ball. Full count southpaw reliever lineup crooked number fastball second base. Perfect game outfielder rally force dodgers right fielder dead ball era right field. Pickoff world series peanuts batting average cup of coffee foul inside robbed. Bleeder club appeal first base sidearm mustard steal line drive inning.
+                <span class="nt">&lt;/p&gt;&lt;p&gt;</span>
+                    There was once more P text here. I like the... british ipsum? more. Pommy ipsum 221B Baker Street ey up chuck down the local chap beefeater, guinness nosh jammy git put me soaps back on bowler hat complete mare spend a penny, accordingly rambunctious middle class well chuffed lass. Cheesed off ask your mother if a tenner a right corker in the goolies marmite devonshire cream tea, black pudding horses for courses pot noodle gobsmacked pillock. Done up like a kipper Bob's your uncle half-inch it a tad a right toff sling one's hook, gallivanting around houlligan Time Lord. Yorkshire pudding gosh biscuits Southeners cor blimey' nigh, knows bugger all about nowt sausage roll gobsmacked pork dripping. 
+      <span class="nt">&lt;/p&gt;</span> <span class="nt">&lt;p&gt;</span>
+                    Used to be a single sentence instead of a full paragraph. To reflect, I've cut down the ipsum. Lorem ipsum dolor sit amet.
+<span class="nt">&lt;/p&gt;&lt;span</span> <span class="na">id=</span><span class="s">"bouncy"</span> <span class="na">style=</span><span class="s">"font-family:monospace;color:green;background-color:lightblue;"</span><span class="nt">&gt;</span>[Scroll Down (two fingers)]<span class="nt">&lt;/span&gt;</span>
+            <span class="nt">&lt;/div&gt;&lt;div</span> <span class="na">class=</span><span class="s">"gradient-scrolly"</span><span class="nt">&gt;</span>
+            <span class="nt">&lt;/div&gt;</span>
+<span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">"cred"</span><span class="nt">&gt;</span>       First line of the credits - these are really cool on the full site<span class="nt">&lt;br&gt;</span>
+                                <span class="nt">&lt;span&gt;</span>Second credits line (also cool)<span class="nt">&lt;/span&gt;&lt;br&gt;</span>
+                                     Not that cliche, kinda cool still
+     <span class="c">&lt;!-- Side note: This doesn't work for centering. The browser deletes all those extra spaces during render! --&gt;</span>
+                              <span class="c">&lt;!-- Instead, use text-align:center; in CSS. --&gt;</span>
+            <span class="nt">&lt;/div&gt;</span>
+<span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">"carousel"</span> <span class="na">onmouseover = </span><span class="s">"carouselHovered()"</span> <span class="na">onmouseleave = </span><span class="s">"carouselUnhovered()"</span><span class="nt">&gt;&lt;div</span> <span class="na">class = </span><span class="s">"image"</span><span class="nt">&gt;</span>
+A piece of art!
+       <span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"res/art.png"</span><span class="nt">/&gt;</span>
+                <span class="nt">&lt;/div&gt;&lt;div</span> <span class="na">class = </span><span class="s">"image"</span><span class="nt">&gt;</span>
+           A piece of art!<span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"res/art1.png"</span><span class="nt">/&gt;</span>
+                <span class="nt">&lt;/div&gt;&lt;div</span> <span class="na">class = </span><span class="s">"image"</span><span class="nt">&gt;</span> A piece of art!     <span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"res/art2.png"</span><span class="nt">/&gt;&lt;/div&gt;&lt;div</span> <span class="na">class = </span><span class="s">"image"</span><span class="nt">&gt;</span>
+                    A piece of art!<span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"res/art3.png"</span><span class="nt">/&gt;</span>
+    
+                <span class="nt">&lt;/div&gt;</span>
+<span class="nt">&lt;div</span> <span class="na">class = </span><span class="s">"image"</span><span class="nt">&gt;</span> A piece of art!
+     <span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"res/art4.png"</span><span class="nt">/&gt;</span>
+        <span class="nt">&lt;/div&gt;</span>
+         <span class="nt">&lt;div</span> <span class="na">class = </span><span class="s">"image"</span><span class="nt">&gt;</span>A piece of art!
+                    <span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"res/art5.png"</span><span class="nt">/&gt;</span> <span class="nt">&lt;/div&gt;</span>
+                <span class="nt">&lt;div</span> <span class="na">class = </span><span class="s">"image"</span><span class="nt">&gt;</span>
+  A piece of art!<span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"res/art6.png"</span><span class="nt">/&gt;</span>
+ <span class="nt">&lt;/div&gt;</span>
+        <span class="nt">&lt;/div&gt;&lt;div</span> <span class="na">class=</span><span class="s">"gradient-down"</span> <span class="na">style=</span><span class="s">"z-index: 1;position:relative;"</span><span class="nt">&gt;</span>
+    
+    <span class="nt">&lt;/div&gt;</span>
+  <span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">"understuff"</span> <span class="na">style=</span><span class="s">"z-index: 2;position:relative;"</span><span class="nt">&gt;&lt;p&gt;</span>
+                    A little piece on contributing to this site<span class="nt">&lt;br&gt;</span>
+                    Some <span class="nt">&lt;b&gt;</span>rules<span class="nt">&lt;/b&gt;</span> on submission<span class="nt">&lt;br&gt;</span> <span class="nt">&lt;/p&gt;</span>
+    <span class="nt">&lt;p&gt;</span>
+ <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"text"</span> <span class="na">id=</span><span class="s">"urname"</span> <span class="na">placeholder=</span><span class="s">"Your name"</span><span class="nt">&gt;&lt;/input&gt;&lt;br&gt;&lt;label</span> <span class="na">id = </span><span class="s">"submitFile"</span> <span class="na">for=</span><span class="s">"submitFileInput"</span><span class="nt">&gt;</span>Upload your image<span class="nt">&lt;/label&gt;</span>
+      <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"file"</span> <span class="na">id=</span><span class="s">"submitFileInput"</span> <span class="na">accept=</span><span class="s">"image/png, image/jpeg"</span><span class="nt">/&gt;&lt;br&gt;</span>
+<span class="nt">&lt;img</span> <span class="na">id=</span><span class="s">"filepreview"</span> <span class="na">src=</span><span class="s">""</span><span class="nt">&gt;</span>   <span class="nt">&lt;button</span> <span class="na">id=</span><span class="s">"submitbutton"</span> <span class="na">onclick=</span><span class="s">"sendimage()"</span> <span class="na">style=</span><span class="s">"display: none;"</span><span class="nt">&gt;</span>Send<span class="nt">&lt;/button&gt;</span>
+                <span class="nt">&lt;/p&gt;</span>   <span class="nt">&lt;/div&gt;</span>
+<span class="nt">&lt;/div&gt;</span>
+    <span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">"shadowbox"</span> <span class="na">class=</span><span class="s">"hidden"</span><span class="nt">&gt;</span> <span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"foo"</span><span class="nt">/&gt;</span>
+  <span class="nt">&lt;/div&gt;</span> <span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">"submittedDongle"</span> <span class="na">style=</span><span class="s">"display: none"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;span</span> <span class="na">style=</span><span class="s">"font-size: 1.3em;"</span><span class="nt">&gt;</span>Generic "your submission is complete" text!<span class="nt">&lt;/span&gt;&lt;br&gt;</span>
+       Some explanatory text about your submission!
+   <span class="nt">&lt;/div&gt;</span> <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"https://npmcdn.com/parse/dist/parse.min.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
+        <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"main.js"</span><span class="nt">&gt;</span>
+
+<span class="nt">&lt;/script&gt;</span> <span class="nt">&lt;/body&gt;</span>
+				<span class="nt">&lt;/html&gt;</span>
+</code></pre></div></div>
+
+<p>(Unless I phenomenally screwed up, all I did to this one was add/delete spaces, newlines, and tabs. If you copy/paste this into replit or similar it won’t work because you don’t have my JavaScript, CSS, and images.)</p>
+
+<p>Not very readable, right? You can still edit the text and everything, but efficiently editing or debugging the markup? Un-possible, to quote the mad hatter. I’d recommend that you imagine trying to find the bug in the markup, but you don’t merely have to imagine it, I have a broken markup prepared for you:</p>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;!DOCTYPE html&gt;</span>
+<span class="nt">&lt;html</span> <span class="na">lang=</span><span class="s">"en"</span> <span class="na">dir=</span><span class="s">"ltr"</span><span class="nt">&gt;&lt;head&gt;&lt;meta</span> <span class="na">charset=</span><span class="s">"utf-8"</span><span class="nt">&gt;</span> <span class="nt">&lt;title&gt;</span>And I'll make a title out of you (indeed, my Mulan references are "cringe")<span class="nt">&lt;/title&gt;</span>
+<span class="nt">&lt;link</span> <span class="na">rel=</span><span class="s">"stylesheet"</span> <span class="na">href=</span><span class="s">"main.css"</span> <span class="nt">/&gt;</span>
+  <span class="nt">&lt;/head&gt;</span>
+<span class="nt">&lt;body&gt;&lt;div</span> <span class="na">id=</span><span class="s">"main"</span><span class="nt">&gt;</span>
+<span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">"topstuff"</span><span class="nt">&gt;</span>
+ <span class="nt">&lt;h1&gt;</span>Sample Page that totally wasn't once Not Art Gallery<span class="nt">&lt;/h1&gt;&lt;h2&gt;</span>
+                    A secondary heading.
+                <span class="nt">&lt;/h2&gt;&lt;p&gt;</span>
+                    This used to be some text in a P, but I decided to replace it with a baseball ipsum (there's a lot of these out there). Baseball ipsum dolor sit amet passed ball outs, sweep stretch bleeder triple play. Left fielder count fair swing cork balk ball. Full count southpaw reliever lineup crooked number fastball second base. Perfect game outfielder rally force dodgers right fielder dead ball era right field. Pickoff world series peanuts batting average cup of coffee foul inside robbed. Bleeder club appeal first base sidearm mustard steal line drive inning.
+                <span class="nt">&lt;/p&gt;&lt;p&gt;</span>
+                    There was once more P text here. I like the... british ipsum? more. Pommy ipsum 221B Baker Street ey up chuck down the local chap beefeater, guinness nosh jammy git put me soaps back on bowler hat complete mare spend a penny, accordingly rambunctious middle class well chuffed lass. Cheesed off ask your mother if a tenner a right corker in the goolies marmite devonshire cream tea, black pudding horses for courses pot noodle gobsmacked pillock. Done up like a kipper Bob's your uncle half-inch it a tad a right toff sling one's hook, gallivanting around houlligan Time Lord. Yorkshire pudding gosh biscuits Southeners cor blimey' nigh, knows bugger all about nowt sausage roll gobsmacked pork dripping. 
+      <span class="nt">&lt;/p&gt;</span> <span class="nt">&lt;p&gt;</span>
+                    Used to be a single sentence instead of a full paragraph. To reflect, I've cut down the ipsum. Lorem ipsum dolor sit amet.
+<span class="nt">&lt;/p&gt;&lt;span</span> <span class="na">id=</span><span class="s">"bouncy"</span> <span class="na">style=</span><span class="s">"font-family:monospace;color:green;background-color:lightblue;"</span><span class="nt">&gt;</span>[Scroll Down (two fingers)]<span class="nt">&lt;/span&gt;</span>
+            <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"gradient-scrolly"</span><span class="nt">&gt;</span>
+            <span class="nt">&lt;/div&gt;</span>
+<span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">"cred"</span><span class="nt">&gt;</span>       First line of the credits - these are really cool on the full site<span class="nt">&lt;br&gt;</span>
+                                <span class="nt">&lt;span&gt;</span>Second credits line (also cool)<span class="nt">&lt;/span&gt;&lt;br&gt;</span>
+                                     Not that cliche, kinda cool still
+     <span class="c">&lt;!-- Side note: This doesn't work for centering. The browser deletes all those extra spaces during render! --&gt;</span>
+                              <span class="c">&lt;!-- Instead, use text-align:center; in CSS. --&gt;</span>
+            <span class="nt">&lt;/div&gt;</span>
+<span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">"carousel"</span> <span class="na">onmouseover = </span><span class="s">"carouselHovered()"</span> <span class="na">onmouseleave = </span><span class="s">"carouselUnhovered()"</span><span class="nt">&gt;&lt;div</span> <span class="na">class = </span><span class="s">"image"</span><span class="nt">&gt;</span>
+A piece of art!
+       <span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"res/art.png"</span><span class="nt">/&gt;</span>
+                <span class="nt">&lt;/div&gt;&lt;div</span> <span class="na">class = </span><span class="s">"image"</span><span class="nt">&gt;</span>
+           A piece of art!<span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"res/art1.png"</span><span class="nt">/&gt;</span>
+                <span class="nt">&lt;/div&gt;&lt;div</span> <span class="na">class = </span><span class="s">"image"</span><span class="nt">&gt;</span> A piece of art!     <span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"res/art2.png"</span><span class="nt">/&gt;&lt;/div&gt;&lt;div</span> <span class="na">class = </span><span class="s">"image"</span><span class="nt">&gt;</span>
+                    A piece of art!<span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"res/art3.png"</span><span class="nt">/&gt;</span>
+    
+                <span class="nt">&lt;/div&gt;</span>
+<span class="nt">&lt;div</span> <span class="na">class = </span><span class="s">"image"</span><span class="nt">&gt;</span> A piece of art!
+     <span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"res/art4.png"</span><span class="nt">/&gt;</span>
+        <span class="nt">&lt;/div&gt;</span>
+         <span class="nt">&lt;div</span> <span class="na">class = </span><span class="s">"image"</span><span class="nt">&gt;</span>A piece of art!
+                    <span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"res/art5.png"</span><span class="nt">/&gt;</span> <span class="nt">&lt;/div&gt;</span>
+                <span class="nt">&lt;div</span> <span class="na">class = </span><span class="s">"image"</span><span class="nt">&gt;</span>
+  A piece of art!<span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"res/art6.png"</span><span class="nt">/&gt;</span>
+ <span class="nt">&lt;/div&gt;</span>
+        <span class="nt">&lt;/div&gt;&lt;div</span> <span class="na">class=</span><span class="s">"gradient-down"</span> <span class="na">style=</span><span class="s">"z-index: 1;position:relative;"</span><span class="nt">&gt;</span>
+    
+    <span class="nt">&lt;/div&gt;</span>
+  <span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">"understuff"</span> <span class="na">style=</span><span class="s">"z-index: 2;position:relative;"</span><span class="nt">&gt;&lt;p&gt;</span>
+                    A little piece on contributing to this site<span class="nt">&lt;br&gt;</span>
+                    Some <span class="nt">&lt;b&gt;</span>rules<span class="nt">&lt;/b&gt;</span> on submission<span class="nt">&lt;br&gt;</span> <span class="nt">&lt;/p&gt;</span>
+    <span class="nt">&lt;p&gt;</span>
+ <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"text"</span> <span class="na">id=</span><span class="s">"urname"</span> <span class="na">placeholder=</span><span class="s">"Your name"</span><span class="nt">&gt;&lt;/input&gt;&lt;br&gt;&lt;label</span> <span class="na">id = </span><span class="s">"submitFile"</span> <span class="na">for=</span><span class="s">"submitFileInput"</span><span class="nt">&gt;</span>Upload your image<span class="nt">&lt;/label&gt;</span>
+      <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"file"</span> <span class="na">id=</span><span class="s">"submitFileInput"</span> <span class="na">accept=</span><span class="s">"image/png, image/jpeg"</span><span class="nt">/&gt;&lt;br&gt;</span>
+<span class="nt">&lt;img</span> <span class="na">id=</span><span class="s">"filepreview"</span> <span class="na">src=</span><span class="s">""</span><span class="nt">&gt;</span>   <span class="nt">&lt;button</span> <span class="na">id=</span><span class="s">"submitbutton"</span> <span class="na">onclick=</span><span class="s">"sendimage()"</span> <span class="na">style=</span><span class="s">"display: none;"</span><span class="nt">&gt;</span>Send<span class="nt">&lt;/button&gt;</span>
+                <span class="nt">&lt;/p&gt;</span>   <span class="nt">&lt;/div&gt;</span>
+<span class="nt">&lt;/div&gt;</span>
+    <span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">"shadowbox"</span> <span class="na">class=</span><span class="s">"hidden"</span><span class="nt">&gt;</span> <span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"foo"</span><span class="nt">/&gt;</span>
+  <span class="nt">&lt;/div&gt;</span> <span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">"submittedDongle"</span> <span class="na">style=</span><span class="s">"display: none"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;span</span> <span class="na">style=</span><span class="s">"font-size: 1.3em;"</span><span class="nt">&gt;</span>Generic "your submission is complete" text!<span class="nt">&lt;/span&gt;&lt;br&gt;</span>
+       Some explanatory text about your submission!
+   <span class="nt">&lt;/div&gt;</span> <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"https://npmcdn.com/parse/dist/parse.min.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
+        <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"main.js"</span><span class="nt">&gt;</span>
+
+<span class="nt">&lt;/script&gt;</span> <span class="nt">&lt;/body&gt;</span>
+				<span class="nt">&lt;/html&gt;</span>
+</code></pre></div></div>
+
+<p>Now you <em>could</em> just compare it with the one that works (I believe some tools exist for that, actually, to simplify the process), but pretend you don’t want to do that. You will only very rarely have a working version and a broken version that are so close together that you can just swap the non-functioning code with the functioning and call it a day. Can’t find the bug? I wouldn’t be able to either. Hiding the bug took me a minute or so, even, and I was only deleting 5 characters. So what if the formatting was fixed? Can you find the bug in this version?</p>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;!DOCTYPE html&gt;</span>
+<span class="nt">&lt;html</span> <span class="na">lang=</span><span class="s">"en"</span> <span class="na">dir=</span><span class="s">"ltr"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;head&gt;</span>
+        <span class="nt">&lt;meta</span> <span class="na">charset=</span><span class="s">"utf-8"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;title&gt;</span>And I'll make a title out of you (indeed, my Mulan references are "cringe")<span class="nt">&lt;/title&gt;</span>
+        <span class="nt">&lt;link</span> <span class="na">rel=</span><span class="s">"stylesheet"</span> <span class="na">href=</span><span class="s">"main.css"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;/head&gt;</span>
+    <span class="nt">&lt;body&gt;</span>
+        <span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">"main"</span><span class="nt">&gt;</span>
+            <span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">"topstuff"</span><span class="nt">&gt;</span>
+                <span class="nt">&lt;h1&gt;</span>Sample Page that totally wasn't once Not Art Gallery<span class="nt">&lt;/h1&gt;</span>
+                <span class="nt">&lt;h2&gt;</span>
+                    A secondary heading.
+                <span class="nt">&lt;/h2&gt;</span>
+                <span class="nt">&lt;p&gt;</span>
+                    This used to be some text in a P, but I decided to replace it with a baseball ipsum (there's a lot of these out there). Baseball ipsum dolor sit amet passed ball outs, sweep stretch bleeder triple play. Left fielder count fair swing cork balk ball. Full count southpaw reliever lineup crooked number fastball second base. Perfect game outfielder rally force dodgers right fielder dead ball era right field. Pickoff world series peanuts batting average cup of coffee foul inside robbed. Bleeder club appeal first base sidearm mustard steal line drive inning.
+                <span class="nt">&lt;/p&gt;</span>
+                <span class="nt">&lt;p&gt;</span>
+                    There was once more P text here. I like the... british ipsum? more. Pommy ipsum 221B Baker Street ey up chuck down the local chap beefeater, guinness nosh jammy git put me soaps back on bowler hat complete mare spend a penny, accordingly rambunctious middle class well chuffed lass. Cheesed off ask your mother if a tenner a right corker in the goolies marmite devonshire cream tea, black pudding horses for courses pot noodle gobsmacked pillock. Done up like a kipper Bob's your uncle half-inch it a tad a right toff sling one's hook, gallivanting around houlligan Time Lord. Yorkshire pudding gosh biscuits Southeners cor blimey' nigh, knows bugger all about nowt sausage roll gobsmacked pork dripping.
+                <span class="nt">&lt;/p&gt;</span>
+                <span class="nt">&lt;p&gt;</span>
+                    Used to be a single sentence instead of a full paragraph. To reflect, I've cut down the ipsum. Lorem ipsum dolor sit amet.
+                <span class="nt">&lt;/p&gt;</span>
+                <span class="nt">&lt;span</span> <span class="na">id=</span><span class="s">"bouncy"</span> <span class="na">style=</span><span class="s">"font-family:monospace;color:green;background-color:lightblue;"</span><span class="nt">&gt;</span>[Scroll Down (two fingers)]<span class="nt">&lt;/span&gt;</span>
+            <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"gradient-scrolly"</span><span class="nt">&gt;</span>
+            <span class="nt">&lt;/div&gt;</span>
+            <span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">"cred"</span><span class="nt">&gt;</span>
+                First line of the credits - these are really cool on the full site<span class="nt">&lt;br&gt;</span>
+                <span class="nt">&lt;span&gt;</span>Second credits line (also cool)<span class="nt">&lt;/span&gt;&lt;br&gt;</span>
+                Not that cliche, kinda cool still
+            <span class="nt">&lt;/div&gt;</span>
+            <span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">"carousel"</span> <span class="na">onmouseover = </span><span class="s">"carouselHovered()"</span> <span class="na">onmouseleave = </span><span class="s">"carouselUnhovered()"</span><span class="nt">&gt;</span>
+                <span class="nt">&lt;div</span> <span class="na">class = </span><span class="s">"image"</span><span class="nt">&gt;</span>
+                    A piece of art!
+                    <span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"res/art.png"</span><span class="nt">/&gt;</span>
+                <span class="nt">&lt;/div&gt;</span>
+                <span class="nt">&lt;div</span> <span class="na">class = </span><span class="s">"image"</span><span class="nt">&gt;</span>
+                    A piece of art!
+                    <span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"res/art1.png"</span><span class="nt">/&gt;</span>
+                <span class="nt">&lt;/div&gt;</span>
+                <span class="nt">&lt;div</span> <span class="na">class = </span><span class="s">"image"</span><span class="nt">&gt;</span>
+                    A piece of art!
+                    <span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"res/art2.png"</span><span class="nt">/&gt;</span>
+                <span class="nt">&lt;/div&gt;</span>
+                <span class="nt">&lt;div</span> <span class="na">class = </span><span class="s">"image"</span><span class="nt">&gt;</span>
+                    A piece of art!
+                    <span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"res/art3.png"</span><span class="nt">/&gt;</span>
+                <span class="nt">&lt;/div&gt;</span>
+                <span class="nt">&lt;div</span> <span class="na">class = </span><span class="s">"image"</span><span class="nt">&gt;</span>
+                    A piece of art!
+                    <span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"res/art4.png"</span><span class="nt">/&gt;</span>
+                <span class="nt">&lt;/div&gt;</span>
+                <span class="nt">&lt;div</span> <span class="na">class = </span><span class="s">"image"</span><span class="nt">&gt;</span>
+                    A piece of art!
+                    <span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"res/art5.png"</span><span class="nt">/&gt;</span>
+                <span class="nt">&lt;/div&gt;</span>
+                <span class="nt">&lt;div</span> <span class="na">class = </span><span class="s">"image"</span><span class="nt">&gt;</span>
+                    A piece of art!
+                    <span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"res/art6.png"</span><span class="nt">/&gt;</span>
+                <span class="nt">&lt;/div&gt;</span>
+            <span class="nt">&lt;/div&gt;</span>
+            <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"gradient-down"</span> <span class="na">style=</span><span class="s">"z-index: 1;position:relative;"</span><span class="nt">&gt;&lt;/div&gt;</span>
+            <span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">"understuff"</span> <span class="na">style=</span><span class="s">"z-index: 2;position:relative;"</span><span class="nt">&gt;</span>
+                <span class="nt">&lt;p&gt;</span>
+                    A little piece on contributing to this site<span class="nt">&lt;br&gt;</span>
+                    Some <span class="nt">&lt;b&gt;</span>rules<span class="nt">&lt;/b&gt;</span> on submission<span class="nt">&lt;br&gt;</span>
+                <span class="nt">&lt;/p&gt;</span>
+                <span class="nt">&lt;p&gt;</span>
+                    <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"text"</span> <span class="na">id=</span><span class="s">"urname"</span> <span class="na">placeholder=</span><span class="s">"Your name"</span><span class="nt">&gt;&lt;/input&gt;&lt;br&gt;</span>
+                    <span class="nt">&lt;label</span> <span class="na">id = </span><span class="s">"submitFile"</span> <span class="na">for=</span><span class="s">"submitFileInput"</span><span class="nt">&gt;</span>Upload your image<span class="nt">&lt;/label&gt;</span>
+                    <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"file"</span> <span class="na">id=</span><span class="s">"submitFileInput"</span> <span class="na">accept=</span><span class="s">"image/png, image/jpeg"</span><span class="nt">/&gt;&lt;br&gt;</span>
+                    <span class="nt">&lt;img</span> <span class="na">id=</span><span class="s">"filepreview"</span> <span class="na">src=</span><span class="s">""</span><span class="nt">&gt;</span>
+                    <span class="nt">&lt;button</span> <span class="na">id=</span><span class="s">"submitbutton"</span> <span class="na">onclick=</span><span class="s">"sendimage()"</span> <span class="na">style=</span><span class="s">"display: none;"</span><span class="nt">&gt;</span>Send<span class="nt">&lt;/button&gt;</span>
+                <span class="nt">&lt;/p&gt;</span>
+            <span class="nt">&lt;/div&gt;</span>
+        <span class="nt">&lt;/div&gt;</span>
+        <span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">"shadowbox"</span> <span class="na">class=</span><span class="s">"hidden"</span><span class="nt">&gt;</span>
+            <span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"foo"</span><span class="nt">/&gt;</span>
+        <span class="nt">&lt;/div&gt;</span>
+        <span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">"submittedDongle"</span> <span class="na">style=</span><span class="s">"display: none"</span><span class="nt">&gt;</span>
+            <span class="nt">&lt;span</span> <span class="na">style=</span><span class="s">"font-size: 1.3em;"</span><span class="nt">&gt;</span>Generic "your submission is complete" text!<span class="nt">&lt;/span&gt;&lt;br&gt;</span>
+            Some explanatory text about your submission!
+        <span class="nt">&lt;/div&gt;</span>
+        <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"https://npmcdn.com/parse/dist/parse.min.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
+        <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"main.js"</span><span class="nt">&gt;</span>
+
+        <span class="nt">&lt;/script&gt;</span>
+    <span class="nt">&lt;/body&gt;</span>
+<span class="nt">&lt;/html&gt;</span>
+</code></pre></div></div>
+
+<p>It’s still somewhat difficult to tell that the <code class="language-plaintext highlighter-rouge">#topstuff</code> div is missing a <code class="language-plaintext highlighter-rouge">&lt;/div&gt;</code>, but it’s much, much less so. And the only difference? Spaces, tabs, and newlines.</p>
+
+<h2 id="1-interim2-where-to-newline">1-Interim.2: Where to newline</h2>
+
+<p>Now it’s time to actually use some concepts! In the first chapter, we went through tabs, then newlines, then spaces (descending order of usefulness). Before we can go over tabs in this Interim, however, we have to go over newlines. In HTML there are two main “types” of element: Inline and Block. Inline elements are meant to be used in a sentence: such as, the <code class="language-plaintext highlighter-rouge">i</code> tag is used like this, <code class="language-plaintext highlighter-rouge">Hello world lorem &lt;i&gt;this is a pretty italicized Ipsum&lt;/i&gt;</code>. We won’t go over every inline element there is, but a rule of thumb: if it doesn’t interrupt text, it’s inline, if it pushes everything out of it’s way and fills as much of the screen as possible, it’s block. Obviously you don’t want to interrupt your markup like this,</p>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code>hello
+<span class="nt">&lt;i&gt;</span>world<span class="nt">&lt;/i&gt;</span>
+, how've you been?
+</code></pre></div></div>
+
+<p>so you don’t want a newline for most inline elements. However, your markup quickly gets dirty if you don’t use a newline for block elements like <code class="language-plaintext highlighter-rouge">p</code> and <code class="language-plaintext highlighter-rouge">div</code>, like</p>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;div&gt;&lt;p&gt;</span>Hey there how've you been<span class="nt">&lt;/p&gt;&lt;p&gt;</span>Your uncle came down with the Jalapeno Blight? How awful!<span class="nt">&lt;/p&gt;&lt;/div&gt;</span>
+</code></pre></div></div>
+
+<p>vs</p>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;div&gt;</span>
+    <span class="nt">&lt;p&gt;</span>
+        Hey there how've you been
+    <span class="nt">&lt;/p&gt;</span>
+    <span class="nt">&lt;p&gt;</span>
+        Your uncle came down with the Jalapeno Blight? How awful!
+    <span class="nt">&lt;/p&gt;</span>
+<span class="nt">&lt;/div&gt;</span>
+</code></pre></div></div>
+
+<p>So-</p>
+
+<ul>
+  <li>If it’s a block element, give the opening tag (<code class="language-plaintext highlighter-rouge">&lt;div&gt;</code>) and the closing tag (<code class="language-plaintext highlighter-rouge">&lt;/div&gt;</code>) their own lines.</li>
+  <li>If it’s a block element, put the content inside on it’s own line as well. Lines galore!</li>
+  <li>If it’s an inline element, don’t use newlines at all - just stick those little bits of markup in your text like candies in a Halloween basket of spiders.</li>
+  <li>If it’s a block element, don’t put any content on the lines of the opening and closing tag.</li>
+  <li>Also, depending on what you’re doing, you might want to add extra blank lines to separate similar groups of tags, to make it even cleaner.</li>
+</ul>
+
+<p>That’s the first step to cleaning up your code. Now on to tabs!</p>
+
+<h2 id="1-interim3-tabs">1-Interim.3: Tabs</h2>
+
+<p>Ah yes, our best friends the Tabs. These work after the newlines, so there’s some pretty easy rules you can follow whenever you hit that enter button. (If your HTML editor does automatic tabs, open in a text editor like we did for Java in part 1):</p>
+
+<ul>
+  <li>If you just opened a block-level tag: increase the tab level by one.
+    <div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;p&gt;</span> <span class="c">&lt;!-- The content inside the block-level P element is one tab up --&gt;</span>
+    <span class="nt">&lt;span&gt;</span>An inline inside a block!<span class="nt">&lt;/span&gt;</span>
+<span class="nt">&lt;/p&gt;</span>
+</code></pre></div>    </div>
+  </li>
+  <li>If you just closed a block-level tag: decrease the tab level by one, <em>including on the line of the closing tag</em>.
+    <div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">&lt;!-- this is what happens if you don't tab down --&gt;</span>
+<span class="nt">&lt;p&gt;</span>
+    <span class="nt">&lt;span&gt;</span>This looks silly.<span class="nt">&lt;/span&gt;</span>
+	<span class="nt">&lt;/p&gt;</span>
+	<span class="nt">&lt;span&gt;</span>Yep. Still silly.<span class="nt">&lt;/span&gt;</span>
+  
+<span class="c">&lt;!-- This is what happens if you do tab down, but do it wrong --&gt;</span>
+<span class="nt">&lt;p&gt;</span>
+    <span class="nt">&lt;span&gt;</span>Less silly<span class="nt">&lt;/span&gt;</span>
+	<span class="nt">&lt;/p&gt;</span>
+<span class="nt">&lt;span&gt;</span>Still kinda silly<span class="nt">&lt;/span&gt;</span>
+  
+<span class="c">&lt;!-- This is correct. --&gt;</span>
+<span class="nt">&lt;p&gt;</span>
+    <span class="nt">&lt;span&gt;</span>Not silly at all!<span class="nt">&lt;/span&gt;</span>
+<span class="nt">&lt;/p&gt;</span>
+<span class="nt">&lt;span&gt;</span>Very serious!<span class="nt">&lt;/span&gt;</span>
+</code></pre></div>    </div>
+  </li>
+  <li>If you opened or closed an inline tag, don’t do anything at all - treat inline tags as normal text under most circumstances.</li>
+</ul>
+
+<p>Easy, right? You’ll notice that a lot of this is very similar to what we did in chapter 1 for Java - just replace the first line of a function (the declaration and <code class="language-plaintext highlighter-rouge">{</code>) with an opening tag, and the <code class="language-plaintext highlighter-rouge">}</code> with the closing tag, and the rules are the same!</p>
+
+<h2 id="1-interim4-spaces-and-wrapping-up">1-Interim.4: Spaces and Wrapping Up</h2>
+
+<p>Most of the time in HTML you don’t use spaces much. The best practice is mostly summed up by “don’t use ‘em”, except inside the opening tag’s declaration. I present to you the opening tag of the Carousel element from Not Art:</p>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">"carousel"</span> <span class="na">onmouseover=</span><span class="s">"carouselHovered()"</span> <span class="na">onmouseleave=</span><span class="s">"carouselUnhovered()"</span><span class="nt">&gt;</span>
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">onmouseover</code> and <code class="language-plaintext highlighter-rouge">onmouseleave</code> are JavaScript events that I use to mess with scrolling, and <code class="language-plaintext highlighter-rouge">id</code> is a unique identifier for the element so you can mess with it in CSS and JavaScript. You’ll notice that between every key-value pair<collapsible-footnote citationname="[1]">A key value pair is like a variable - a name (key) representing some data (value).</collapsible-footnote> there’s a space, but there’s no spaces around the <code class="language-plaintext highlighter-rouge">=</code>! That’s sort of a code-style thing. Spaces around the = isn’t too important for legibility so you can choose if you like them or not, but spaces between pairs are quite important.</p>
+
+<p>I believe that’s all! If you want more on the topic, W3schools is <em>not</em> recommended as their cleanliness is quite awful for introductory tutorials (and I can’t vouch for the later ones), but <a href="https://developer.mozilla.org/en-US/docs/Web/HTML">MDN</a> near’bout always uses best practices so I recommend you read from there. We’re still on track for basics of Where to use Functions and Where to use Classes next post (assuming I don’t do more interim).</p>
+
+<p>Keep coding and don’t forget to use your tabs!</p>
+
+            My friend's blogs: <a href="https://wizardwatch.net/">Wizardwatch's overall site</a>, <a href="https://sawyershepherd.org/">Sawyer's blog</a> (the .org part bemuses me). If ryleu decides to actually put something on his site, I'll link it here.
+            <div class="navlinks">
+                
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                        
+                            <a href="/blog/code-cleanliness-1">&lt; Code Cleanliness part 1 <p>A primer and serial internet book on code cleanliness, mostly written for the students of CS classes at Kennesaw State University</p></a>
+                        
+                    
+                    
+                
+                
+                
+                    
+                        
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+            </div>
+            <div id="disqus_thread"></div>
+            <script>
+                /**
+                *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+                *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables    */
+                /*
+                var disqus_config = function () {
+                this.page.url = PAGE_URL;  // Replace PAGE_URL with your page's canonical URL variable
+                this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+                };
+                */
+                (function() { // DON'T EDIT BELOW THIS LINE
+                var d = document, s = d.createElement('script');
+                s.src = 'https://linuxrocks2000-github-io.disqus.com/embed.js';
+                s.setAttribute('data-timestamp', +new Date());
+                (d.head || d.body).appendChild(s);
+                })();
+            </script>
+            <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        </div>
+        <div id="footer">
+            <p><a href = "mailto:plupy44@gmail.com">Email?</a></p>
+<p><a href = "https://github.com/LinuxRocks2000">Github?</a></p>
+<p>Privacy policy: We don't collect data</p>
+<p>Cookie policy: We don't use cookies</p>
+<p>Copywrong 1492, Tyler Clarke</p>
+<p>All rights preserved</p>
+<p>Vegetables are alive too</p>
+<p>Cows pollute the environment and should be eaten</p>
+<p>Nothing here is copyrighted - if we wanted people to not have our data, we wouldn't smatter it across the internet.</p>
+<p>Lawyers beware - here be people who know that lawyers are hired thugs designed <br />to make the person with more money win in court, no matter how right or wrong they are</p>
+<p>I hereby order that any stuck-up prigs that say I need a real privacy policy can leave the room.</p>
+
+        </div>
+        <div id="sidebar">
+            <div id="stickything">
+
+    <a class = "theA" href="/blog/code-cleanliness-1-Interim">
+        <div class = "sidebar-item">
+            <span class = "title">Interim: Code Cleanliness for Web Developers</span><br />
+            <span class = "bottomthing">Connecting concepts from Code Cleanliness part 1 to HTML and CSS</span>
+        </div>
+    </a>
+
+    <a class = "theA" href="/blog/code-cleanliness-1">
+        <div class = "sidebar-item">
+            <span class = "title">Code Cleanliness part 1</span><br />
+            <span class = "bottomthing">A primer and serial internet book on code cleanliness, mostly written for the students of CS classes at Kennesaw State University</span>
+        </div>
+    </a>
+
+    <a class = "theA" href="/blog/guns-are-stupid">
+        <div class = "sidebar-item">
+            <span class = "title">Guns are Stupid</span><br />
+            <span class = "bottomthing">Honestly, I don't understand how anybody could not see this.</span>
+        </div>
+    </a>
+
+    <a class = "theA" href="/blog/platformer-from-scratch-chap-6">
+        <div class = "sidebar-item">
+            <span class = "title">Platformer From Scratch Chap 6</span><br />
+            <span class = "bottomthing">Conclusively finishing the physics engine for the third time, bats, level management</span>
+        </div>
+    </a>
+
+    <a class = "theA" href="/blog/platformer-from-scratch-chap-5">
+        <div class = "sidebar-item">
+            <span class = "title">Platformer From Scratch Chap 5</span><br />
+            <span class = "bottomthing">Cleaning up motion, adding fifty coins, adding various other new block types</span>
+        </div>
+    </a>
+
+    <a class = "theA" href="/blog/platformer-from-scratch-chap-4">
+        <div class = "sidebar-item">
+            <span class = "title">Platformer From Scratch Chap 4</span><br />
+            <span class = "bottomthing">Extending the physics engine for special bricks and the coins!</span>
+        </div>
+    </a>
+
+    <a class = "theA" href="/blog/platformer-from-scratch-chap-3">
+        <div class = "sidebar-item">
+            <span class = "title">Platformer From Scratch Chap 3</span><br />
+            <span class = "bottomthing">Physics</span>
+        </div>
+    </a>
+
+    <a class = "theA" href="/blog/platformer-from-scratch-chap-2">
+        <div class = "sidebar-item">
+            <span class = "title">Platformer From Scratch Chap 2</span><br />
+            <span class = "bottomthing">Players, improved graphics, gameloops!</span>
+        </div>
+    </a>
+
+    <a class = "theA" href="/blog/platformer-from-scratch-chap-1">
+        <div class = "sidebar-item">
+            <span class = "title">Platformer From Scratch Chap 1</span><br />
+            <span class = "bottomthing">Getting graphics working</span>
+        </div>
+    </a>
+
+    <a class = "theA" href="/blog/gluten-free-dairy-free-highly-based-brownies">
+        <div class = "sidebar-item">
+            <span class = "title">Gluten Free, Dairy Free, Highly Based Brownies</span><br />
+            <span class = "bottomthing">Because everyone has just <i>got</i> to love long-winded poorly-Javascripted baking blogs!</span>
+        </div>
+    </a>
+
+    <a class = "theA" href="/blog/on-religion">
+        <div class = "sidebar-item">
+            <span class = "title">On Religion</span><br />
+            <span class = "bottomthing">My views and my justification</span>
+        </div>
+    </a>
+
+    <a class = "theA" href="/blog/Carbon-Cycles">
+        <div class = "sidebar-item">
+            <span class = "title">Carbon Cycles</span><br />
+            <span class = "bottomthing">And why America should use Ethanol</span>
+        </div>
+    </a>
+
+    <a class = "theA" href="/blog/the-case-for-carbon-investment">
+        <div class = "sidebar-item">
+            <span class = "title">The Case for Carbon Investment</span><br />
+            <span class = "bottomthing">The ugly truth about carbon dioxide, and what we can do about it (not made by a doom-and-gloomer!)</span>
+        </div>
+    </a>
+
+    <a class = "theA" href="/blog/something-up-with-squishmallow">
+        <div class = "sidebar-item">
+            <span class = "title">Something wrong with Squishmallows (only for people who like tabloid humour)</span><br />
+            <span class = "bottomthing">Detective Lane Howser, on the case</span>
+        </div>
+    </a>
+
+    <a class = "theA" href="/blog/conversations-with-a-southerner">
+        <div class = "sidebar-item">
+            <span class = "title">Conversations with the last true-born southerner</span><br />
+            <span class = "bottomthing">Any normal person who has ever talked to a true southern person will agree</span>
+        </div>
+    </a>
+
+    <a class = "theA" href="/blog/microsoft-poetry">
+        <div class = "sidebar-item">
+            <span class = "title">A poem for Microsoft</span><br />
+            <span class = "bottomthing">Because microsoft needs a poem that fully describes it</span>
+        </div>
+    </a>
+
+    <a class = "theA" href="/blog/hello-world">
+        <div class = "sidebar-item">
+            <span class = "title">Welcome to my blog!</span><br />
+            <span class = "bottomthing">The first post in my blog, also a great place to go for extra information</span>
+        </div>
+    </a>
+
+</div>
+<style>
+    .sidebar-item{
+        padding: 10px;
+        background-color: azure;
+        margin: 10px;
+    }
+    .sidebar-item > .title{
+        color: black;
+        text-decoration: none;
+        white-space: nowrap;
+    }
+    .sidebar-item > .bottomthing{
+        color: grey;
+        font-weight: bold;
+    }
+    .sidebar-item:hover{
+        background-color: transparent;
+    }
+    .theA{
+        text-decoration: none;
+    }
+    #stickything{
+        position: relative;
+    }
+</style>
+
+        </div>
+        <script type="text/javascript">
+            Array.from(document.getElementsByClassName("noselect")).forEach((item, i) => {
+                item.addEventListener('copy', function(e){
+                    var text = window.getSelection().toString().replace(/[\n\r]+/g, '');
+                    e.clipboardData.setData('text/plain', "Let me make something clear. When I mark something noSelect, I mean it. This blog contains tutorials, in which you learn, NOT just copy code! I do not want people putting in zero-effort.");
+                    e.preventDefault();
+                });
+            });
+        </script>
+        <script type = "text/javascript" src = "/blog/js/main.js"></script>
+    </body>
+</html>

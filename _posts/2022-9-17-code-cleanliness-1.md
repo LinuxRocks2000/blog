@@ -1,6 +1,6 @@
 ---
 title: "Code Cleanliness part 1"
-bottomthing: "A primer and book on code cleanliness, mostly written for the students of CS classes at Kennesaw State University"
+bottomthing: "A primer and serial internet book on code cleanliness, mostly written for the students of CS classes at Kennesaw State University"
 ---
 
 # 1: Basics of Code Cleanliness
