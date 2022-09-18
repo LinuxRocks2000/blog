@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+    <head>
+        <meta charset="utf-8">
+        <title>Code Cleanliness part 1</title>
+        <link rel="stylesheet" href="/blog/css/main.css" />
+        <link rel="stylesheet"
+              href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/styles/default.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/highlight.min.js"></script>
+        <script>
+            hljs.configure({
+                ignoreUnescapedHTML: true
+            });
+            hljs.highlightAll();
+        </script>
+    </head>
+    <body>
+        <div id="topbar">
+            <nav>
+    <a href="/blog/">Blog</a>
+    <a href="/blog/about">About Me</a>
+    <a href="/">My comic</a>
+</nav>
+
+<style>
+    nav > a{
+        font-family: Arial;
+        font-size: 2em;
+        color: black;
+        text-decoration: none;
+        margin-left: 20px;
+    }
+</style>
+
+        </div>
+        <div id="body">
+            <div class="navlinks">
+                
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                        
+                            <a href="/blog/guns-are-stupid">&lt; Guns are Stupid <p>Honestly, I don't understand how anybody could not see this.</p></a>
+                        
+                    
+                    
+                
+                
+                
+                    
+                        
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+            </div>
+            <h1 id="1-basics-of-code-cleanliness">1: Basics of Code Cleanliness</h1>
+
+<p>So I’ve been helping out around the Kennesaw State University (unofficial, I think) Discord server and one of the biggest issues I’ve seen is dirty code. Learning bad practices from the very start of your code career is nothing but harmful for you, so I’ve decided to put together a little 101 for code cleanliness.</p>
+
+<p>To take a professorial voice, “what is code cleanliness?”</p>
+
+<p>Code cleanliness is an intangible measure of how readable and understandable your computer program is. Clean code is easily read and edited not just by you but by other people, dirty code is difficult for other people (and perhaps yourself) to read and edit. This stretches into more than formatting - say you’re using a specific number in 10 places all throughout a 10,000 line project, but each time divided or multiplied or otherwise mutated, how do you change the number? You could go through the code and debug until you find all of the occurrences of the number, perhaps taking hours of your time, or you can use a variable for it and change it only once.</p>
+
+<p>If you’re a new coder, you might be wondering what the point of code cleanliness is. I will admit a big benefit is that other developers can read your code - messy code is much, much easier to continue developing. You don’t want to share a program and have another developer completely re-write it because it’s unreadable and dirty (yes, this has happened to me).</p>
+
+<p>Most languages have their own separate ways to keep clean. C-family languages (think C++, Python, JavaScript, and Java, amongst others) tend to rely on careful application of classes and objects for such things, and website code (HTML and CSS) is kept clean through clever ordering of elements and well-thought-out application of styles. However, there are several methods that apply to every language that I will go over here.</p>
+
+<h2 id="11-the-importance-of-tabs">1.1: The importance of tabs</h2>
+
+<p>Tabulation is the first step in good code. Ideally you’ll learn it as a muscle memory - tab, backspace, tab, backspace, all in order as you type. It makes it easier to see what block a line is in if you have proper tabulation (indeed, Python enforces it) and good tab practices can make a program significantly cleaner and more readable in general. Think of it like a book - most people keep their manuscript formatted as 12pt double spaced before they decide to publish and printing costs become a problem. This makes it easier to read so they can edit it and find typos and other mistakes. (At least, I assume this is what most people do. Most people aren’t being very smart if they don’t). I’m quite fond of analogies, but if you (as with most people) find it rather obtuse, here’s a Java example of properly formatted code:</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Main</span><span class="o">{</span>
+    <span class="kd">public</span> <span class="nf">Main</span><span class="o">(){</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Hello World"</span><span class="o">);</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">doFunction</span><span class="o">(</span><span class="mi">1</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="kt">void</span> <span class="nf">doFunction</span><span class="o">(</span><span class="kt">int</span> <span class="n">operation</span><span class="o">){</span>
+        <span class="k">switch</span><span class="o">(</span><span class="n">operation</span><span class="o">){</span>
+            <span class="k">case</span> <span class="mi">0</span><span class="o">:</span>
+                <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Verrrrrrry clever. Filling code with Switch/Case statements which are the dirtiest aspect of java."</span><span class="o">);</span> <span class="c1">// I'm not kidding, actually, switch/case is obtuse and dirty in any language</span>
+                <span class="k">break</span><span class="o">;</span>
+            <span class="k">case</span> <span class="mi">1</span><span class="o">:</span>
+                <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Would you please stop filling code with switch/case statements?"</span><span class="o">);</span>
+                <span class="k">break</span><span class="o">;</span>
+            <span class="k">case</span> <span class="mi">2</span><span class="o">:</span>
+                <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"I give up."</span><span class="o">);</span>
+                <span class="k">break</span><span class="o">;</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p>And here’s one of improperly formatted code:</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Main</span><span class="o">{</span>
+<span class="kd">public</span> <span class="nf">Main</span><span class="o">(){</span>
+<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Hello World"</span><span class="o">);</span>
+<span class="k">this</span><span class="o">.</span><span class="na">doFunction</span><span class="o">(</span><span class="mi">1</span><span class="o">);</span>
+<span class="o">}</span>
+
+<span class="kt">void</span> <span class="nf">doFunction</span><span class="o">(</span><span class="kt">int</span> <span class="n">operation</span><span class="o">){</span>
+<span class="k">switch</span><span class="o">(</span><span class="n">operation</span><span class="o">){</span>
+<span class="k">case</span> <span class="mi">0</span><span class="o">:</span>
+<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Verrrrrrry clever. Filling code with Switch/Case statements which are the dirtiest aspect of java."</span><span class="o">);</span> <span class="c1">// I'm not kidding, actually, switch/case is obtuse and dirty in any language</span>
+<span class="k">break</span><span class="o">;</span>
+<span class="k">case</span> <span class="mi">1</span><span class="o">:</span>
+<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Would you please stop filling code with switch/case statements?"</span><span class="o">);</span>
+<span class="k">break</span><span class="o">;</span>
+<span class="k">case</span> <span class="mi">2</span><span class="o">:</span>
+<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"I give up."</span><span class="o">);</span>
+<span class="k">break</span><span class="o">;</span>
+<span class="o">}</span>
+<span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p>This is bad enough already - now imagine there are randomly applied tabs in the wrong places, and the program is several hundred (or even thousand!) lines longer. So yeah. Tabs.</p>
+
+<h2 id="12-how-to-actually-use-the-tabs">1.2: How to actually <em>use</em> the tabs</h2>
+
+<p>For this one, if you’re using Intellij or similar you need to locate the file in a text editor like Notepad (Gedit, Kate, anything; editors like Atom are too smart). Intellij is immensely clever about automatic tabs which makes it much harder to learn. Write a couple lines and you’ll probably find yourself wading in a sea of clean code with islands of unreadable blobs.</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Main</span><span class="o">{</span> <span class="c1">// Written in an editor (it actually wasn't, but consider it a stand-in)</span>
+    <span class="kd">public</span> <span class="nf">Main</span><span class="o">(){</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Hello World"</span><span class="o">);</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">doFunction</span><span class="o">(</span><span class="mi">1</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="kt">void</span> <span class="nf">doFunction</span><span class="o">(</span><span class="kt">int</span> <span class="n">operation</span><span class="o">){</span>
+        <span class="k">switch</span><span class="o">(</span><span class="n">operation</span><span class="o">){</span>
+            <span class="k">case</span> <span class="mi">0</span><span class="o">:</span>
+                <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Verrrrrrry clever. Filling code with Switch/Case statements which are the dirtiest aspect of java."</span><span class="o">);</span> <span class="c1">// I'm not kidding, actually, switch/case is obtuse and dirty in most any language</span>
+                <span class="k">break</span><span class="o">;</span>
+            <span class="k">case</span> <span class="mi">1</span><span class="o">:</span>
+                <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Would you please stop filling code with switch/case statements?"</span><span class="o">);</span>
+                <span class="k">break</span><span class="o">;</span>
+            <span class="k">case</span> <span class="mi">2</span><span class="o">:</span>
+                <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"I give up."</span><span class="o">);</span>
+                <span class="k">break</span><span class="o">;</span>
+<span class="k">case</span> <span class="mi">3</span><span class="o">:</span>
+<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"this part was written in a basic text editor"</span><span class="o">);</span>
+<span class="k">break</span><span class="o">;</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p>If you’re editing code that already exists, you’ll probably already see a pattern. Every time you use <code class="language-plaintext highlighter-rouge">{</code>, you have to tab up one. Every time you use <code class="language-plaintext highlighter-rouge">}</code>, you have to tab down one (including on the line with the <code class="language-plaintext highlighter-rouge">}</code>).  Case statements are a bit weird but basically after you have <code class="language-plaintext highlighter-rouge">case..something..:</code>, you tab up one, and when you have <code class="language-plaintext highlighter-rouge">break</code> you tab down one (<strong>NOT</strong> including on the line with the <code class="language-plaintext highlighter-rouge">break</code>). Statements - function calls, defining variables, etc, remain on the current tab level.</p>
+
+<p>There’s a bit of conflict over what form of tabs to use. It’s generally accepted that a tab is 2, 4, or 8 spaces, but nobody’s sure which one (4 is the most common and the one I recommend), and a slightly more controversial point is whether tabs should be parsed as individual spaces or large blocks (you’ll see what I mean if you ever move your cursor over a tabulation in an editor. However, it is universally accepted that once you select one of these tab styles, you should stick with it. When tab styles change between lines, it generally makes code harder to read.</p>
+
+<h2 id="13-a-code-challenge">1.3: A code challenge</h2>
+
+<p>So far I’ve bored you with extended discussion and some blocks of my scrapped-together, probably nonfunctional Java. Now try a little challenge.</p>
+
+<p>This is in C++ because it’s my most comfortable language and it provides a bit of a challenge for newer coders who don’t have any experience with it - remember, the same rules from the end of section 1.2 apply in this language as in Java. Answers below but under a 20 second timer wall (because I’m pretty annoying). Note that the only improper formatting will be tabs - we haven’t gone over whitespace and newline yet, so you don’t have to worry about those.</p>
+
+<p>I’m not exactly testing you on this, but I do recommend you copy this into a text editor and fix it from there.</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="err">#</span><span class="n">include</span> <span class="o">&lt;</span><span class="n">stdio</span><span class="o">.</span><span class="na">h</span><span class="o">&gt;</span>
+<span class="err">#</span><span class="n">include</span> <span class="o">&lt;</span><span class="n">iostream</span><span class="o">&gt;</span>
+<span class="err">#</span><span class="n">include</span> <span class="o">&lt;</span><span class="n">string</span><span class="o">&gt;</span>
+
+
+<span class="nl">std:</span><span class="o">:</span><span class="n">string</span> <span class="nf">getHello</span><span class="o">(){</span> <span class="c1">// A function that returns "Hello".</span>
+<span class="k">return</span> <span class="s">"Hello"</span><span class="o">;</span>
+	<span class="o">}</span>
+
+<span class="nl">std:</span><span class="o">:</span><span class="n">string</span> <span class="nf">getWorld</span><span class="o">(){</span>
+<span class="k">return</span> <span class="s">"World"</span><span class="o">;</span>
+<span class="o">}</span>
+
+	<span class="nl">std:</span><span class="o">:</span><span class="n">string</span> <span class="nf">getHappyString</span><span class="o">(){</span>
+	<span class="k">return</span> <span class="nf">getHello</span><span class="o">()</span> <span class="o">+</span> <span class="s">" "</span> <span class="o">+</span> <span class="n">getWorld</span><span class="o">();</span>
+<span class="o">}</span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="o">(){</span>
+  <span class="nl">std:</span><span class="o">:</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">getHappyString</span><span class="o">()</span> <span class="o">&lt;&lt;</span> <span class="nl">std:</span><span class="o">:</span><span class="n">endl</span><span class="o">;</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<div class="timerwall" style="height: 120vh;" data-time="20"></div>
+
+<p>Here’s the fixed version (with comments where it was altered):</p>
+
+<div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp">
+#include</span> <span class="cpf">&lt;iostream&gt;</span><span class="cp">
+#include</span> <span class="cpf">&lt;string&gt;</span><span class="cp">
+</span>
+
+<span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="nf">getHello</span><span class="p">(){</span> <span class="c1">// A function that returns "Hello".</span>
+	<span class="k">return</span> <span class="s">"Hello"</span><span class="p">;</span> <span class="c1">// Tab up (because of the { on the previous line)</span>
+<span class="p">}</span> <span class="c1">// Tab down (because these are always included in their own tabdown)</span>
+
+<span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="nf">getWorld</span><span class="p">(){</span>
+	<span class="k">return</span> <span class="s">"World"</span><span class="p">;</span> <span class="c1">// Tab up (because of the { before)</span>
+<span class="p">}</span>
+
+<span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="nf">getHappyString</span><span class="p">(){</span> <span class="c1">// Tab down (the tabulation level was at 0 because of the }s)</span>
+	<span class="k">return</span> <span class="n">getHello</span><span class="p">()</span> <span class="o">+</span> <span class="s">" "</span> <span class="o">+</span> <span class="n">getWorld</span><span class="p">();</span>
+<span class="p">}</span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">(){</span>
+	<span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">getHappyString</span><span class="p">()</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span> <span class="c1">// Delete the spaces and add a tab (two space tabs aren't wrong per se, but the document was already using four space tabs)</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h2 id="14-newlines">1.4: Newlines</h2>
+
+<p>Newlines and spaces are not <em>incredibly</em> important - generally as long as you use them they’ll be fine - but you should at least be aware of them. In general, the important thing is that you choose something that works for you and makes some sense. Generally you don’t have to worry too much about these in HTML, but CSS does have to deal with it.</p>
+
+<p>The general rules I follow (which, I hope, follow real conventions) are…</p>
+
+<ul>
+  <li>After a block of <code class="language-plaintext highlighter-rouge">#includes</code> or <code class="language-plaintext highlighter-rouge">imports</code>- 2 newlines. Not two after each (they should all be touching), but two after all of them together.
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>import stuff; // Java, Python
+#include &lt;stuff&gt;; // C++
+
+
+// After TWO newlines, your code.
+</code></pre></div>    </div>
+  </li>
+  <li>After the final <code class="language-plaintext highlighter-rouge">}</code> (or just after the class in Python) of a <code class="language-plaintext highlighter-rouge">class</code>- 2 newlines, as long as it isn’t the last class in the file. Any C-family language.
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>class Thing{ // Java, C++
+	// stuff
+}
+
+
+// More code AFTER those two newlines
+class Thing: ## Python (note the ## instead of //! This tiny section is Python code.)
+	def __init__(self):
+		pass ## Stuff.
+
+
+// Even more code.
+</code></pre></div>    </div>
+  </li>
+  <li>After a function (including inside a class, as long as it isn’t the last function)- 1 newline. Any C-family language as well.
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>def programFunction():
+	pass ## Pythonnnnnnn!
+  
+// 1 newline
+int main() {
+	// C++ and Java
+}
+  
+// 1 newline
+fun function : int() {
+	// Kotlin (not going to have much kotlining, but it's a fun one)
+}
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>After a variable (or block of variables) is defined (as long as it’s NOT the last thing in a class)- I use 1 newline, but this is not exactly an enforced convention. You should just decide on how you like it. Sometimes I order blocks of similar variables together separated by newlines, sometimes leave them in a big mess together, etc. There are no real well-defined rules that I know of for this one. Just make sure whatever you choose is readable!</p>
+  </li>
+  <li>
+    <p>At the end of the file - 1 empty line. This is a UNIX/Linux thing from the old days when program depended on it and doesn’t apply with most modern programs but it’s a best practice nonetheless. Linux is the future of computing (it’ll almost certainly outlive Windows and Mac), so you’d best get used to it’s quirks - the alternatives could be dead in your lifetime.</p>
+  </li>
+  <li>Between CSS selectors - 1 newline.
+    <div class="language-css highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">.fake</span> <span class="p">{</span> <span class="c">/* A selector */</span>
+    <span class="nl">background-color</span><span class="p">:</span> <span class="no">red</span><span class="p">;</span> <span class="c">/* A rule */</span>
+<span class="p">}</span>
+  
+<span class="nf">#moreFakeID</span> <span class="p">{</span>
+    <span class="c">/* more rules */</span>
+<span class="p">}</span>
+  
+<span class="nt">p</span> <span class="p">{</span>
+    <span class="c">/* rules for styling paragraphs */</span>
+<span class="p">}</span>
+</code></pre></div>    </div>
+  </li>
+  <li>Between rules in CSS - if you want, you can put some newlines in wherever it makes sense. There’s no good conventions that I know of.</li>
+</ul>
+
+<p>This is not a terribly solid concept - indeed, it’s rather jiggly - so I’ll attempt to provide some useful examples. Here’s a program that follows all the practices I recommend - it’s up to you to decide whether it’s correct or not:</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">java.util.Scanner</span><span class="o">;</span>
+
+
+<span class="kd">class</span> <span class="nc">Hitchhiker</span> <span class="o">{</span>
+    <span class="kd">private</span> <span class="kt">int</span> <span class="n">number</span> <span class="o">=</span> <span class="mi">10</span><span class="o">;</span>
+
+    <span class="nc">String</span> <span class="nf">helloFunction</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="s">"Hello"</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+
+
+<span class="kd">class</span> <span class="nc">Main</span> <span class="o">{</span>
+    <span class="kd">private</span> <span class="nc">Scanner</span> <span class="n">scanner</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Scanner</span><span class="o">(</span><span class="nc">System</span><span class="o">.</span><span class="na">in</span><span class="o">);</span>
+
+    <span class="kd">private</span> <span class="nc">Hitchhiker</span> <span class="n">douglasAdams</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Hitchhiker</span><span class="o">();</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"hi"</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="kd">private</span> <span class="kt">int</span> <span class="n">thing</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p>Here’s a version of the code that is somewhat wrong - not super wrong:</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">java.util.Scanner</span><span class="o">;</span>
+<span class="kd">class</span> <span class="nc">Hitchhiker</span> <span class="o">{</span>
+    <span class="kd">private</span> <span class="kt">int</span> <span class="n">number</span> <span class="o">=</span> <span class="mi">10</span><span class="o">;</span>
+    <span class="nc">String</span> <span class="nf">helloFunction</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="s">"Hello"</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+<span class="kd">class</span> <span class="nc">Main</span> <span class="o">{</span>
+    <span class="kd">private</span> <span class="nc">Scanner</span> <span class="n">scanner</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Scanner</span><span class="o">(</span><span class="nc">System</span><span class="o">.</span><span class="na">in</span><span class="o">);</span>
+    <span class="kd">private</span> <span class="nc">Hitchhiker</span> <span class="n">douglasAdams</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Hitchhiker</span><span class="o">();</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"hi"</span><span class="o">);</span>
+    <span class="o">}</span>
+    <span class="kd">private</span> <span class="kt">int</span> <span class="n">thing</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p>Kinda hard to read, right?
+You can also go too far on the other end, like so:</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">java.util.Scanner</span><span class="o">;</span>
+
+
+
+
+<span class="kd">class</span> <span class="nc">Hitchhiker</span> <span class="o">{</span>
+
+
+    <span class="kd">private</span> <span class="kt">int</span> <span class="n">number</span> <span class="o">=</span> <span class="mi">10</span><span class="o">;</span>
+
+    <span class="nc">String</span> <span class="nf">helloFunction</span><span class="o">()</span> <span class="o">{</span>
+
+
+
+
+        <span class="k">return</span> <span class="s">"Hello"</span><span class="o">;</span>
+
+    <span class="o">}</span>
+
+<span class="o">}</span>
+
+
+
+
+<span class="kd">class</span> <span class="nc">Main</span> <span class="o">{</span>
+
+    <span class="kd">private</span> <span class="nc">Scanner</span> <span class="n">scanner</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Scanner</span><span class="o">(</span><span class="nc">System</span><span class="o">.</span><span class="na">in</span><span class="o">);</span>
+
+
+
+    <span class="kd">private</span> <span class="nc">Hitchhiker</span> <span class="n">douglasAdams</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Hitchhiker</span><span class="o">();</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+
+
+
+
+
+
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"hi"</span><span class="o">);</span>
+
+    <span class="o">}</span>
+
+
+    <span class="kd">private</span> <span class="kt">int</span> <span class="n">thing</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+
+<span class="o">}</span>
+
+
+
+
+</code></pre></div></div>
+
+<p>Not nearly as hard to read but still unpleasant, and it takes up much more space, meaning it’s harder to see the whole thing in one page, and the newlines aren’t intelligent enough to guide you through the code.</p>
+
+<h2 id="15-spaces">1.5: Spaces</h2>
+
+<p>Let’s go over some space practices. This is perhaps the <em>least</em> important part of basic formatting, so we can cover it fairly quickly. This is mostly for pedants and painters of programmatical portraits. These apply to most languages, CSS included, but I’ll use Java for all the examples; most of it is simple enough that it’ll fit directly in most languages.</p>
+
+<p>Where to use spaces:</p>
+
+<ul>
+  <li>
+    <p>Not in variable names. C’mon people. It won’t understand.</p>
+  </li>
+  <li>After the class name and before the <code class="language-plaintext highlighter-rouge">{</code>
+    <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">Test</span> <span class="o">{</span> <span class="c1">// See?</span>
+  
+<span class="o">}</span>
+
+
+<span class="kd">class</span> <span class="nc">NotThatBad</span><span class="o">{</span> <span class="c1">// No difference? Yeah.</span>
+
+<span class="o">}</span>
+</code></pre></div>    </div>
+  </li>
+  <li>After the <code class="language-plaintext highlighter-rouge">)</code> and before the <code class="language-plaintext highlighter-rouge">{</code> in function names
+    <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">void</span> <span class="nf">fun1</span><span class="o">()</span> <span class="o">{</span> <span class="c1">// See?</span>
+
+<span class="o">}</span>
+
+<span class="kt">void</span> <span class="nf">fun2</span><span class="o">(){</span> <span class="c1">// Eh.</span>
+
+<span class="o">}</span>
+
+<span class="kt">void</span> <span class="nf">fun3</span><span class="o">()</span>             <span class="o">{</span> <span class="c1">// No.</span>
+
+<span class="o">}</span>
+</code></pre></div>    </div>
+  </li>
+  <li>More important - Around logic operators. Like so,
+    <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="mi">10</span> <span class="o">==</span> <span class="mi">10</span><span class="o">;</span> <span class="c1">// Spaces</span>
+<span class="mi">10</span><span class="o">==</span><span class="mi">10</span><span class="o">;</span> <span class="c1">// No spaces.</span>
+<span class="mi">10</span> <span class="o">&lt;</span> <span class="mi">20</span><span class="o">;</span> <span class="c1">// Spaces</span>
+<span class="mi">10</span><span class="o">&lt;</span><span class="mi">20</span><span class="o">;</span> <span class="c1">// No spaces.</span>
+<span class="mi">30</span> <span class="o">&gt;</span> <span class="mi">15</span><span class="o">;</span> <span class="c1">// Spaces</span>
+<span class="mi">30</span><span class="o">&gt;</span><span class="mi">15</span><span class="o">;</span> <span class="c1">// No spaces.</span>
+<span class="c1">// There's others but you get the gist. If ever you end up doing ternary and need help with spaces - google it, the example will probably use the spaces properly. You'll be able to tell if it doesn't.</span>
+</code></pre></div>    </div>
+  </li>
+  <li>Less important again - Before comments.
+    <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"C++ too!"</span><span class="o">);</span> <span class="c1">// Space</span>
+<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"And Python!"</span><span class="o">);</span><span class="c1">// No space.</span>
+<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"And Javascript!"</span><span class="o">);</span>                <span class="c1">// Too many spaces!</span>
+</code></pre></div>    </div>
+  </li>
+  <li>After commas-
+    <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">void</span> <span class="nf">function</span><span class="o">(</span><span class="kt">int</span> <span class="n">num1</span><span class="o">,</span> <span class="kt">int</span> <span class="n">num2</span><span class="o">){</span> <span class="c1">// Spaces</span>
+  
+<span class="o">}</span>
+  
+<span class="kt">void</span> <span class="nf">function2</span><span class="o">(</span><span class="kt">int</span> <span class="n">num1</span><span class="o">,</span><span class="kt">int</span> <span class="n">num2</span><span class="o">){</span> <span class="c1">// No spaces.</span>
+  
+<span class="o">}</span>
+</code></pre></div>    </div>
+  </li>
+</ul>
+
+<h2 id="16-final-challenge-bringing-it-all-together">1.6: Final Challenge (bringing it all together)</h2>
+
+<p>Here’s a little Java challenge code for you to fix (should compile, won’t do anything):</p>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">Thing</span><span class="o">{</span>
+<span class="kd">public</span> <span class="kt">int</span> <span class="n">number</span> <span class="o">=</span> <span class="mi">12</span><span class="o">;</span>
+<span class="kt">void</span> <span class="nf">doThing</span><span class="o">()</span>       <span class="o">{</span>
+  <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"hello"</span><span class="o">);</span>
+<span class="o">}</span>
+    <span class="kt">void</span> <span class="nf">doOtherThing</span><span class="o">(){</span>
+      <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"why must you keep creating these example functions?"</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+<span class="kd">class</span> <span class="nc">Main</span><span class="o">{</span>
+  <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">){</span>
+  <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"UGH! No more! Stop it with these example functions!"</span><span class="o">);</span>
+  <span class="o">}</span>
+  <span class="kd">private</span> <span class="kt">int</span> <span class="nf">divide</span><span class="o">(</span><span class="kt">int</span> <span class="n">num1</span><span class="o">,</span><span class="kt">int</span> <span class="n">num2</span><span class="o">){</span>
+   <span class="k">return</span> <span class="n">num1</span><span class="o">/</span>  <span class="n">num2</span><span class="o">;</span>
+  		<span class="o">}</span>
+<span class="kd">public</span> <span class="kt">int</span> <span class="n">anotherNumber</span> <span class="o">=</span> <span class="mi">178</span><span class="o">;</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<div style="height: 80vh;"></div>
+
+<p>Note: If you converted all the 2-space-tabs to 4-space-tabs, that was actually “wrong”! The prevalent style was 2-space-tabs. It’s not like it really matters (and 4-space-tabs are easier to read in my opinion) but I consider it an interesting exercise in perspective.</p>
+
+<p>In the next episode, we’ll go over the basics of code organization: when to use functions, when to use classes, and why to use any of them. If I still have space (these chapters are going to be much smaller than PFS installments), I’ll write in some basic bits on logic and optimization as well.</p>
+
+<p><strong>See ya soon!</strong></p>
+
+            My friend's blogs: <a href="https://wizardwatch.net/">Wizardwatch's overall site</a>, <a href="https://sawyershepherd.org/">Sawyer's blog</a> (the .org part bemuses me). If ryleu decides to actually put something on his site, I'll link it here.
+            <div class="navlinks">
+                
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                        
+                            <a href="/blog/guns-are-stupid">&lt; Guns are Stupid <p>Honestly, I don't understand how anybody could not see this.</p></a>
+                        
+                    
+                    
+                
+                
+                
+                    
+                        
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+            </div>
+            <div id="disqus_thread"></div>
+            <script>
+                /**
+                *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+                *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables    */
+                /*
+                var disqus_config = function () {
+                this.page.url = PAGE_URL;  // Replace PAGE_URL with your page's canonical URL variable
+                this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+                };
+                */
+                (function() { // DON'T EDIT BELOW THIS LINE
+                var d = document, s = d.createElement('script');
+                s.src = 'https://linuxrocks2000-github-io.disqus.com/embed.js';
+                s.setAttribute('data-timestamp', +new Date());
+                (d.head || d.body).appendChild(s);
+                })();
+            </script>
+            <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        </div>
+        <div id="footer">
+            <p><a href = "mailto:plupy44@gmail.com">Email?</a></p>
+<p><a href = "https://github.com/LinuxRocks2000">Github?</a></p>
+<p>Privacy policy: We don't collect data</p>
+<p>Cookie policy: We don't use cookies</p>
+<p>Copywrong 1492, Tyler Clarke</p>
+<p>All rights preserved</p>
+<p>Vegetables are alive too</p>
+<p>Cows pollute the environment and should be eaten</p>
+<p>Nothing here is copyrighted - if we wanted people to not have our data, we wouldn't smatter it across the internet.</p>
+<p>Lawyers beware - here be people who know that lawyers are hired thugs designed <br />to make the person with more money win in court, no matter how right or wrong they are</p>
+<p>I hereby order that any stuck-up prigs that say I need a real privacy policy can leave the room.</p>
+
+        </div>
+        <div id="sidebar">
+            <div id="stickything">
+
+    <a class = "theA" href="/blog/code-cleanliness-1">
+        <div class = "sidebar-item">
+            <span class = "title">Code Cleanliness part 1</span><br />
+            <span class = "bottomthing">A primer and book on code cleanliness, mostly written for the students of CS classes at Kennesaw State University</span>
+        </div>
+    </a>
+
+    <a class = "theA" href="/blog/guns-are-stupid">
+        <div class = "sidebar-item">
+            <span class = "title">Guns are Stupid</span><br />
+            <span class = "bottomthing">Honestly, I don't understand how anybody could not see this.</span>
+        </div>
+    </a>
+
+    <a class = "theA" href="/blog/platformer-from-scratch-chap-6">
+        <div class = "sidebar-item">
+            <span class = "title">Platformer From Scratch Chap 6</span><br />
+            <span class = "bottomthing">Conclusively finishing the physics engine for the third time, bats, level management</span>
+        </div>
+    </a>
+
+    <a class = "theA" href="/blog/platformer-from-scratch-chap-5">
+        <div class = "sidebar-item">
+            <span class = "title">Platformer From Scratch Chap 5</span><br />
+            <span class = "bottomthing">Cleaning up motion, adding fifty coins, adding various other new block types</span>
+        </div>
+    </a>
+
+    <a class = "theA" href="/blog/platformer-from-scratch-chap-4">
+        <div class = "sidebar-item">
+            <span class = "title">Platformer From Scratch Chap 4</span><br />
+            <span class = "bottomthing">Extending the physics engine for special bricks and the coins!</span>
+        </div>
+    </a>
+
+    <a class = "theA" href="/blog/platformer-from-scratch-chap-3">
+        <div class = "sidebar-item">
+            <span class = "title">Platformer From Scratch Chap 3</span><br />
+            <span class = "bottomthing">Physics</span>
+        </div>
+    </a>
+
+    <a class = "theA" href="/blog/platformer-from-scratch-chap-2">
+        <div class = "sidebar-item">
+            <span class = "title">Platformer From Scratch Chap 2</span><br />
+            <span class = "bottomthing">Players, improved graphics, gameloops!</span>
+        </div>
+    </a>
+
+    <a class = "theA" href="/blog/platformer-from-scratch-chap-1">
+        <div class = "sidebar-item">
+            <span class = "title">Platformer From Scratch Chap 1</span><br />
+            <span class = "bottomthing">Getting graphics working</span>
+        </div>
+    </a>
+
+    <a class = "theA" href="/blog/gluten-free-dairy-free-highly-based-brownies">
+        <div class = "sidebar-item">
+            <span class = "title">Gluten Free, Dairy Free, Highly Based Brownies</span><br />
+            <span class = "bottomthing">Because everyone has just <i>got</i> to love long-winded poorly-Javascripted baking blogs!</span>
+        </div>
+    </a>
+
+    <a class = "theA" href="/blog/on-religion">
+        <div class = "sidebar-item">
+            <span class = "title">On Religion</span><br />
+            <span class = "bottomthing">My views and my justification</span>
+        </div>
+    </a>
+
+    <a class = "theA" href="/blog/Carbon-Cycles">
+        <div class = "sidebar-item">
+            <span class = "title">Carbon Cycles</span><br />
+            <span class = "bottomthing">And why America should use Ethanol</span>
+        </div>
+    </a>
+
+    <a class = "theA" href="/blog/the-case-for-carbon-investment">
+        <div class = "sidebar-item">
+            <span class = "title">The Case for Carbon Investment</span><br />
+            <span class = "bottomthing">The ugly truth about carbon dioxide, and what we can do about it (not made by a doom-and-gloomer!)</span>
+        </div>
+    </a>
+
+    <a class = "theA" href="/blog/something-up-with-squishmallow">
+        <div class = "sidebar-item">
+            <span class = "title">Something wrong with Squishmallows (only for people who like tabloid humour)</span><br />
+            <span class = "bottomthing">Detective Lane Howser, on the case</span>
+        </div>
+    </a>
+
+    <a class = "theA" href="/blog/conversations-with-a-southerner">
+        <div class = "sidebar-item">
+            <span class = "title">Conversations with the last true-born southerner</span><br />
+            <span class = "bottomthing">Any normal person who has ever talked to a true southern person will agree</span>
+        </div>
+    </a>
+
+    <a class = "theA" href="/blog/microsoft-poetry">
+        <div class = "sidebar-item">
+            <span class = "title">A poem for Microsoft</span><br />
+            <span class = "bottomthing">Because microsoft needs a poem that fully describes it</span>
+        </div>
+    </a>
+
+    <a class = "theA" href="/blog/hello-world">
+        <div class = "sidebar-item">
+            <span class = "title">Welcome to my blog!</span><br />
+            <span class = "bottomthing">The first post in my blog, also a great place to go for extra information</span>
+        </div>
+    </a>
+
+</div>
+<style>
+    .sidebar-item{
+        padding: 10px;
+        background-color: azure;
+        margin: 10px;
+    }
+    .sidebar-item > .title{
+        color: black;
+        text-decoration: none;
+        white-space: nowrap;
+    }
+    .sidebar-item > .bottomthing{
+        color: grey;
+        font-weight: bold;
+    }
+    .sidebar-item:hover{
+        background-color: transparent;
+    }
+    .theA{
+        text-decoration: none;
+    }
+    #stickything{
+        position: relative;
+    }
+</style>
+
+        </div>
+        <script type="text/javascript">
+            Array.from(document.getElementsByClassName("noselect")).forEach((item, i) => {
+                item.addEventListener('copy', function(e){
+                    var text = window.getSelection().toString().replace(/[\n\r]+/g, '');
+                    e.clipboardData.setData('text/plain', "Let me make something clear. When I mark something noSelect, I mean it. This blog contains tutorials, in which you learn, NOT just copy code! I do not want people putting in zero-effort.");
+                    e.preventDefault();
+                });
+            });
+        </script>
+        <script type = "text/javascript" src = "/blog/js/main.js"></script>
+    </body>
+</html>

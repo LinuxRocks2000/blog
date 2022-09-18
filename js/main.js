@@ -59,6 +59,18 @@ Array.from(document.getElementsByClassName("timerwall")).forEach((item, i) => {
     });
 });
 
+function getAnchor(el){
+    var node = el;
+    var pos = 0;
+    while (node){
+        if (node.offsetTop){
+            pos += node.offsetTop;
+        }
+        node = node.parentNode;
+    }
+    return pos;
+}
+
 window.addEventListener("scroll", function() {
     timewalls.forEach((item, i) => {
         if (!item.done){
@@ -77,6 +89,10 @@ window.addEventListener("scroll", function() {
                     };
                     doTickDown();
                 }
+                window.scrollTo({
+                    left: 0,
+                    top: getAnchor(item.el)
+                });
                 window.scrollBy({
                     left: 0,
                     top: item.el.getBoundingClientRect().top - (window.innerHeight * 2/3),
