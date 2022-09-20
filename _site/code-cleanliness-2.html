@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+    <head>
+        <meta charset="utf-8">
+        <title>Code Cleanliness part 2</title>
+        <link rel="stylesheet" href="/blog/css/main.css" />
+        <link rel="stylesheet"
+              href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/styles/default.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/highlight.min.js"></script>
+        <script>
+            hljs.configure({
+                ignoreUnescapedHTML: true
+            });
+            hljs.highlightAll();
+        </script>
+    </head>
+    <body>
+        <div id="topbar">
+            <nav>
+    <a href="/blog/">Blog</a>
+    <a href="/blog/about">About Me</a>
+    <a href="/">My comic</a>
+</nav>
+
+<style>
+    nav > a{
+        font-family: Arial;
+        font-size: 2em;
+        color: black;
+        text-decoration: none;
+        margin-left: 20px;
+    }
+</style>
+
+        </div>
+        <div id="body">
+            <div class="navlinks">
+                
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                        
+                            <a href="/blog/code-cleanliness-1-Interim">&lt; Interim: Code Cleanliness for Web Developers <p>Connecting concepts from Code Cleanliness part 1 to HTML and CSS</p></a>
+                        
+                    
+                    
+                
+                
+                
+                    
+                        
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+            </div>
+            <h1 id="2-efficient-code">2: Efficient Code</h1>
+
+<p><strong>Diction note</strong>: I’ll be using the terms “compile” and “compiler” a lot over this chapter. A “compiler” takes something humans can read and edit easily (like a Java or C++ program) and converts it into something that computers can read easily (known as bytecode, if you ever open an EXE file in a text editor this is what you’re looking at). To “compile” is to run a compiler on a program - you won’t generally have to touch this much, because Intellij will compile and run for you. It’s important to note that running a program (telling the computer to start reading and using bytecode) is very different from compiling!</p>
+
+<p>Ok, ok, I lied. We aren’t going over classes and functions today. We do still have a lot of topics to cover, however. Firstly we’ll go over clean practices of when to use certain types of statement - when to use <code class="language-plaintext highlighter-rouge">if</code>, when to use <code class="language-plaintext highlighter-rouge">switch</code> (please don’t use <code class="language-plaintext highlighter-rouge">switch</code>, it’s immensely dirty), when to use <code class="language-plaintext highlighter-rouge">for</code>, when to use <code class="language-plaintext highlighter-rouge">while</code>, and how to use their various features to your benefit. If I have enough space, we’ll also go over some thumb-rules on how to write code that compiles first try. This article will mostly not apply to web development - I’ll write something for y’all CS 1300 folks soon, don’t worry.</p>
+
+<h2 id="21-switch-case-if-and-else">2.1: Switch, case, if, and else</h2>
+
+<p>These are four very similar syntactical constructs that you probably know well by now. If you don’t, or want a quick refresher, remember that:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">if</code> statements - check if something is true and run some code if it comes out to <code class="language-plaintext highlighter-rouge">true</code></li>
+  <li><code class="language-plaintext highlighter-rouge">else</code> statements - if the last <code class="language-plaintext highlighter-rouge">if</code> statement’s comparison came out to <code class="language-plaintext highlighter-rouge">false</code>, run some  code</li>
+  <li><code class="language-plaintext highlighter-rouge">switch</code> statements - take a comparison value and open a block of case statements</li>
+  <li><code class="language-plaintext highlighter-rouge">case</code> statements - check the parent switch’s value against a test, if they’re the same run some code</li>
+</ul>
+
+<p><strong>Note</strong>: Over this book I refer to <code class="language-plaintext highlighter-rouge">switch</code>/<code class="language-plaintext highlighter-rouge">case</code> as an ugly, dirty, and useless logic flow that can and should be replaced by the superior <code class="language-plaintext highlighter-rouge">if</code>/<code class="language-plaintext highlighter-rouge">else if</code>/<code class="language-plaintext highlighter-rouge">else</code>. The allure of <code class="language-plaintext highlighter-rouge">switch</code>/<code class="language-plaintext highlighter-rouge">case</code> is, however, undeniable - they allow you to shave off some work and match values in bulk. However, most of the time, unless you’re using them very carefully, they just make code dirtier. An easy rule of thumb is- if you have a bunch (or plan to, planning is important!) of fairly uniform logic operations (only == is supported by <code class="language-plaintext highlighter-rouge">switch</code>/<code class="language-plaintext highlighter-rouge">case</code>) you want to check against a single value and do very simple operations, you should be using <code class="language-plaintext highlighter-rouge">switch</code>/<code class="language-plaintext highlighter-rouge">case</code>, but if you have ANY other situation you should not. An example is when I used a <code class="language-plaintext highlighter-rouge">switch</code>/<code class="language-plaintext highlighter-rouge">case</code> statement in Platformer for art, because styles are determined by a single value (a string), so it made it cleaner instead of the opposite.</p>
+
+<p><code class="language-plaintext highlighter-rouge">switch</code>es and <code class="language-plaintext highlighter-rouge">if</code>s are very very different statements. <code class="language-plaintext highlighter-rouge">if</code>s exist to do complex logic with every operator in the language - they can check less than,  greater than, equal to, or not equal to, as well as run functions to test their results for even more powerful logic. On the other hand, <code class="language-plaintext highlighter-rouge">switch</code> statements exist to do purely equality checks, although I must admit they’re pretty good at it. So, you can extrapolate these general rules:</p>
+
+<ul>
+  <li>Use <code class="language-plaintext highlighter-rouge">if</code> statements when you need to check if something is less than, greater than, or not equal to</li>
+  <li>Use <code class="language-plaintext highlighter-rouge">switch</code> statements when you need to check if something is equal to</li>
+  <li>Use <code class="language-plaintext highlighter-rouge">if</code> statements if want to compare against more than one variable</li>
+  <li>Use <code class="language-plaintext highlighter-rouge">switch</code> statements if you’re fine with comparing against one</li>
+  <li>Use <code class="language-plaintext highlighter-rouge">switch</code> only if you have a large number (or think you might eventually have a large number) of checks to do</li>
+  <li>Use <code class="language-plaintext highlighter-rouge">if</code> otherwise</li>
+</ul>
+
+<p>Now, you can replicate most of <code class="language-plaintext highlighter-rouge">if</code>’s functionality with <code class="language-plaintext highlighter-rouge">switch</code>es, but that doesn’t mean you <em>should</em>. Indeed, you should definitely avoid doing so. That makes code dirty. You want clean, concise, and efficient, not bloated. A C++ example of what you shouldn’t do is,</p>
+
+<div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="c1"> // Necessary for the program to actually run but you don't have to worry about it too much</span><span class="cp">
+#include</span> <span class="cpf">&lt;iostream&gt;</span><span class="cp">
+</span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">(){</span>
+    <span class="kt">int</span> <span class="n">theySaid</span><span class="p">;</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">cin</span> <span class="o">&gt;&gt;</span> <span class="n">theySaid</span><span class="p">;</span> <span class="c1">// Same idea as scan.nextInt(), now theySaid is equal to some piece of user input</span>
+    <span class="k">switch</span><span class="p">(</span><span class="n">theySaid</span> <span class="o">&gt;</span> <span class="mi">50</span><span class="p">){</span>
+        <span class="k">case</span> <span class="nb">true</span><span class="p">:</span>
+            <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"Your number is more than 50"</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span> <span class="c1">// Just a printout.</span>
+            <span class="k">break</span><span class="p">;</span>
+    <span class="p">}</span>
+    
+    <span class="k">switch</span> <span class="p">(</span><span class="n">theySaid</span> <span class="o">&lt;</span> <span class="mi">50</span><span class="p">){</span>
+        <span class="k">case</span> <span class="nb">true</span><span class="p">:</span>
+            <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"Your number is less than 50"</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span> <span class="c1">// Like System.out.println()</span>
+            <span class="k">break</span><span class="p">;</span>
+    <span class="p">}</span>
+    
+    <span class="k">switch</span> <span class="p">(</span><span class="n">theySaid</span><span class="p">){</span>
+        <span class="k">case</span> <span class="mi">50</span><span class="p">:</span>
+            <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"Your number is exactly 50! Hooray!"</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+            <span class="k">break</span><span class="p">;</span>
+    <span class="p">}</span>
+    
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span> <span class="c1">// System-level stuff, don't worry about it</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>(This is verified to run). This technically works, but it’s kinda stupid. It’s bloated and does one more check than necessary. Observe the proper version (c++ still),</p>
+
+<div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="c1"> // Necessary for the program to actually run but you don't have to worry about it too much</span><span class="cp">
+#include</span> <span class="cpf">&lt;iostream&gt;</span><span class="cp">
+</span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">(){</span>
+    <span class="kt">int</span> <span class="n">theySaid</span><span class="p">;</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">cin</span> <span class="o">&gt;&gt;</span> <span class="n">theySaid</span><span class="p">;</span> <span class="c1">// Same idea as scan.nextInt(), now theySaid is equal to some piece of user input</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">theySaid</span> <span class="o">&gt;</span> <span class="mi">50</span><span class="p">){</span>
+    	<span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"Your number is more than 50"</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span> <span class="c1">// Just a printout.</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">theySaid</span> <span class="o">&lt;</span> <span class="mi">50</span><span class="p">){</span> <span class="c1">// Else ifs are fun. Basically, if the last thing didn't return true and this next thing does return true, run some code.</span>
+    	<span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"Your number is less than 50"</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span> <span class="c1">// Like System.out.println()</span>
+    <span class="p">}</span>
+    <span class="k">else</span><span class="p">{</span> <span class="c1">// Runs if the last else-if didn't run.</span>
+        <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"Your number is exactly 50! Hooray!"</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+    <span class="p">}</span>
+    
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span> <span class="c1">// System-level stuff, don't worry about it</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>(Also verified). See, much cleaner! You don’t have to manually check against <code class="language-plaintext highlighter-rouge">true</code>, and you can group it all together in one block to reduce the number of operations you do and make it so only one of the printouts ever happens under any circumstances. This all applies to Java as well - surely you’ve recognized some syntaxes. However, switch/case becomes useful in situations like this (Java because C++ is weird about strings in switch/case),</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">java.util.Scanner</span><span class="o">;</span>
+
+
+<span class="kd">class</span> <span class="nc">Main</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+        <span class="nc">Scanner</span> <span class="n">scan</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Scanner</span><span class="o">(</span><span class="nc">System</span><span class="o">.</span><span class="na">in</span><span class="o">);</span>
+        <span class="nc">String</span> <span class="n">input</span> <span class="o">=</span> <span class="n">scan</span><span class="o">.</span><span class="na">nextLine</span><span class="o">();</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">input</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="s">"Hello"</span><span class="o">)){</span>
+            <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Hello yourself"</span><span class="o">);</span>
+        <span class="o">}</span>
+        <span class="k">else</span> <span class="nf">if</span> <span class="o">(</span><span class="n">input</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="s">"Goodbye"</span><span class="o">)){</span>
+            <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Where ya goin, city boy?"</span><span class="o">);</span>
+        <span class="o">}</span>
+        <span class="k">else</span> <span class="nf">if</span> <span class="o">(</span><span class="n">input</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="s">"Sausage is good"</span><span class="o">)){</span>
+            <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Bacon is better"</span><span class="o">);</span>
+        <span class="o">}</span>
+        <span class="k">else</span> <span class="nf">if</span> <span class="o">(</span><span class="n">input</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="s">"Eggs and Biscuits are good"</span><span class="o">)){</span>
+            <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"What are you, Southern?"</span><span class="o">);</span>
+        <span class="o">}</span>
+        <span class="k">else</span> <span class="nf">if</span> <span class="o">(</span><span class="n">input</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="s">"Gravy and grits is best"</span><span class="o">)){</span>
+            <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"That's a good answer to my question"</span><span class="o">);</span>
+        <span class="o">}</span>
+        <span class="k">else</span> <span class="nf">if</span> <span class="o">(</span><span class="n">input</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="s">"Free market economies cause an underprivileged lower class"</span><span class="o">)){</span>
+            <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"I'm getting very mixed messages here."</span><span class="o">);</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p>That’s kinda painful. In this single case, it actually gets more efficient to use <code class="language-plaintext highlighter-rouge">switch</code>/<code class="language-plaintext highlighter-rouge">case</code>, like so:</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">java.util.Scanner</span><span class="o">;</span>
+
+
+<span class="kd">class</span> <span class="nc">Main</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+        <span class="nc">Scanner</span> <span class="n">scan</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Scanner</span><span class="o">(</span><span class="nc">System</span><span class="o">.</span><span class="na">in</span><span class="o">);</span>
+        <span class="nc">String</span> <span class="n">input</span> <span class="o">=</span> <span class="n">scan</span><span class="o">.</span><span class="na">nextLine</span><span class="o">();</span>
+        <span class="k">switch</span><span class="o">(</span><span class="n">input</span><span class="o">){</span>
+            <span class="k">case</span> <span class="s">"Hello"</span><span class="o">:</span>
+                <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Hello yourself"</span><span class="o">);</span>
+            	<span class="k">break</span><span class="o">;</span>
+            <span class="k">case</span> <span class="s">"Goodbye"</span><span class="o">:</span>
+                <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Where ya goin, city boy?"</span><span class="o">);</span>
+            	<span class="k">break</span><span class="o">;</span>
+            <span class="k">case</span> <span class="s">"Sausage is good"</span><span class="o">:</span>
+                <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Bacon is better"</span><span class="o">);</span>
+            	<span class="k">break</span><span class="o">;</span>
+            <span class="k">case</span> <span class="s">"Eggs and Biscuits are good"</span><span class="o">:</span>
+                <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"What are you, Southern?"</span><span class="o">);</span>
+            	<span class="k">break</span><span class="o">;</span>
+            <span class="k">case</span> <span class="s">"Gravy and grits is best"</span><span class="o">:</span>
+                <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"That's a good answer to my question"</span><span class="o">);</span>
+            	<span class="k">break</span><span class="o">;</span>
+            <span class="k">case</span> <span class="s">"Free market economies cause an underprivileged lower class"</span><span class="o">:</span>
+                <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"I'm getting very mixed messages here."</span><span class="o">);</span>
+            	<span class="k">break</span><span class="o">;</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p>Both of these programs are verified to run.</p>
+
+<p>You’ll notice that if there were only a couple, instead of 6, you’d want to use <code class="language-plaintext highlighter-rouge">if</code>/<code class="language-plaintext highlighter-rouge">else</code>; <code class="language-plaintext highlighter-rouge">switch</code>/<code class="language-plaintext highlighter-rouge">case</code> is only efficient when you have a largish number of statements (a very experienced code teacher I’m friends with corroborates, by the way).</p>
+
+<h2 id="22-for-loops">2.2: For Loops</h2>
+
+<p>Ah yes. Loops. I’m not certain how many of you know how to use these already - I’m assuming most CS students by now are acquainted with basic <code class="language-plaintext highlighter-rouge">for</code> loops, and maybe have heard of <code class="language-plaintext highlighter-rouge">while</code> loops. However, I’ve noticed that the class is doing somewhat of a poor job of teaching them, so let’s go through <code class="language-plaintext highlighter-rouge">for</code> loops again. If you’re pretty sure you don’t need to read this part, read it anyways, because you can never be sure.</p>
+
+<p>What is a for loop? A for loop is a way to run a piece of code a set number of times. It’s structured rather like an <code class="language-plaintext highlighter-rouge">if</code> statement, but with a <em>lot</em> more where the condition goes. Generally they look something like this:</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="o">;</span> <span class="n">i</span> <span class="o">++){</span>
+    <span class="c1">// Your code goes here</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p>This doesn’t tell you too much, however. So let’s dissect it, Platformer from Scratch (my previous internet book, available on this website) style.</p>
+
+<ul>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">for (</code>: Tell the compiler to expect the iterator declaration of a <code class="language-plaintext highlighter-rouge">for</code> loop.</p>
+  </li>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">int i</code>: This is the <em>iterator variable</em>. Iterator variables increase in every iteration of the loop, so if you have</p>
+
+    <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">5</span><span class="o">;</span> <span class="n">i</span> <span class="o">++){</span>
+    <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">i</span><span class="o">);</span>
+<span class="o">}</span>
+</code></pre></div>    </div>
+
+    <p>you’ll print out all the numbers from 0 to 4. (Why is this? Loops are supposed to be 0-indexed. That means they start at 0 and stop 1 before the boundary. You have the same number of iterations, but the iterator variable is always 1 less than you might expect. If you get from 1 to 5, you’re doing something wrong!)</p>
+  </li>
+  <li>
+    <p>` = 0<code class="language-plaintext highlighter-rouge">: Tell the compiler that the *iterator variable* should start at 0. You can make this whatever you want, but I can tell you that is not a good idea. Badly constructed </code>for` loops will eventually come back to bite you - I can tell you this from personal experience.</p>
+  </li>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">;</code>: Tell the compiler that you’re done initializing (preparing) the iterator variable, and want to define the boundary. The boundary is like the condition of an <code class="language-plaintext highlighter-rouge">if</code> statement - when it evaluates to true, the for loop continues another iteration, but if it is ever false, the loop breaks.</p>
+  </li>
+  <li>
+    <p>` i &lt; 5<code class="language-plaintext highlighter-rouge">: The condition of the </code>for<code class="language-plaintext highlighter-rouge"> loop - if it's true, go on for another pass, and if it's false, break the loop. You can use any comparison operator in here, but the ones you'll mostly be using are </code>&lt;<code class="language-plaintext highlighter-rouge"> and </code>&gt;<code class="language-plaintext highlighter-rouge"> (if you use </code>&lt;=<code class="language-plaintext highlighter-rouge"> or </code>&gt;=`, you’re making a mistake! It won’t hurt you too much in the Java class, but when you get out into professional stuff this will mess you up. Personal experience.)</p>
+  </li>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">;</code>: Tell the compiler you’re ready to go into the final part, where you define the variable’s change per iteration.</p>
+  </li>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">i ++</code>: The variable’s change per iteration. This is usually going to be <code class="language-plaintext highlighter-rouge">i ++</code> (assuming your iterator variable is <code class="language-plaintext highlighter-rouge">i</code>), but anything is valid there - you could even subtract one every time, but you’ll want to make the condition a <code class="language-plaintext highlighter-rouge">&gt;</code> instead of a <code class="language-plaintext highlighter-rouge">&lt;</code> so it doesn’t get caught in an infinite loop.</p>
+  </li>
+</ul>
+
+<p>From there you just put your code in curlies (<code class="language-plaintext highlighter-rouge">{}</code>) and you have a <code class="language-plaintext highlighter-rouge">for</code> loop!</p>
+
+<h2 id="23-while-loops">2.3: While loops</h2>
+
+<p>There’s a fair chance you haven’t heard of <code class="language-plaintext highlighter-rouge">while</code> loops yet. They’re basically <code class="language-plaintext highlighter-rouge">if</code> statements that continue running the code until the condition returns false - like a <code class="language-plaintext highlighter-rouge">for</code> loop without the iterator variable. The syntax (in most languages, actually, not just Java) is,</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">while</span> <span class="o">(</span><span class="n">condition</span><span class="o">){</span>
+    <span class="c1">// Code that runs until condition is false</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p>A good example is checking the validity of user input, like so:</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Assume there's a class set up with a Scanner named scan and all</span>
+<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Question (Y/N): "</span><span class="o">);</span>
+<span class="nc">String</span> <span class="n">input</span> <span class="o">=</span> <span class="n">scan</span><span class="o">.</span><span class="na">nextLine</span><span class="o">();</span>
+
+<span class="k">while</span> <span class="o">(!</span><span class="n">input</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="s">"Y"</span><span class="o">)</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="n">input</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="s">"N"</span><span class="o">)){</span> <span class="c1">// The check runs over and over again, so you can just change the value of input and if it's valid the loop breaks</span>
+    <span class="c1">// While the input isn't Y and the input isn't N</span>
+    <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Please give Y or N: "</span><span class="o">);</span>
+    <span class="n">input</span> <span class="o">=</span> <span class="n">scan</span><span class="o">.</span><span class="na">nextLine</span><span class="o">();</span> <span class="c1">// Prompt again.</span>
+<span class="o">}</span>
+
+<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Thank you for your response!"</span><span class="o">);</span>
+</code></pre></div></div>
+
+<p>(verified correct)</p>
+
+<p>Running this will give something like,</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Question (Y/N): 
+L
+Please give Y or N: 
+Z
+Please give Y or N: 
+n
+Please give Y or N: 
+Y
+Thank you for your response!
+</code></pre></div></div>
+
+<p>You don’t have to use nested ifs or break the program, you can just hang until they provide useful data! More advanced implementations of this are of course possible, but I won’t get into those.</p>
+
+<p><strong>Note</strong>: Be aware of <code class="language-plaintext highlighter-rouge">while</code> loops! They can and will hang your program forever (infinite loop) if for some reason the condition is never false.</p>
+
+<p>That wasn’t so bad! If you need more on while loops, I think a good Google query is <code class="language-plaintext highlighter-rouge">Java while loop</code> (replace “Java” with whatever language you’re in; HTML and CSS don’t have them so don’t bother with those).</p>
+
+<h2 id="24-when-to-actually-use-for-and-while--miscellaneous-stuff">2.4: When to actually use For and While + Miscellaneous stuff</h2>
+
+<p>I think the situations in which you might want to use a <code class="language-plaintext highlighter-rouge">for</code> loop or a <code class="language-plaintext highlighter-rouge">while</code> loop are fairly obvious, but choosing which one might be more difficult. In general, you use <code class="language-plaintext highlighter-rouge">for</code> if you need an iterator and <code class="language-plaintext highlighter-rouge">while</code> if you don’t; here’s a list of thumbs:</p>
+
+<ul>
+  <li>If you need to have an iterator variable that <em>increases linearly</em> use a <code class="language-plaintext highlighter-rouge">for</code> loop</li>
+  <li>If you don’t need an iterator variable use a <code class="language-plaintext highlighter-rouge">while</code> loop (note: it counts as needing an iterator variable if you want something to happen a set number of times, like a <code class="language-plaintext highlighter-rouge">for</code> loop where you don’t use <code class="language-plaintext highlighter-rouge">i</code> in the code)</li>
+  <li>If you want to iterate over something (like run a piece of code for every element in an array) use a <code class="language-plaintext highlighter-rouge">for</code> loop bounded by the length of the array. Be careful! If you don’t use the for loop construction practices outlined in 2.2, you’ll probably end up with broken code. Yep, personal experience.</li>
+  <li>If you want to run a piece of code forever (like in game development, it’s called a mainloop), use <code class="language-plaintext highlighter-rouge">while (true)</code>, unless you want to count ticks in which case you can use a for loop with a <code class="language-plaintext highlighter-rouge">true</code> condition, as opposed to <code class="language-plaintext highlighter-rouge">i &lt; something</code>. (Note: some languages don’t want you writing your own mainloops and prefer that you use some functions they provide - such as, you should <strong>never</strong> use <code class="language-plaintext highlighter-rouge">while (true)</code> in ECMAScript/Javascript).</li>
+  <li>If you only want to run something once based on a condition, you should be using an <code class="language-plaintext highlighter-rouge">if</code> statement.</li>
+  <li>If you want to run something a set number of times, but only actually do anything if some condition is filled, you should use an <code class="language-plaintext highlighter-rouge">if</code> statement inside a <code class="language-plaintext highlighter-rouge">for</code> loop.</li>
+</ul>
+
+<p>Because this was a fairly short section, I’ll also include some bonus miscellaneous information.</p>
+
+<ul>
+  <li>Semicolons (Java, C++, Javascript, any C family language really): The rule of thumb is that there’s a semicolon after every line not ending with <code class="language-plaintext highlighter-rouge">{</code> or <code class="language-plaintext highlighter-rouge">}</code>. If you’re one of those people who always puts <code class="language-plaintext highlighter-rouge">{</code> and <code class="language-plaintext highlighter-rouge">}</code> on their own lines (eww, by the way), then this rule of thumb is <em>way</em> harder to effectively quantify - imagine that little newline before the <code class="language-plaintext highlighter-rouge">{</code> doesn’t exist.</li>
+  <li><code class="language-plaintext highlighter-rouge">private</code>, <code class="language-plaintext highlighter-rouge">public</code>, and <code class="language-plaintext highlighter-rouge">protected</code> (largely Java): These are painful to work with and you shouldn’t worry about them too much until later on, but remember that if something is used from another class it should be <code class="language-plaintext highlighter-rouge">public</code>, and if it’s only used internally <code class="language-plaintext highlighter-rouge">private</code>. <code class="language-plaintext highlighter-rouge">protected</code> prevents access by classes from other packages - useful if you’re writing a library.</li>
+  <li><code class="language-plaintext highlighter-rouge">static</code> (C++, maybe Java): Static means that a property cannot be inside an object, and is instead under the class. So instead of <code class="language-plaintext highlighter-rouge">myObj.method()</code> it’s <code class="language-plaintext highlighter-rouge">MyClass.method()</code>. Useful if you want a class to have helper functions and objects at the same time.</li>
+  <li><code class="language-plaintext highlighter-rouge">const</code> (C++, maybe Java, Javascript): The value cannot change - is immutable. Keeps bugs away because you’ll get in trouble if you try editing it, if you’re in a big project you want to make as many things <code class="language-plaintext highlighter-rouge">const</code> as possible.</li>
+</ul>
+
+<p>Well, that was a quick chapter! I hope you find it at least marginally useful.</p>
+
+<p>The next installment will <em>probably</em> be for HTML and CSS, such as how to keep them clean, efficient and minimal. This is a very large and difficult topic so it’s probably going to be a very large and difficult chapter. If I don’t post before this Friday afternoon, it won’t be out until the weekend after next, as I’ll be out-of-state for a week.</p>
+
+<p><strong>See ya soon, and keep coding!</strong></p>
+
+            My friend's blogs: <a href="https://wizardwatch.net/">Wizardwatch's overall site</a>, <a href="https://sawyershepherd.org/">Sawyer's blog</a> (the .org part bemuses me). If ryleu decides to actually put something on his site, I'll link it here.
+            <div class="navlinks">
+                
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                        
+                            <a href="/blog/code-cleanliness-1-Interim">&lt; Interim: Code Cleanliness for Web Developers <p>Connecting concepts from Code Cleanliness part 1 to HTML and CSS</p></a>
+                        
+                    
+                    
+                
+                
+                
+                    
+                        
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+            </div>
+            <div id="disqus_thread"></div>
+            <script>
+                /**
+                *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+                *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables    */
+                /*
+                var disqus_config = function () {
+                this.page.url = PAGE_URL;  // Replace PAGE_URL with your page's canonical URL variable
+                this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+                };
+                */
+                (function() { // DON'T EDIT BELOW THIS LINE
+                var d = document, s = d.createElement('script');
+                s.src = 'https://linuxrocks2000-github-io.disqus.com/embed.js';
+                s.setAttribute('data-timestamp', +new Date());
+                (d.head || d.body).appendChild(s);
+                })();
+            </script>
+            <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        </div>
+        <div id="footer">
+            <p><a href = "mailto:plupy44@gmail.com">Email?</a></p>
+<p><a href = "https://github.com/LinuxRocks2000">Github?</a></p>
+<p>Privacy policy: We don't collect data</p>
+<p>Cookie policy: We don't use cookies</p>
+<p>Copywrong 1492, Tyler Clarke</p>
+<p>All rights preserved</p>
+<p>Vegetables are alive too</p>
+<p>Cows pollute the environment and should be eaten</p>
+<p>Nothing here is copyrighted - if we wanted people to not have our data, we wouldn't smatter it across the internet.</p>
+<p>Lawyers beware - here be people who know that lawyers are hired thugs designed <br />to make the person with more money win in court, no matter how right or wrong they are</p>
+<p>I hereby order that any stuck-up prigs that say I need a real privacy policy can leave the room.</p>
+
+        </div>
+        <div id="sidebar">
+            <div id="stickything">
+
+    <a class = "theA" href="/blog/code-cleanliness-2">
+        <div class = "sidebar-item">
+            <span class = "title">Code Cleanliness part 2</span><br />
+            <span class = "bottomthing">A primer and serial internet book on code cleanliness, mostly written for the students of CS classes at Kennesaw State University</span>
+        </div>
+    </a>
+
+    <a class = "theA" href="/blog/code-cleanliness-1-Interim">
+        <div class = "sidebar-item">
+            <span class = "title">Interim: Code Cleanliness for Web Developers</span><br />
+            <span class = "bottomthing">Connecting concepts from Code Cleanliness part 1 to HTML and CSS</span>
+        </div>
+    </a>
+
+    <a class = "theA" href="/blog/code-cleanliness-1">
+        <div class = "sidebar-item">
+            <span class = "title">Code Cleanliness part 1</span><br />
+            <span class = "bottomthing">A primer and serial internet book on code cleanliness, mostly written for the students of CS classes at Kennesaw State University</span>
+        </div>
+    </a>
+
+    <a class = "theA" href="/blog/guns-are-stupid">
+        <div class = "sidebar-item">
+            <span class = "title">Guns are Stupid</span><br />
+            <span class = "bottomthing">Honestly, I don't understand how anybody could not see this.</span>
+        </div>
+    </a>
+
+    <a class = "theA" href="/blog/platformer-from-scratch-chap-6">
+        <div class = "sidebar-item">
+            <span class = "title">Platformer From Scratch Chap 6</span><br />
+            <span class = "bottomthing">Conclusively finishing the physics engine for the third time, bats, level management</span>
+        </div>
+    </a>
+
+    <a class = "theA" href="/blog/platformer-from-scratch-chap-5">
+        <div class = "sidebar-item">
+            <span class = "title">Platformer From Scratch Chap 5</span><br />
+            <span class = "bottomthing">Cleaning up motion, adding fifty coins, adding various other new block types</span>
+        </div>
+    </a>
+
+    <a class = "theA" href="/blog/platformer-from-scratch-chap-4">
+        <div class = "sidebar-item">
+            <span class = "title">Platformer From Scratch Chap 4</span><br />
+            <span class = "bottomthing">Extending the physics engine for special bricks and the coins!</span>
+        </div>
+    </a>
+
+    <a class = "theA" href="/blog/platformer-from-scratch-chap-3">
+        <div class = "sidebar-item">
+            <span class = "title">Platformer From Scratch Chap 3</span><br />
+            <span class = "bottomthing">Physics</span>
+        </div>
+    </a>
+
+    <a class = "theA" href="/blog/platformer-from-scratch-chap-2">
+        <div class = "sidebar-item">
+            <span class = "title">Platformer From Scratch Chap 2</span><br />
+            <span class = "bottomthing">Players, improved graphics, gameloops!</span>
+        </div>
+    </a>
+
+    <a class = "theA" href="/blog/platformer-from-scratch-chap-1">
+        <div class = "sidebar-item">
+            <span class = "title">Platformer From Scratch Chap 1</span><br />
+            <span class = "bottomthing">Getting graphics working</span>
+        </div>
+    </a>
+
+    <a class = "theA" href="/blog/gluten-free-dairy-free-highly-based-brownies">
+        <div class = "sidebar-item">
+            <span class = "title">Gluten Free, Dairy Free, Highly Based Brownies</span><br />
+            <span class = "bottomthing">Because everyone has just <i>got</i> to love long-winded poorly-Javascripted baking blogs!</span>
+        </div>
+    </a>
+
+    <a class = "theA" href="/blog/on-religion">
+        <div class = "sidebar-item">
+            <span class = "title">On Religion</span><br />
+            <span class = "bottomthing">My views and my justification</span>
+        </div>
+    </a>
+
+    <a class = "theA" href="/blog/Carbon-Cycles">
+        <div class = "sidebar-item">
+            <span class = "title">Carbon Cycles</span><br />
+            <span class = "bottomthing">And why America should use Ethanol</span>
+        </div>
+    </a>
+
+    <a class = "theA" href="/blog/the-case-for-carbon-investment">
+        <div class = "sidebar-item">
+            <span class = "title">The Case for Carbon Investment</span><br />
+            <span class = "bottomthing">The ugly truth about carbon dioxide, and what we can do about it (not made by a doom-and-gloomer!)</span>
+        </div>
+    </a>
+
+    <a class = "theA" href="/blog/something-up-with-squishmallow">
+        <div class = "sidebar-item">
+            <span class = "title">Something wrong with Squishmallows (only for people who like tabloid humour)</span><br />
+            <span class = "bottomthing">Detective Lane Howser, on the case</span>
+        </div>
+    </a>
+
+    <a class = "theA" href="/blog/conversations-with-a-southerner">
+        <div class = "sidebar-item">
+            <span class = "title">Conversations with the last true-born southerner</span><br />
+            <span class = "bottomthing">Any normal person who has ever talked to a true southern person will agree</span>
+        </div>
+    </a>
+
+    <a class = "theA" href="/blog/microsoft-poetry">
+        <div class = "sidebar-item">
+            <span class = "title">A poem for Microsoft</span><br />
+            <span class = "bottomthing">Because microsoft needs a poem that fully describes it</span>
+        </div>
+    </a>
+
+    <a class = "theA" href="/blog/hello-world">
+        <div class = "sidebar-item">
+            <span class = "title">Welcome to my blog!</span><br />
+            <span class = "bottomthing">The first post in my blog, also a great place to go for extra information</span>
+        </div>
+    </a>
+
+</div>
+<style>
+    .sidebar-item{
+        padding: 10px;
+        background-color: azure;
+        margin: 10px;
+    }
+    .sidebar-item > .title{
+        color: black;
+        text-decoration: none;
+        white-space: nowrap;
+    }
+    .sidebar-item > .bottomthing{
+        color: grey;
+        font-weight: bold;
+    }
+    .sidebar-item:hover{
+        background-color: transparent;
+    }
+    .theA{
+        text-decoration: none;
+    }
+    #stickything{
+        position: relative;
+    }
+</style>
+
+        </div>
+        <script type="text/javascript">
+            Array.from(document.getElementsByClassName("noselect")).forEach((item, i) => {
+                item.addEventListener('copy', function(e){
+                    var text = window.getSelection().toString().replace(/[\n\r]+/g, '');
+                    e.clipboardData.setData('text/plain', "Let me make something clear. When I mark something noSelect, I mean it. This blog contains tutorials, in which you learn, NOT just copy code! I do not want people putting in zero-effort.");
+                    e.preventDefault();
+                });
+            });
+        </script>
+        <script type = "text/javascript" src = "/blog/js/main.js"></script>
+    </body>
+</html>
