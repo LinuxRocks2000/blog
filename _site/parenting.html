@@ -2,7 +2,7 @@
 <html lang="en" dir="ltr">
     <head>
         <meta charset="utf-8">
-        <title>Web Development in C++</title>
+        <title>Good Parenting</title>
         <link rel="stylesheet" href="/blog/css/main.css" />
         <link rel="stylesheet"
               href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/styles/default.min.css">
@@ -160,11 +160,57 @@
                     
                 
             </div>
-            <p>Hello again, my dear coding padawans (and, you know, new visitors)! Today we’re going to go through one of the more complex and interesting projects you can work on: building an HTTP server.</p>
+            <p>Note: This post will be kind of a departure from my normal content. I am writing this because I’ve met a lot of terrible parents and realized that my own are not merely above average, but are absolutely spectacular. I’m writing a much, much larger post that will probably appeal to y’all more on developing HTTP servers in C++ - don’t worry, this kind of material will <em>not</em> become the norm ‘round these parts.</p>
 
-<h2 id="what-is-this-what-will-i-learn">What is this? What will I learn?</h2>
+<p>Further note: in case the previous note didn’t clue you in, this is <strong>not</strong> a post about how awful my parents are and how they’re abusive and terrible people because they just <em>wouldn’t</em> buy me a pony for my 13th birthday - it’s the opposite. I must reinforce how spectacular they are.</p>
 
-<p>This post will go through all the necessary concepts to building a threaded webserver using modern c++ (and, in some cases, archaic C because the c++ equivalents are poorly made). This is not going to be another book, just a very, very long post, so the current progress at different steps will be shown throughout.</p>
+<p>Final note: Yes, this is on alternative parenting. If you’re too classic American to deal with that, then shut up and leave this blog, we don’t accommodate your type here. Authoritative parenting produces rebellious children.</p>
+
+<h2 id="the-flawed-concept-of-deserved-respect">The flawed concept of deserved respect</h2>
+
+<p>One thing I’ve noticed is that most parents that ascribe to the authoritative (NOT authoritarian; that’s a whole ‘nuther box of wriggling parasitic worms) style demand respect from their children. This is stupid. If you do this, you are telling your children you are the absolute authority and that taking issue with you is tantamount to sin. Unfortunately, a lot of parents follow this structure, whether they admit it or not. Let me make this very clear. <strong>If you demand respect from your children, you are asserting their subhumanity.</strong> Respect <em>has</em> to be earned, it cannot be taken. Now I can almost smell the chorus of complaints - “I don’t want my kids to be rebellious”, “I deserve respect because they’re my dependent”, etc. This is actually not what I meant. Instead of instilling in your children that you are Superior, you should teach them Fair Judgement. Instill in your children from an early age the ability to <em>judge</em> a person and <em>fairly deem them worthy of respect</em>. Teach them a set of morals and the ability to judge fairly and accurately based on those morals. It is your responsibility, then, to adhere to those morals, the same way you would expect them to. This is also known as treating your children as human beings. You do not want your children to bow down to people who put them in positions of authority, you want them to recognize good and bad qualities in people and weigh them appropriately. My parents never required me to call them “ma’am” or “sir”, or in any other way <strong>assert my subhumanity</strong>, and I judge them fairly: my mother is not intelligent, she’s about average, but she is a kind, selfless person, for which I respect her; and my father is a very intelligent, hardworking person, for which I respect him.</p>
+
+<p>Simply put, you don’t teach your children to respect you, you teach them to respect in general then make sure <em>you</em> deserve that respect. Demanding it is just saying “I have a fragile ego and do not want to put in the effort to deserve your respect”.</p>
+
+<h2 id="the-flawed-concept-of-obedience">The flawed concept of obedience</h2>
+
+<p>You need to understand something as a parent: Your word is <em>not</em> God’s (I use this metaphorically as always; I’m not religious). Using “because I said so” as a justification is a sign that you do <em>not</em> deserve respect - you aren’t putting in any effort to explain a concept, which is to say you do not consider your children worth that effort OR you are not intelligent enough to justify it properly OR you expect your children to be perfectly obedient to your every whim. There’s nothing wrong with your children doing what you say, and expecting them to do as such, <strong>GIVEN THAT YOU DESERVE THEIR RESPECT</strong> (see the first Flawed Concept section for an explanation of this, if you haven’t read it already); however, you should not expect your children not to question you. Asking your children not to question you is tantamount to asserting your word to be that of God, which is obviously not respectable behavior. Instead, you should explain to your children precisely why you wish for them to do something. Do you <em>not</em> want your children to question things? Is not curiosity human nature? If this sounds redundant to you, because that was obvious and you would never do something like that, then you are a good parent. Alas, I’ve had the misfortune to meet those that had no comprehension of this at all. Now, it’s reasonable for you not to want to have an hour-long conversation about economics with a 5-year-old, but you should at least give something more than “because I said so”. Simply put, saying “Because I said so” is telling your children that they do not have valid questions or, in some cases, opinions. <strong>If you do, you are asserting your child’s subhumanity.</strong> Instead, consider giving a simple explanation:</p>
+
+<p>“Why should I wash the dishes?”</p>
+
+<p>“Because we need clean dishes to eat with”</p>
+
+<p>“Why don’t <em>you</em> just do it?”</p>
+
+<p>This is the part where a poor parent would yell at them for being ungrateful. Remember that young children do not have a good concept of work and effort and fairness beyond selfish desires. Fortunately, young children tend to have a good comprehension of sharing, even if it’s only limited to playing with toys. You can leverage this, “It’s like sharing, if you help out I can do other things.” I don’t have any 5-year-olds around to test on, but I’m assuming you’d have to do a bit more explaining than that; in any case, you should do <strong>anything</strong> but say “Because I said so”.</p>
+
+<p>It’s infuriating when a child is informed that they have to do something just because you told them to; you’re dismissing them. The only situations I can fathom where you wouldn’t want to tell them is if you’re trying to get them to bring you something somewhat illicit, like a pack of cigarettes or a bottle o’ gin. In those cases? You’re a hopeless parent, and you need to re-evaluate a lot of life choices. Morality is the most important thing you can teach your children.</p>
+
+<h2 id="the-flawed-concept-of-reimbursement">The flawed concept of reimbursement</h2>
+
+<p>Here’s one that will probably be a lot closer to most people. It is not uncommon at all for children, even at a young age, to be paid to do chores like washing the dishes or the laundry - this is flawed. You should put in the effort to explain to your children that such work is necessary and beneficial to them as well as you (see the Flawed Concept of Obedience). While it does make sense to prepare your children for a world where payment rules all, it does not make sense to teach a 5-year-old that they should only do the dishes if they’re paid for it. Sure, you can make it as clear as possible that that’s <em>not</em> what’s happening, but they’re going to see that they get a 5 dollar bill when they wash the plates after supper, and they’re going to associate it. They’ll recover from this, of course, but they won’t be nearly as well adjusted and it just feeds into teenage angst and irritating discussions. You can use your discretion here.</p>
+
+<p>I’m personally against the idea of an allowance - I don’t ask to buy things often, and when I do it’s something really really important like a new computer after my parents smashed the old one with a car (this indeed happened, it was a hilarious situation; I’m very happy with the AMD Ryzen 7 to replace the old Intel) - but if you find it necessary that your children have some pocket money, whether through nostalgia or necessity, it might be difficult to make it anything but a reimbursement. Giving your kids money for no reason is an even worse infraction than giving it to them for doing necessary chores.</p>
+
+<h2 id="the-half-flawed-concept-of-punishment">The half-flawed concept of punishment</h2>
+
+<p>There is nothing wrong with punishing your children for doing bad things. If your kids steal stuff, or do drugs, or start fights, they need to be punished for their behavior. Punishment of children in American culture, however, tends to be flawed for two reasons: first, oftentimes, parents have a flawed conception of what behaviors need to be punished, and secondly parents often assign unnecessarily large or idiotically small punishments with no accurate means of measurement. Let’s address #1 first.</p>
+
+<p>Especially in teenagers, a lot of punishable mistakes often work out more as a maturing experience than anything. There are two crucial factors to this: first, nobody but the child in question was directly harmed, and second the child cleaned up after themselves and resolved the problem. An example is something that happened to me earlier today: I was, stupidly, using a metal 1-cup measure to break badly freezer-burned mangoes away from the massive chunk inhabiting the bag, and the head snapped off. I glued it back together and told my mom, and she didn’t really care. Both conditions are satisfied - nobody was harmed, and I fixed it after myself. I learned from the experience. However, take another (fictional) analogy, where Person One lazily fails to submit a bit of homework and then does nothing to make up for it or fix the problem, failing the class. Person One’s parents are right to punish them for not attempting to fix the problem - genuine laziness is a problem. Had they talked to the instructor, done a load of extra credit, and passed the class, then punishing them would be wrong - they learned from the experience, and cleaned up after themselves. This isn’t uncommon. If you reacted with agreement, and perhaps shock that any parent would make that mistake, then you’re a good parent: unfortunately, that same situation recently happened to a friend, and they’ve been grounded for almost a week, so such parents do exist.</p>
+
+<p>Let’s now confront the second problem. Say our Person One doesn’t clean up after themselves, but is still a reasonably hard worker and otherwise a good-ish student, and the infraction was minor, so gets a B in the class. Person One’s parents know they still have to punish Person One, which is reasonable, so they ground their child for two weeks.</p>
+
+<p>What mistake did they make here? Well, the issue was one of scale. Their child didn’t do anything <em>that</em> bad - nobody but them got hurt, and they didn’t do much damage. If they failed the class, it would be justified, but they made up for it with lots of hard work and did a good job. It was unfair. Of course, the parents could have made the opposite mistake, and merely did nothing, or assigned such a small punishment as to be equivalent to nothing: this is wrong as well, as the child learns nothing from it.</p>
+
+<p>Something you’ll have to note, as a parent, is that all of this can be wrong. I shall explain with a personal example. In my first semester of dual enrollment, at Chattahoochee Technical College, I missed an assignment because I thought the due date was a few days later than reality. The issue was that the professor failed to mark it properly - the marked dates hadn’t changed since 2019, and his schedule had. My parents listened when I explained what happened and understood; my mom even prompted me to e-mail the professor, and I got the grade changed. It is important that you consider everything your child has to say, or they will become more secretive and more prone to lying when asked about such matters. If I couldn’t trust my parents to listen, I would have learned my lesson and would’ve glossed over the entire incident, for fear of unjust punishment. To put it simply, <strong>never discard what your children say even if it sounds like a bad excuse, because there’s a fair chance they aren’t lying and have evidence of such.</strong> If you refuse to listen to your children in such situations, guess what you’re doing? <strong>Asserting their subhumanity.</strong></p>
+
+<h2 id="wrapping-up">Wrapping up</h2>
+
+<p>Everything I’ve written here trails into one simple phrase: “Asserting their subhumanity”. This means, quite simply, that you are refusing to acknowledge them as a human being with thoughts and feelings and opinions and problems just like your own. The lessons to teach your children from section 1 apply to you too: You should fairly judge your children as people and respect them accordingly. Asserting their subhumanity is when you <em>don’t</em> do this, when you look at them as parasites or servants or subordinates. <em>Everyone</em> deserves to be judged fairly.</p>
+
+<p>As a person who is not a parent, I can’t say anything I’ve written here is even remotely accurate. I’m writing as the child of good parents (if you don’t think they’re good, you’re objectively wrong; this aside is too small to list all the examples, but they very much deserve respect and extend the courtesy of judging their children fairly) who has noticed certain behaviors, and has seen other parents who do <em>not</em> act like them. I hope that, if you’re a parent reading this, you’ll judge it fairly and take everything at face value, and hopefully learn something from it.</p>
+
+<p>Don’t worry, this is probably going to be the last post in this vein for a long, long time. <strong>See y’all soon!</strong></p>
 
             My friend's blogs: <a href="https://wizardwatch.net/">Wizardwatch's overall site</a>, <a href="https://sawyershepherd.org/">Sawyer's blog</a> (the .org part bemuses me). If ryleu decides to actually put something on his site, I'll link it here.
             <div class="navlinks">
@@ -330,10 +376,10 @@
         <div id="sidebar">
             <div id="stickything">
 
-    <a class = "theA" href="/blog/web-development-in-c++">
+    <a class = "theA" href="/blog/parenting">
         <div class = "sidebar-item">
-            <span class = "title">Web Development in C++</span><br />
-            <span class = "bottomthing">Building a minimal webserver in my favorite language</span>
+            <span class = "title">Good Parenting</span><br />
+            <span class = "bottomthing">From a child of good parents</span>
         </div>
     </a>
 
