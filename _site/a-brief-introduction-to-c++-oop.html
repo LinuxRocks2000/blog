@@ -1,0 +1,920 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+    <head>
+        <meta charset="utf-8">
+        <title>A Brief Introduction C++ Object Oriented Programming</title>
+        <link rel="stylesheet" href="/blog/css/main.css" />
+        <link rel="stylesheet"
+              href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/styles/default.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/highlight.min.js"></script>
+        <script>
+            hljs.configure({
+                ignoreUnescapedHTML: true
+            });
+            hljs.highlightAll();
+        </script>
+    </head>
+    <body>
+        <div id="topbar">
+            <nav>
+    <a href="/blog/">Blog</a>
+    <a href="/blog/about">About Me</a>
+    <a href="/">My comic</a>
+</nav>
+
+<style>
+    nav > a{
+        font-family: Arial;
+        font-size: 2em;
+        color: black;
+        text-decoration: none;
+        margin-left: 20px;
+    }
+</style>
+
+        </div>
+        <div id="body">
+            <div class="navlinks">
+                
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                        
+                            <a href="/blog/guns-are-stupid-part-2">&lt; Guns are Still Stupid <p>If you don't get this then, frankly, you are a huge idiot</p></a>
+                        
+                    
+                    
+                
+                
+                
+                    
+                        
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+            </div>
+            <p>As most readers of my blog will probably agree, C++ is a dang awesome language. It is fast (blazing. Fast.), it’s easy to learn and to use, it scales to very large projects, and people who write good code are rewarded with code that works really, really well. It is also almost completely backwards compatible with C, so you can use kernel-level APIs in an object oriented context <em>and</em> can do hacky crap with pointers, if you feel like it (although please don’t: that’s how you get what we call segmentation faults).</p>
+
+<p>Object oriented programming in C++ was the original goal of the language, and it just keeps getting better and better. Features like <code class="language-plaintext highlighter-rouge">auto</code>, templates, virtual interfaces, and concepts allow C++’s static typing to work really, really well and keep us protected from undefined errors. And of course, that’s what this article is about!</p>
+
+<p>This post makes use of c++20 features. If you’re using g++ from command line, you can probably use c++20 with <code class="language-plaintext highlighter-rouge">-std=c++20</code> or <code class="language-plaintext highlighter-rouge">-std=gnu++20</code> (whichever you prefer). If you <em>can’t</em>, you have a very old compiler and are probably on a very old system; you should go about fixing that before you follow this.</p>
+
+<p>Note: this post assumes knowledge of object-oriented c++ concepts and knowledge of abstractions like enums.</p>
+
+<h2 id="1-inheritance">1: Inheritance</h2>
+
+<p>Inheritance is the most basic aspect of C++ object oriented programming, except, perhaps, objects and classes themselves. It is, simply, when a class is used to extend another class. The simplest usage is like this:</p>
+<div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include</span> <span class="cpf">&lt;iostream&gt;</span><span class="cp">
+</span>
+
+<span class="k">class</span> <span class="nc">Animal</span> <span class="p">{</span>
+	<span class="nl">public:</span>
+    <span class="kt">void</span> <span class="n">Eat</span><span class="p">()</span> <span class="p">{</span>
+        <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"yum"</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">};</span>
+
+<span class="k">class</span> <span class="nc">Dog</span> <span class="o">:</span> <span class="k">public</span> <span class="n">Animal</span> <span class="p">{</span>
+    <span class="c1">// The public part signifies that functions defined in Animal will be externally accessible, so you can call Dog::Eat</span>
+    <span class="c1">// Try removing it and compiling the code, and you'll get errors!</span>
+    <span class="nl">public:</span>
+    <span class="kt">void</span> <span class="n">Run</span><span class="p">()</span> <span class="p">{</span>
+        <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"zoom"</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">};</span>
+
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">(){</span>
+    <span class="n">Dog</span> <span class="n">d</span><span class="p">;</span>
+    <span class="n">d</span><span class="p">.</span><span class="n">Eat</span><span class="p">();</span>
+    <span class="n">d</span><span class="p">.</span><span class="n">Run</span><span class="p">();</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>If you compile and run, you’ll see that it prints out both “yum” and “zoom”! This is because Dog is an Animal, and all Animals can Eat.</p>
+
+<h3 id="11-polymorphism-and-interfaces">1.1: Polymorphism and Interfaces</h3>
+
+<p>One feature of Inheritance is that objects of the child class can be used as objects of the base class (although there are some caveats, we won’t be getting into those here) - <em>and overloaded functions are preserved</em>. So the following works perfectly:</p>
+
+<div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include</span> <span class="cpf">&lt;iostream&gt;</span><span class="cp">
+</span>
+
+<span class="k">class</span> <span class="nc">Animal</span> <span class="p">{</span>
+	<span class="nl">public:</span>
+    <span class="k">virtual</span> <span class="kt">void</span> <span class="n">Eat</span><span class="p">()</span> <span class="p">{</span> <span class="c1">// Virtual allows for polymorphism - the function can be changed by child classes, and then the new object can be used as an Animal.</span>
+        <span class="c1">// If you get rid of virtual, it will still compile, but your code will print out "yum" instead of "the dog is eating"</span>
+        <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"yum"</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">};</span>
+
+<span class="k">class</span> <span class="nc">Dog</span> <span class="o">:</span> <span class="k">public</span> <span class="n">Animal</span> <span class="p">{</span>
+    <span class="c1">// The public part signifies that functions defined in Animal will be externally accessible, so you can call Dog::Eat</span>
+    <span class="c1">// Try removing it and compiling the code, and you'll get errors!</span>
+    <span class="nl">public:</span>
+    <span class="kt">void</span> <span class="n">Eat</span><span class="p">()</span> <span class="p">{</span>
+        <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"the dog is eating"</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">};</span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">(){</span>
+    <span class="n">Animal</span><span class="o">*</span> <span class="n">d</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Dog</span><span class="p">();</span>
+    <span class="n">d</span> <span class="o">-&gt;</span> <span class="n">Eat</span><span class="p">();</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>And it prints out “the dog is eating”!</p>
+
+<p>Note: if you get rid of the <code class="language-plaintext highlighter-rouge">virtual</code> bit, your code will compile fine, but instead you’ll only see “yum” printed out. This is because, if functions aren’t virtual, they’re looked up by type instead of by object and <code class="language-plaintext highlighter-rouge">d</code> is an Animal* instead of a Dog*.</p>
+
+<p>Polymorphic code is when you define a base class like Animal and then subclass it to add functionality. A better example is a simple motor controller compatibility library:</p>
+
+<div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">BaseMotor</span> <span class="p">{</span>
+<span class="nl">public:</span>
+    <span class="k">virtual</span> <span class="kt">void</span> <span class="n">SetPercent</span> <span class="p">(</span><span class="kt">float</span> <span class="n">percent</span><span class="p">)</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="c1">// = 0 signifies that the virtual function is not implemented but will be implemented in a base class - they are "pure".</span>
+    <span class="k">virtual</span> <span class="kt">void</span> <span class="n">SetPosition</span> <span class="p">(</span><span class="kt">float</span> <span class="n">position</span><span class="p">)</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">};</span>
+</code></pre></div></div>
+
+<p>Now we can overload this for, say, a simple servo motor, like so:</p>
+
+<div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">ServoMotor</span> <span class="o">:</span> <span class="k">public</span> <span class="n">BaseMotor</span> <span class="p">{</span>
+<span class="nl">public:</span>
+    <span class="kt">void</span> <span class="n">SetPercent</span> <span class="p">(</span><span class="kt">float</span> <span class="n">percent</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"Running motor at "</span> <span class="o">&lt;&lt;</span> <span class="n">percent</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+    <span class="p">}</span>
+    
+    <span class="kt">void</span> <span class="n">SetPosition</span> <span class="p">(</span><span class="kt">float</span> <span class="n">position</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"Moving motor to "</span> <span class="o">&lt;&lt;</span> <span class="n">position</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">};</span>
+</code></pre></div></div>
+
+<p>And finally use it like,</p>
+
+<div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">int</span> <span class="nf">main</span><span class="p">(){</span>
+    <span class="n">BaseMotor</span><span class="o">*</span> <span class="n">m</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ServoMotor</span><span class="p">;</span>
+    <span class="n">m</span> <span class="o">-&gt;</span> <span class="n">SetPercent</span><span class="p">(</span><span class="mf">0.5</span><span class="p">);</span>
+    <span class="n">m</span> <span class="o">-&gt;</span> <span class="n">SetPosition</span><span class="p">(</span><span class="mi">100</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Congratulations, you have a polymorphic interface!</p>
+
+<p>There are some situations in which we want a polymorphic base class to provide functions instead of just placeholders. Since BaseMotor is a class, we can just add those functions!</p>
+
+<div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Global scope</span>
+<span class="k">enum</span> <span class="n">Mode</span> <span class="p">{</span>
+    <span class="n">PERCENT</span><span class="p">,</span>
+    <span class="n">POSITION</span>
+<span class="p">};</span>
+
+<span class="k">class</span> <span class="nc">BaseMotor</span> <span class="p">{</span>
+    <span class="c1">// ...</span>
+	<span class="kt">void</span> <span class="n">Set</span> <span class="p">(</span><span class="n">Mode</span> <span class="n">mode</span><span class="p">,</span> <span class="kt">float</span> <span class="n">data</span><span class="p">)</span> <span class="p">{</span>
+		<span class="k">if</span> <span class="p">(</span><span class="n">mode</span> <span class="o">==</span> <span class="n">PERCENT</span><span class="p">){</span>
+    		<span class="n">SetPercent</span><span class="p">(</span><span class="n">data</span><span class="p">);</span>
+    	<span class="p">}</span>
+	    <span class="k">if</span> <span class="p">(</span><span class="n">mode</span> <span class="o">==</span> <span class="n">POSITION</span><span class="p">){</span>
+        	<span class="n">SetPosition</span><span class="p">(</span><span class="n">data</span><span class="p">);</span>
+    	<span class="p">}</span>
+	<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Now, <code class="language-plaintext highlighter-rouge">m.Set(PERCENT, 0.5)</code> is equivalent to <code class="language-plaintext highlighter-rouge">m.SetPercent(0.5)</code>, and has the same result!</p>
+
+<h3 id="12-multiple-inheritance">1.2: Multiple Inheritance</h3>
+
+<p>Multiple inheritance is when a class inherits from more than one parent. Sound cool? It is.</p>
+
+<p>Say you have two classes, an InternetConnection class that does spooky things to send data over an internet connection, and a Point class which represents a point on the Cartesian plane, and you want to make it so Points are shared over an internet connection.</p>
+
+<div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include</span> <span class="cpf">&lt;iostream&gt;</span><span class="cp">
+#include</span> <span class="cpf">&lt;string&gt;</span><span class="cp">
+</span>
+
+<span class="k">class</span> <span class="nc">InternetConnection</span> <span class="p">{</span>
+<span class="nl">public:</span>
+    <span class="kt">void</span> <span class="n">SendMessage</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">message</span><span class="p">){</span>
+        <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"Sending message "</span> <span class="o">&lt;&lt;</span> <span class="n">message</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">};</span>
+
+
+<span class="k">class</span> <span class="nc">Point</span> <span class="p">{</span>
+    <span class="kt">int</span> <span class="n">x</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">y</span><span class="p">;</span>
+<span class="nl">public:</span>
+
+    <span class="kt">void</span> <span class="n">Set</span><span class="p">(</span><span class="kt">int</span> <span class="n">_x</span><span class="p">,</span> <span class="kt">int</span> <span class="n">_y</span><span class="p">){</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">_x</span><span class="p">;</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">_y</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">};</span>
+</code></pre></div></div>
+
+<p>You could go about it with a class like this,</p>
+
+<div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">NetworkPoint</span> <span class="p">{</span>
+    <span class="n">Point</span> <span class="n">p</span><span class="p">;</span>
+    <span class="n">InternetConnection</span> <span class="n">n</span><span class="p">;</span>
+<span class="nl">public:</span>
+    <span class="kt">void</span> <span class="n">Set</span><span class="p">(</span><span class="kt">int</span> <span class="n">_x</span><span class="p">,</span> <span class="kt">int</span> <span class="n">_y</span><span class="p">){</span>
+        <span class="n">p</span><span class="p">.</span><span class="n">Set</span><span class="p">(</span><span class="n">_x</span><span class="p">,</span> <span class="n">_y</span><span class="p">);</span>
+        <span class="n">n</span><span class="p">.</span><span class="n">SendMessage</span><span class="p">(</span><span class="s">"Changed the point's value to "</span> <span class="o">+</span> <span class="n">std</span><span class="o">::</span><span class="n">to_string</span><span class="p">(</span><span class="n">_x</span><span class="p">)</span> <span class="o">+</span> <span class="s">"x"</span> <span class="o">+</span> <span class="n">std</span><span class="o">::</span><span class="n">to_string</span><span class="p">(</span><span class="n">_y</span><span class="p">));</span>
+    <span class="p">}</span>
+<span class="p">};</span>
+</code></pre></div></div>
+
+<p>Which works well enough. But say you want to add a feature to Point that returns the Pythagorean distance from 0, like</p>
+
+<div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Point</span> <span class="p">{</span>
+<span class="nl">public:</span>
+    <span class="c1">// ...</span>
+    <span class="kt">float</span> <span class="n">GetDistanceFromZero</span><span class="p">(){</span>
+        <span class="k">return</span> <span class="n">sqrt</span><span class="p">(</span><span class="n">x</span> <span class="o">*</span> <span class="n">x</span> <span class="o">+</span> <span class="n">y</span> <span class="o">*</span> <span class="n">y</span><span class="p">);</span> <span class="c1">// Need to include cmath.h for sqrt()</span>
+    <span class="p">}</span>
+<span class="p">};</span>
+</code></pre></div></div>
+
+<p>How do you implement this in NetworkPoint? Well, it would be easy enough to add, just</p>
+
+<div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">NetworkPoint</span> <span class="p">{</span>
+<span class="nl">public:</span>
+    <span class="c1">// ...</span>
+    <span class="kt">float</span> <span class="n">GetDistanceFromZero</span><span class="p">(){</span>
+        <span class="k">return</span> <span class="n">p</span><span class="p">.</span><span class="n">GetDistanceFromZero</span><span class="p">();</span>
+    <span class="p">}</span>
+<span class="p">};</span>
+</code></pre></div></div>
+
+<p>But now you have to repeat that process every time you want to extend Point! Your code will quickly become unmaintainable.</p>
+
+<p>The clean way to handle this is with inheritance. So just make NetworkPoint inherit from Point and keep an InternetConnection!</p>
+
+<div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">NetworkPointV2</span> <span class="o">:</span> <span class="k">public</span> <span class="n">Point</span> <span class="p">{</span>
+    <span class="n">InternetConnection</span> <span class="n">n</span><span class="p">;</span>
+<span class="nl">public:</span>
+    <span class="kt">void</span> <span class="n">Set</span><span class="p">(</span><span class="kt">int</span> <span class="n">_x</span><span class="p">,</span> <span class="kt">int</span> <span class="n">_y</span><span class="p">)</span> <span class="p">{</span> <span class="c1">// Note that Set in Point isn't virtual. Thus a NetworkPoint can't be used as a Point! It is not polymorphic.</span>
+        <span class="n">Point</span><span class="o">::</span><span class="n">Set</span><span class="p">(</span><span class="n">_x</span><span class="p">,</span> <span class="n">_y</span><span class="p">);</span> <span class="c1">// Call the base class function - we still want set to work properly</span>
+        <span class="n">n</span><span class="p">.</span><span class="n">SendMessage</span><span class="p">(</span><span class="s">"Changed the point's value to "</span> <span class="o">+</span> <span class="n">std</span><span class="o">::</span><span class="n">to_string</span><span class="p">(</span><span class="n">_x</span><span class="p">)</span> <span class="o">+</span> <span class="s">"x"</span> <span class="o">+</span> <span class="n">std</span><span class="o">::</span><span class="n">to_string</span><span class="p">(</span><span class="n">_y</span><span class="p">));</span>
+    <span class="p">}</span>
+<span class="p">};</span>
+</code></pre></div></div>
+
+<p>At this point you must make a design decision. If it’s necessary to interact with InternetConnection apis from outside when working on a NetworkPointV2, eventually you’ll need to start writing functions that call InternetConnection functions. Your code gets dirty. It’s time to use multiple inheritance!</p>
+
+<p>(Also, remember, it’s not always appropriate to use multiple inheritance, such as if you don’t want every api exposed. Use discretion!)</p>
+
+<div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">NetworkPointV3</span> <span class="o">:</span> <span class="k">public</span> <span class="n">Point</span><span class="p">,</span> <span class="k">public</span> <span class="n">InternetConnection</span> <span class="p">{</span>
+<span class="nl">public:</span>
+    <span class="kt">void</span> <span class="n">Set</span><span class="p">(</span><span class="kt">int</span> <span class="n">_x</span><span class="p">,</span> <span class="kt">int</span> <span class="n">_y</span><span class="p">){</span> <span class="c1">// Note that Set in Point isn't virtual. Thus a NetworkPoint can't be used as a Point! It is not polymorphic.</span>
+        <span class="n">Point</span><span class="o">::</span><span class="n">Set</span><span class="p">(</span><span class="n">_x</span><span class="p">,</span> <span class="n">_y</span><span class="p">);</span>
+        <span class="n">SendMessage</span><span class="p">(</span><span class="s">"Changed the point's value to "</span> <span class="o">+</span> <span class="n">std</span><span class="o">::</span><span class="n">to_string</span><span class="p">(</span><span class="n">_x</span><span class="p">)</span> <span class="o">+</span> <span class="s">"x"</span> <span class="o">+</span> <span class="n">std</span><span class="o">::</span><span class="n">to_string</span><span class="p">(</span><span class="n">_y</span><span class="p">));</span>
+    <span class="p">}</span>
+<span class="p">};</span>
+</code></pre></div></div>
+
+<p><em>Much</em> better! Now every time you add a public function to Point or InternetConnection, NetworkPointV3 will gain that function.</p>
+
+<h2 id="2-templates">2: Templates</h2>
+
+<p>Templates are an excellent way to make library code more efficient. They allow you to create new types based on any static field passed into a class - a fancy way of saying they change the behavior of the class. An example of a templated class is,</p>
+
+<div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">template</span> <span class="o">&lt;</span><span class="k">typename</span> <span class="nc">FirstType</span><span class="p">,</span> <span class="k">typename</span> <span class="nc">SecondType</span><span class="p">&gt;</span> <span class="c1">// Take two template values. Think of it like a function definition - typename is the type of each argument. Typename refers to any valid c++ type.</span>
+<span class="c1">// Be very careful never to add a semicolon between the template bit and the struct/class bit! It's a very embarrassing compile error.</span>
+<span class="k">struct</span> <span class="nc">Pair</span> <span class="p">{</span>
+    <span class="n">FirstType</span> <span class="n">first</span><span class="p">;</span>
+    <span class="n">SecondType</span> <span class="n">second</span><span class="p">;</span>
+<span class="p">};</span>
+</code></pre></div></div>
+
+<p>Pair is now a <em>templated type</em>. It doesn’t have any kind of meaning on it’s own, and you can’t create an object of Pair, but if you feed it two types you create a valid class!</p>
+
+<div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">Pair</span> <span class="n">p</span><span class="p">;</span> <span class="c1">// Compiler error</span>
+<span class="n">Pair</span> <span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span> <span class="kt">double</span><span class="o">&gt;</span> <span class="n">p2</span><span class="p">;</span> <span class="c1">// Valid pair with an int FirstType and a double SecondType</span>
+</code></pre></div></div>
+
+<p>Hold on. What? Why is <code class="language-plaintext highlighter-rouge">Pair</code> not valid but <code class="language-plaintext highlighter-rouge">Pair &lt;int, double&gt;</code> is?</p>
+
+<p>C++ is a <em>statically typed</em> language. That means, among a lot of other things, that the size and byte structure of all classes has to be determined at compile time and if it tries to change there’s an error! Since templates choose what types are actually used inside a class, the compiler gets angry if the template type isn’t specified. Pair is an incomplete type! When you specify the template values, you’re not passing arguments, you’re actually filling in the type itself.</p>
+
+<div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">Pair</span> <span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span> <span class="kt">double</span><span class="o">&gt;</span><span class="p">;</span> <span class="c1">// Is equivalent to</span>
+<span class="k">struct</span> <span class="nc">Pair</span> <span class="p">{</span>
+    <span class="kt">int</span> <span class="n">first</span><span class="p">;</span>
+    <span class="kt">double</span> <span class="n">second</span><span class="p">;</span>
+<span class="p">};</span> <span class="c1">// Assuming you're on a system with 32-bit ints and 64-bit doubles, this type now takes up 96 bits, or 12 bytes.</span>
+
+<span class="n">Pair</span> <span class="o">&lt;</span><span class="kt">char</span><span class="p">[</span><span class="mi">6</span><span class="p">],</span> <span class="kt">int</span><span class="o">&gt;</span><span class="p">;</span> <span class="c1">// Is equivalent to</span>
+<span class="k">struct</span> <span class="nc">Pair</span> <span class="p">{</span>
+    <span class="kt">char</span><span class="p">[</span><span class="mi">6</span><span class="p">]</span> <span class="n">first</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">second</span><span class="p">;</span>
+<span class="p">};</span> <span class="c1">// 10 bytes - 4-byte int + 6 byte array</span>
+</code></pre></div></div>
+
+<p>Because templates are basically new types, templates of the same class are not compatible types.</p>
+
+<div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">Pair</span> <span class="o">&lt;</span><span class="kt">char</span><span class="p">[</span><span class="mi">6</span><span class="p">],</span> <span class="kt">double</span><span class="o">&gt;*</span> <span class="n">incompatible</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Pair</span> <span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>This may seem counterintuitive, but consider that this is basically saying,</p>
+
+<div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">struct</span> <span class="nc">CharDoublePair</span> <span class="p">{</span>
+    <span class="kt">char</span><span class="p">[</span><span class="mi">6</span><span class="p">]</span> <span class="n">first</span><span class="p">;</span>
+    <span class="kt">double</span> <span class="n">second</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="k">struct</span> <span class="nc">IntStringPair</span> <span class="p">{</span>
+    <span class="kt">int</span> <span class="n">first</span><span class="p">;</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">second</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="n">CharDoublePair</span><span class="o">*</span> <span class="n">incompatible</span> <span class="o">=</span> <span class="k">new</span> <span class="n">IntStringPair</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>A usage of templates that you’ve surely seen before is with managed arrays, like <code class="language-plaintext highlighter-rouge">std::vector</code>s. An <code class="language-plaintext highlighter-rouge">std::vector &lt;int&gt;</code> is just a Python-style list of ints; this is using a template!</p>
+
+<div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">template</span> <span class="o">&lt;</span><span class="k">typename</span> <span class="nc">T</span><span class="p">,</span> <span class="kt">int</span> <span class="n">length</span><span class="p">&gt;</span> <span class="c1">// this isn't particularly useful, but it serves as an example</span>
+<span class="k">class</span> <span class="nc">ArrayOf</span> <span class="p">{</span>
+<span class="nl">public:</span>
+    <span class="n">T</span> <span class="n">array</span><span class="p">[</span><span class="n">length</span><span class="p">];</span>
+<span class="p">};</span>
+</code></pre></div></div>
+
+<p>What’s this? <code class="language-plaintext highlighter-rouge">int length</code> as a template parameter? Yep. Templates can also be basic types (like ints) or, with c++20 (which you really should be using whenever possible), any type at all! Because template parameters are automatically constant, you can do stuff like arrays sized by a template. Kewl!</p>
+
+<h3 id="21-fancy-stuff-with-templates">2.1: Fancy stuff with templates</h3>
+
+<p>Say you’re making a <a href="https://en.wikipedia.org/wiki/Linked_list">linked list</a>. You’ll need to have a cell type which contains your data and a pointer to the next cell, and a container type that initializes all the cells. The C style way is with <code class="language-plaintext highlighter-rouge">void*</code> pointers, which is like walking willingly into the Cave in which Segfaults Lie without a lantern. In C++, we have templates! However, there’s a problem. You don’t want to have to specify <code class="language-plaintext highlighter-rouge">Container&lt;Cell&lt;MyType&gt;&gt;</code> as your template for the list container - that’s just plain dumb, so how are you going to do this? If you think the answer is passing the template parameter to each cell, you’re right.</p>
+
+<div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">template</span> <span class="o">&lt;</span><span class="k">typename</span> <span class="nc">T</span><span class="p">&gt;</span>
+<span class="k">class</span> <span class="nc">Container</span> <span class="p">{</span>
+    <span class="n">Cell</span> <span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;*</span> <span class="n">first</span><span class="p">;</span>
+<span class="p">};</span>
+</code></pre></div></div>
+
+<p>By the way - yeah, nested templates work. <code class="language-plaintext highlighter-rouge">Container&lt;Cell&lt;MyType&gt;&gt;</code> couldn’t work without some fancy concepts, but things like this are possible:</p>
+
+<div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">template</span> <span class="o">&lt;</span><span class="k">typename</span> <span class="nc">FirstType</span><span class="p">,</span> <span class="k">typename</span> <span class="nc">SecondType</span><span class="p">&gt;</span>
+<span class="k">struct</span> <span class="nc">Pair</span> <span class="p">{</span>
+    <span class="n">FirstType</span> <span class="n">first</span><span class="p">;</span>
+    <span class="n">SecondType</span> <span class="n">second</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="k">template</span> <span class="o">&lt;</span><span class="k">typename</span> <span class="nc">T</span><span class="p">,</span> <span class="kt">int</span> <span class="n">length</span><span class="p">&gt;</span>
+<span class="k">class</span> <span class="nc">UselessArray</span> <span class="p">{</span>
+    <span class="n">T</span> <span class="n">array</span><span class="p">[</span><span class="n">length</span><span class="p">];</span>
+<span class="p">};</span>
+
+<span class="n">UselessArray</span> <span class="o">&lt;</span><span class="n">Pair</span> <span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span> <span class="kt">char</span><span class="p">[</span><span class="mi">6</span><span class="p">]</span><span class="o">&gt;</span><span class="p">,</span> <span class="mi">6</span><span class="o">&gt;</span> <span class="n">arr</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>If this looks stupid, it’s because it is. However, this sort of thing is why <code class="language-plaintext highlighter-rouge">std::map</code> works!</p>
+
+<p>You can also use templates with functions, which behave similarly to template classes. For example, a simple <code class="language-plaintext highlighter-rouge">new</code> implementation using templates,</p>
+
+<div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">template</span> <span class="o">&lt;</span><span class="k">typename</span> <span class="nc">T</span><span class="p">&gt;</span>
+<span class="n">T</span><span class="o">*</span> <span class="nf">createNew</span><span class="p">(){</span>
+	<span class="n">T</span><span class="o">*</span> <span class="n">ret</span> <span class="o">=</span> <span class="p">(</span><span class="n">T</span><span class="o">*</span><span class="p">)</span><span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="n">T</span><span class="p">));</span> <span class="c1">// Syscall to allocate a block of memory size T</span>
+    <span class="n">memset</span><span class="p">(</span><span class="n">ret</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">T</span><span class="p">));</span> <span class="c1">// Zero it, so we don't leave junk data in T</span>
+    <span class="k">return</span> <span class="n">ret</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Can now be used like,</p>
+
+<div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">template</span> <span class="o">&lt;</span><span class="k">typename</span> <span class="nc">T</span><span class="p">,</span> <span class="kt">int</span> <span class="n">length</span><span class="p">&gt;</span>
+<span class="k">class</span> <span class="nc">UselessArray</span> <span class="p">{</span>
+    <span class="n">T</span> <span class="n">array</span><span class="p">[</span><span class="n">length</span><span class="p">];</span>
+<span class="p">};</span>
+
+<span class="n">UselessArray</span> <span class="o">&lt;</span><span class="kt">char</span><span class="p">,</span> <span class="mi">10</span><span class="o">&gt;*</span> <span class="n">arr</span> <span class="o">=</span> <span class="n">createNew</span> <span class="o">&lt;</span><span class="n">UselessArray</span><span class="o">&gt;</span><span class="p">();</span>
+</code></pre></div></div>
+
+<p>Fun!</p>
+
+<p>As with templated classes, you can also pass constant values to templated functions.</p>
+
+<div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">template</span> <span class="o">&lt;</span><span class="k">typename</span> <span class="nc">FirstType</span><span class="p">,</span> <span class="k">typename</span> <span class="nc">SecondType</span><span class="p">&gt;</span>
+<span class="k">struct</span> <span class="nc">Pair</span> <span class="p">{</span>
+    <span class="n">FirstType</span> <span class="n">first</span><span class="p">;</span>
+    <span class="n">SecondType</span> <span class="n">second</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="k">template</span> <span class="o">&lt;</span><span class="k">typename</span> <span class="nc">T</span><span class="p">,</span> <span class="kt">char</span> <span class="n">b</span><span class="p">&gt;</span>
+<span class="kt">void</span> <span class="nf">fancyMemset</span><span class="p">(</span><span class="n">T</span><span class="o">*</span> <span class="n">in</span><span class="p">){</span>
+    <span class="n">memset</span><span class="p">((</span><span class="kt">char</span><span class="o">*</span><span class="p">)</span><span class="n">in</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">T</span><span class="p">));</span>
+<span class="p">}</span>
+
+<span class="n">Pair</span> <span class="o">&lt;</span><span class="kt">char</span><span class="p">,</span> <span class="kt">char</span><span class="o">&gt;</span> <span class="n">p</span> <span class="o">=</span> <span class="p">{</span> <span class="sc">'h'</span><span class="p">,</span> <span class="sc">'i'</span> <span class="p">};</span>
+<span class="n">fancyMemset</span><span class="o">&lt;</span><span class="n">Pair</span><span class="o">&lt;</span><span class="kt">char</span><span class="p">,</span> <span class="kt">char</span><span class="o">&gt;</span><span class="p">,</span> <span class="sc">'l'</span><span class="o">&gt;</span><span class="p">(</span><span class="o">&amp;</span><span class="n">p</span><span class="p">);</span> <span class="c1">// and now p is { 'l', 'l' }, because every byte has been set to 'l'.</span>
+</code></pre></div></div>
+
+<p>Generally useless, but mocking C developers has never been this easy.</p>
+
+<h2 id="3-concepts">3: Concepts</h2>
+
+<p>Now we gettin’ to the good part! Concepts are a fancy-schmancy C++20 feature that allow you to define a set of rules that classes have to conform to, and then through some kind of magic <em>use those parts of any class</em>.</p>
+
+            My friend's blogs: <a href="https://wizardwatch.net/">Wizardwatch's overall site</a>, <a href="https://sawyershepherd.org/">Sawyer's blog</a> (the .org part bemuses me). If ryleu decides to actually put something on his site, I'll link it here.
+            <div class="navlinks">
+                
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                        
+                            <a href="/blog/guns-are-stupid-part-2">&lt; Guns are Still Stupid <p>If you don't get this then, frankly, you are a huge idiot</p></a>
+                        
+                    
+                    
+                
+                
+                
+                    
+                        
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+                    
+                    
+                
+            </div>
+            <div id="disqus_thread"></div>
+            <script>
+                /**
+                *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+                *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables    */
+                /*
+                var disqus_config = function () {
+                this.page.url = PAGE_URL;  // Replace PAGE_URL with your page's canonical URL variable
+                this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+                };
+                */
+                (function() { // DON'T EDIT BELOW THIS LINE
+                var d = document, s = d.createElement('script');
+                s.src = 'https://linuxrocks2000-github-io.disqus.com/embed.js';
+                s.setAttribute('data-timestamp', +new Date());
+                (d.head || d.body).appendChild(s);
+                })();
+            </script>
+            <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        </div>
+        <div id="footer">
+            <p><a href = "mailto:plupy44@gmail.com">Email?</a></p>
+<p><a href = "https://github.com/LinuxRocks2000">Github?</a></p>
+<p>Privacy policy: We don't collect data</p>
+<p>Cookie policy: We don't use cookies</p>
+<p>Copywrong 1492, Tyler Clarke</p>
+<p>All rights preserved</p>
+<p>Vegetables are alive too</p>
+<p>Cows pollute the environment and should be eaten</p>
+<p>Nothing here is copyrighted - if we wanted people to not have our data, we wouldn't smatter it across the internet.</p>
+<p>Lawyers beware - here be people who know that lawyers are hired thugs designed <br />to make the person with more money win in court, no matter how right or wrong they are</p>
+<p>I hereby order that any stuck-up prigs that say I need a real privacy policy can leave the room.</p>
+
+        </div>
+        <div id="sidebar">
+            <div id="stickything">
+
+    <a class = "theA" href="/blog/a-brief-introduction-to-c++-oop">
+        <div class = "sidebar-item">
+            <span class = "title">A Brief Introduction C++ Object Oriented Programming</span><br />
+            <span class = "bottomthing">Perhaps the coolest object oriented language I have ever seen</span>
+        </div>
+    </a>
+
+    <a class = "theA" href="/blog/guns-are-stupid-part-2">
+        <div class = "sidebar-item">
+            <span class = "title">Guns are Still Stupid</span><br />
+            <span class = "bottomthing">If you don't get this then, frankly, you are a huge idiot</span>
+        </div>
+    </a>
+
+    <a class = "theA" href="/blog/the-fundamental-flaw-of-belief">
+        <div class = "sidebar-item">
+            <span class = "title">The Fundamental Problems with Belief</span><br />
+            <span class = "bottomthing">This is my favorite essay so far, and is not to be judged by the title - I couldn't think of anything that fit better.</span>
+        </div>
+    </a>
+
+    <a class = "theA" href="/blog/parenting">
+        <div class = "sidebar-item">
+            <span class = "title">Good Parenting</span><br />
+            <span class = "bottomthing">From a child of good parents</span>
+        </div>
+    </a>
+
+    <a class = "theA" href="/blog/code-cleanliness-2">
+        <div class = "sidebar-item">
+            <span class = "title">Code Cleanliness part 2</span><br />
+            <span class = "bottomthing">A primer and serial internet book on code cleanliness, mostly written for the students of CS classes at Kennesaw State University</span>
+        </div>
+    </a>
+
+    <a class = "theA" href="/blog/code-cleanliness-1-Interim">
+        <div class = "sidebar-item">
+            <span class = "title">Interim: Code Cleanliness for Web Developers</span><br />
+            <span class = "bottomthing">Connecting concepts from Code Cleanliness part 1 to HTML and CSS</span>
+        </div>
+    </a>
+
+    <a class = "theA" href="/blog/code-cleanliness-1">
+        <div class = "sidebar-item">
+            <span class = "title">Code Cleanliness part 1</span><br />
+            <span class = "bottomthing">A primer and serial internet book on code cleanliness, mostly written for the students of CS classes at Kennesaw State University</span>
+        </div>
+    </a>
+
+    <a class = "theA" href="/blog/guns-are-stupid">
+        <div class = "sidebar-item">
+            <span class = "title">Guns are Stupid</span><br />
+            <span class = "bottomthing">Honestly, I don't understand how anybody could not see this.</span>
+        </div>
+    </a>
+
+    <a class = "theA" href="/blog/platformer-from-scratch-chap-6">
+        <div class = "sidebar-item">
+            <span class = "title">Platformer From Scratch Chap 6</span><br />
+            <span class = "bottomthing">Conclusively finishing the physics engine for the third time, bats, level management</span>
+        </div>
+    </a>
+
+    <a class = "theA" href="/blog/platformer-from-scratch-chap-5">
+        <div class = "sidebar-item">
+            <span class = "title">Platformer From Scratch Chap 5</span><br />
+            <span class = "bottomthing">Cleaning up motion, adding fifty coins, adding various other new block types</span>
+        </div>
+    </a>
+
+    <a class = "theA" href="/blog/platformer-from-scratch-chap-4">
+        <div class = "sidebar-item">
+            <span class = "title">Platformer From Scratch Chap 4</span><br />
+            <span class = "bottomthing">Extending the physics engine for special bricks and the coins!</span>
+        </div>
+    </a>
+
+    <a class = "theA" href="/blog/platformer-from-scratch-chap-3">
+        <div class = "sidebar-item">
+            <span class = "title">Platformer From Scratch Chap 3</span><br />
+            <span class = "bottomthing">Physics</span>
+        </div>
+    </a>
+
+    <a class = "theA" href="/blog/platformer-from-scratch-chap-2">
+        <div class = "sidebar-item">
+            <span class = "title">Platformer From Scratch Chap 2</span><br />
+            <span class = "bottomthing">Players, improved graphics, gameloops!</span>
+        </div>
+    </a>
+
+    <a class = "theA" href="/blog/platformer-from-scratch-chap-1">
+        <div class = "sidebar-item">
+            <span class = "title">Platformer From Scratch Chap 1</span><br />
+            <span class = "bottomthing">Getting graphics working</span>
+        </div>
+    </a>
+
+    <a class = "theA" href="/blog/gluten-free-dairy-free-highly-based-brownies">
+        <div class = "sidebar-item">
+            <span class = "title">Gluten Free, Dairy Free, Highly Based Brownies</span><br />
+            <span class = "bottomthing">Because everyone has just <i>got</i> to love long-winded poorly-Javascripted baking blogs!</span>
+        </div>
+    </a>
+
+    <a class = "theA" href="/blog/on-religion">
+        <div class = "sidebar-item">
+            <span class = "title">On Religion</span><br />
+            <span class = "bottomthing">My views and my justification</span>
+        </div>
+    </a>
+
+    <a class = "theA" href="/blog/Carbon-Cycles">
+        <div class = "sidebar-item">
+            <span class = "title">Carbon Cycles</span><br />
+            <span class = "bottomthing">And why America should use Ethanol</span>
+        </div>
+    </a>
+
+    <a class = "theA" href="/blog/the-case-for-carbon-investment">
+        <div class = "sidebar-item">
+            <span class = "title">The Case for Carbon Investment</span><br />
+            <span class = "bottomthing">The ugly truth about carbon dioxide, and what we can do about it (not made by a doom-and-gloomer!)</span>
+        </div>
+    </a>
+
+    <a class = "theA" href="/blog/something-up-with-squishmallow">
+        <div class = "sidebar-item">
+            <span class = "title">Something wrong with Squishmallows (only for people who like tabloid humour)</span><br />
+            <span class = "bottomthing">Detective Lane Howser, on the case</span>
+        </div>
+    </a>
+
+    <a class = "theA" href="/blog/conversations-with-a-southerner">
+        <div class = "sidebar-item">
+            <span class = "title">Conversations with the last true-born southerner</span><br />
+            <span class = "bottomthing">Any normal person who has ever talked to a true southern person will agree</span>
+        </div>
+    </a>
+
+    <a class = "theA" href="/blog/microsoft-poetry">
+        <div class = "sidebar-item">
+            <span class = "title">A poem for Microsoft</span><br />
+            <span class = "bottomthing">Because microsoft needs a poem that fully describes it</span>
+        </div>
+    </a>
+
+    <a class = "theA" href="/blog/hello-world">
+        <div class = "sidebar-item">
+            <span class = "title">Welcome to my blog!</span><br />
+            <span class = "bottomthing">The first post in my blog, also a great place to go for extra information</span>
+        </div>
+    </a>
+
+</div>
+<style>
+    .sidebar-item{
+        padding: 10px;
+        background-color: azure;
+        margin: 10px;
+    }
+    .sidebar-item > .title{
+        color: black;
+        text-decoration: none;
+        white-space: nowrap;
+    }
+    .sidebar-item > .bottomthing{
+        color: grey;
+        font-weight: bold;
+    }
+    .sidebar-item:hover{
+        background-color: transparent;
+    }
+    .theA{
+        text-decoration: none;
+    }
+    #stickything{
+        position: relative;
+    }
+</style>
+
+        </div>
+        <script type="text/javascript">
+            Array.from(document.getElementsByClassName("noselect")).forEach((item, i) => {
+                item.addEventListener('copy', function(e){
+                    var text = window.getSelection().toString().replace(/[\n\r]+/g, '');
+                    e.clipboardData.setData('text/plain', "Let me make something clear. When I mark something noSelect, I mean it. This blog contains tutorials, in which you learn, NOT just copy code! I do not want people putting in zero-effort.");
+                    e.preventDefault();
+                });
+            });
+        </script>
+        <script type = "text/javascript" src = "/blog/js/main.js"></script>
+    </body>
+</html>

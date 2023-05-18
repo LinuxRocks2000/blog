@@ -1,0 +1,3 @@
+# Coder Qualities
+
+I've been working on a small but growing code team in which I am the seniorest developer for some time. My position means I spend most of my time training developers on the ropes - teaching them the language, the tools, and the libraries. This also means I've met a lot of people with different personalities, backgrounds, and competencies. I've met quite a few who weren't mature enough to handle code at all, a bunch who did it really well, and everything in between, so here's an informative document on vetting, teaching, and managing a code team.

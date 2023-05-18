@@ -1,0 +1,63 @@
+---
+title: And Satan Laughed
+bottomthing: A bit of religious sattire
+---
+Sooo. I ghosted y'all for a while. I completely lost motivation waaaaaaay back in January and then robotics season hit... welp.  
+I got bored and wrote a short story today. I really liked how it turned out, so I'm publishing it here. There's probably some morals hidden in there somewhere - be my guest to search - but really it's just a piece of religious "humor", and while it isn't very funny I liked how it turned out.  
+Obviously this might be offensive. Uhh. Don't read it if you'll be offended.
+
+**And Satan Laughed**
+
+
+In the old days, Hell was a place to not be. A cruel punishment designed by… Well, we aren’t quite sure, because some people say God created everything but some say Hell was created by someone else, full of gnashing teeth, demons, fire, and bizarre pieces of metal and rope to make a Spanish Inquisition torturer queasy. A little before the turn of the 20th century, however, things took a turn for the worst.
+
+
+
+It started with the oil CEOs. The first oil companies had been founded fifty years back or so, and the founders were starting to die. Jehovah never was a fan of the pollution of His creation, so down to the Pit they went. Of course, at first they were dismayed, but they were capitalists to the core, and all the fire seemed mighty suspicious. It had to be fueled somehow, and that hinted at massive hydrocarbon pockets underneath the abyss. A few minor demons found themselves not only taking a break from torturing but actually investing in a new venture – the petroleum drilling of The Bad Place, being promised hefty sums of the outcome. Of course, the snickering demons had never planned to let the prospectors use any of that money (an angel’s lifetime of being flayed over and over again being in their near future). Massive (seemingly endless) pockets of oil were in fact discovered, and the initial sales boom was impressive; finally, a competitor for Satan in the boiling oil department. To serve the new economy, a system of currency was created. To keep the slowly and haphazardly forming Government of Hell afloat, taxes were set and enforced viciously.
+
+Demons.
+
+
+
+Once the oil business in the Abyss was solidified, those poor souls who started the venture were sent back to a life of merciless, ceaseless torture in the name of God. This didn’t stop the economy, however. If anything, it bolstered it; with the leaders gone, each company split into six hundred and sixty-six different competing fragments with an unlimited supply to compete over, and everyone in Hell became unimaginably rich.
+
+Then came the lawyers. They were no new trick – lawyers had been around for hundreds of years, and about eighty percent of them went to the inferno (the other twenty percent, the few who actually cared about justice, are rumored to still walk the Earth, as they were rejected from Heaven, Hell, and Purgatory in quick succession). The difference was, these lawyers had grown up in worlds shaped by vicious corporate infighting (some of them had even worked for the oil leaders). It was not long before they, surfing on the turbulent economic forces driving demons to search for oil and precious gems instead of new ways to cause pain, had argued their way into comfortable, pain-free existences – fighting for the newly liberated CEOs and turning an immense profit. Of course, with businesspeople pouring into hell by the hour, the industry had crystallized around the economy. Thousands of companies formed in a matter of weeks. Gemcutters. Dentists. Professional barb removers. Of course, none of the actual work was befitting humans – the demons working for them, however, were paid very well and somewhat enjoyed the new torment of capitalism. The humans, instead, managed things. Such an insane economy meant insane amounts of competition. The demons chuckled as they worked at their respective jobs, carefully plotting the collective destruction of these arrogant humans. Give a few months and Satan would barely have to poke the whole structure to make it collapse, heralding a new Golden Age of Hell unprecedented in demonic history.
+
+Demons.
+
+
+
+It was about thirty years after the first oil CEOs entered hell (somewhere between a week and ten centuries, in the confused Time of the abyss) that the colonists of the 1700-1800s Europe stopped being the primary driving landowner’s force in the fledgling economy of Hell. Now came land developers, realtors and property investors, greedily buying cheap land from the Demons and building things on it. This, of course, added a new economic niche to fill: building materials. Fortunately, Hell seemed to have an infinite supply of wooden switches, which had to be coming from somewhere – the source was quickly found and, in the least coherent land deal in the history of humanity, obtained in the name of the many corporations of Hell. Hard red clay was very easy to find – Hell had such a surplus of it that, even with infinite volume to fill (Hell is unbounded, which makes sense if you think about it then stops making sense when you think about it more) a large portion of it rose to Earth and became the state of Georgia. Limestone, sand, and water were harder to obtain, and were thus sold at ridiculous premiums, but it didn’t deter the land developers, who hired demons at actually hellishly high hourly rates to mix the ingredients into a sort of brimstone-based concrete. Once the foundations were laid, far too wide for their usage to help keep out the fires, they began construction in earnest. The first houses built were entirely of wooden switches, lashed together with whips and coated in clay for fireproofing and rigidity. The demons hired for this particular project were paid barely half as well as they had been before, but it didn’t matter; the ability to intentionally compromise the concrete with demonic curses and satanist runes made it worthwhile.
+
+Demons.
+
+
+
+As the concrete foundations became more widespread, the first human city in Hell was formed. Founded next to Azazath Razavat the Citadel of Pain and Seven Billion Tears, Jefferson City soared on the skyline, illuminated with carefully controlled fires. Very costly residency permits were issued to a large portion of the humans in Hell, and quite a few demons. A city court was formed and, though the demons got equal representation, some of the less perceptive demons felt as though it might be a problem that so many of their number were being arrested – even when the human party was the guilty one. The smarter demons hushed these whiners: clearly, the lawyers who twisted their cases were a truly inspired sort of denizen, and they would do well to learn from them. Anyways, what demon of Hell would be caught saying discrimination is a bad thing?
+
+Eventually, some demons were voted into the city government (faked ballots, of course), but they never could seem to sway the general opinions on public torture – no matter how hard they tried, they just couldn’t convince anyone that mattered that humans doing that kind of thing to each other in public was just plain creepy.
+
+Soon, city law enforcement was initiated, which as a side-effect dealt with the inhumane conduct problems. Most of the officers were demons, which was widely considered in the demonic community to be a good thing. It meant they could decide who got arrested for cheating on tax returns, and who didn’t – and with most of the demons living in poverty at this point, that was an important thing to enforce. No need for more of the demonic hosts to be arrested.
+
+Demons.
+
+
+
+A huge project was initiated by several demonic politicians trying to win votes to plug up the many fiery cracks that caused the rare humans on the edges of the city so much inconvenience. Thousands of demons were hired by the city and dispatched to plug up the fire-cracks. They were paid almost nothing, but the cost of living near the outskirts of the city was cheaper than ever, and anyways: they were helping a Demonic politician gain control. They worked for seven weeks at the project, and when they were finished, the entire area for many miles around was fire-free, the clay rapidly cooling. The demons returned to their homes on the outskirts of the city, for the first time noticing how desolate their neighborhoods seemed. The grand opulence of the inner city seemed to stop at a certain line, and there also did stop the humans. Oh well. Surely the humans couldn’t stand against the obvious decay much longer, and anyways, a massive new construction project was beginning to almost double the city, and thus they were too occupied to think about it.
+
+Most of the dwellings in the center part of Jefferson City were almost palaces, but every building was short: tall construction with mere wooden switches and clay was impossible. Soon, the old torture equipment was being bought at recessional prices, the demons near Jefferson having little time to commit crimes against humanity any more, and melted down: a seemingly endless source of cheap iron to build the skyscrapers of the future with. The first ones were erected in the new extension of Jefferson City to massive success, and the demons in general cheered up greatly, for knocking them down would be a pleasant and effective pastime. The humans seemed to have little to do with the skyscrapers but buy them at increasingly exceptional prices, but fortunately there were plenty less-qualified humans in Hell to fill them with, typing away at things and counting things and Optimizing the Client-Company Relationship for Maximized Workflow Efficaciousness. Crime in those new areas was at first rampant, but then dropped sharply as the incredibly effective demonic police stepped in. None of the demons ever noticed how, despite catching dozens of people in heinous acts every day, the jail cells seemed to have only demons occupying them.
+
+Eventually, demons started to notice how little the richer humans payed in taxes, even compared to themselves. Most of the demons actually had less money now than they’d started out with, being actively in debt. A Tax Rally was started, and the gracious Government of Jefferson City and Other Human Habitations in the Inferno granted a 15% tax cut. The demons snickered. The humans were so easily swayed.
+
+The fifteenth anniversary of Jefferson City came with widespread skyscraper development in all the richer parts of the city. The original construction on the fringes remained – the Cost Efficiency Threshold was eloquently explained to the (entirely demonic) dwellers of those areas by a political demon who was quite enjoying his job.
+Immigration from other parts of Hell was now beginning en masse: demons laying down the whips to work honest jobs for profit and help prepare for the Uprising they were sure Satan would soon lead and humans hoping to obtain grants to explore further the infinite area of Hell. Despite being unbounded, most of Hell was unfilled, being inhospitable even for demons – those areas surrounding the comparatively infinitesimal patch of humans having been prepared with monsters by the original Snake as ultimate punishment. Some of the more well-traveled demons spread the glad tidings that those places were still deadly, and that all the exploring humans would be walking into worse-than-death traps. Those demons walked away grinning at the large sums of money they’d been paid to say those things about the completely empty habitats thousands of miles away from Azazath Razavat.
+
+The humans in Hell, at this point, managed to build internal combustion engines, which quickly replaced the most popular means of transport to date: demon-drawn buggies. This displaced quite a few buggy drivers, who had gotten really good at using those whips.
+
+Humans.
+
+
+
+Eventually, some demons noticed something was wrong, and complained to Satan himself. They were surprised to find the horned, bladed, black-painted, fiery, many-headed, many-armed, dragonlike Fallen Angel in a business suit. They pleaded their grievances in begging tones, on their knees, hands pressed together, clothing chafing, once-spiked tails clipped to a very conservative length required by the Board of Health and Safety. The humans had taken their land, tricked them into building a new world, and then made them pay for it, and they had done it all with a smile on their faces, thinking themselves clever.
+
+And Satan laughed.
